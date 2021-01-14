@@ -1,0 +1,53 @@
+// Here you can add other styles
+.mr-30 {
+    margin-right: 30px !important;
+}
+
+/*#region CustomMenuActive*/
+.sidebar .nav-link.active {
+    color: #fff;
+    background: #20a8d8;
+}
+
+.sidebar .nav-link.active .nav-icon {
+    color: #fff;
+}
+
+table.table thead {
+    background-color: #20a8d8;
+    color: #fff;
+}
+.menu-margin a {
+    padding-left: 40px !important;
+}
+
+.height34px {
+  height: 34px;
+}
+
+.select2-selection--single {
+    height: 34px!important;
+}
+
+.select2-selection--single .select2-selection__arrow {
+    height: 30px !important;
+}
+
+@media screen and (max-width: 992px) {
+    .col-md-none {
+        display: none !important;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .col-lg-none {
+        display: none;
+    }
+}
+/*#endregion CustomMenuActive*/
+
+/*#pretty checkbox*/
+.pretty .state label {
+    min-width: 0 !important;
+}
+/*#pretty checkbox*/

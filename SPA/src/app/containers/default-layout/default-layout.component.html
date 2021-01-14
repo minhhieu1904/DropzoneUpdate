@@ -1,0 +1,43 @@
+<app-header [navbarBrandRouterLink]="['/trend']" [fixed]="true" [navbarBrandText]="{
+  icon: '<image src=assets/img/brand/Logo.png width=42 height=28></image>',
+  text: '<image src=assets/img/brand/Logo.png width=42 height=28></image> SHW'
+}" [sidebarToggler]="'xl'" [mobileAsideMenuToggler]="false" [asideMenuToggler]="false">
+
+  <span class="ml-2">QMS</span>
+  <div class="ml-auto"></div>
+  <ul class="nav navbar-nav ml-auto">
+    <li class="nav-item dropdown mr-30" dropdown placement="bottom right">
+      <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"
+        dropdownToggle (click)="false">
+        <span style="text-decoration: none; cursor: pointer;">{{currentUser.user_Name}}</span>
+        <img src="../../../assets/img/avatars/user.png" class="img-avatar" alt="avatar" />
+      </a>
+      <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+        <a class="dropdown-item" (click)="logout()"><i class="fa fa-lock"></i> Logout</a>
+      </div>
+    </li>
+  </ul>
+</app-header>
+<div class="app-body">
+  <app-sidebar #appSidebar [fixed]="true" [display]="'xl'" [minimized]="sidebarMinimized"
+    (minimizedChange)="toggleMinimize($event)">
+    <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="appSidebar.minimized"></app-sidebar-nav>
+    <app-sidebar-minimizer></app-sidebar-minimizer>
+  </app-sidebar>
+  <!-- Main content -->
+  <main class="main">
+    <!-- Breadcrumb -->
+    <!-- breaking change 'cui-breadcrumb' -->
+    <cui-breadcrumb> </cui-breadcrumb>
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+      <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-clip-rotate" [fullScreen]="true">
+      </ngx-spinner>
+    </div>
+    <!-- /.container-fluid -->
+  </main>
+</div>
+<app-footer>
+  <span>Copyright &copy; 2020 <a href="#">SHYANG SHIN BAO INDUSTRIAL CO., LTD.</a> All rights reserved</span>
+  <span class="ml-auto">Version 1.0</span>
+</app-footer>

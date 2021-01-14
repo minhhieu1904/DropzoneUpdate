@@ -1,0 +1,154 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <strong *ngIf="!product.product_ID;else elseBlock">Add new product</strong>
+          <ng-template #elseBlock><strong>Update product</strong></ng-template>
+          <button type="button" class="btn btn-sm btn-primary float-right" (click)="backList()"><i
+              class="fa fa-chevron-left"></i>
+            Back</button>
+        </div>
+        <form class="form-horizontal" #addProductForm="ngForm" (ngSubmit)="addProductForm.valid && saveAndNext()">
+          <div class="card-body">
+            <div class="form-group row">
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable">Product Cate ID</label>
+                <div class="select-list">
+                  <ng-select2 width="100%" [data]="productCateList" [value]="product.product_Cate_ID"
+                    [(ngModel)]="product.product_Cate_ID" name="productCateList" required [disabled]="flag === '1'">
+                  </ng-select2>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable">Product Name</label>
+                <input type="text" class="form-control" name="product_Name" required [(ngModel)]="product.product_Name">
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable" for="status">Status</label>
+                <select class="form-control" id="status" [(ngModel)]="product.status" name="status">
+                  <option value='1'>Valid</option>
+                  <option value='0'>Invalid</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable" for="new">New</label>
+                <select class="form-control" id="new" [(ngModel)]="product.new" name="new">
+                  <option value='1'>Valid</option>
+                  <option value='0'>Invalid</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable" for="hot_Sale">Hot Sale</label>
+                <select class="form-control" id="hot_Sale" [(ngModel)]="product.hot_Sale" name="hot_Sale">
+                  <option value='1'>Valid</option>
+                  <option value='0'>Invalid</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable" for="isSale">Is Sale</label>
+                <select class="form-control" id="isSale" [(ngModel)]="product.isSale" name="isSale"
+                  (ngModelChange)="changeIsSale($event)">
+                  <option value='1'>Valid</option>
+                  <option value='0'>Invalid</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable">Price</label>
+                <input type="number" class="form-control" name="price" required [(ngModel)]="product.price">
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable">Amount</label>
+                <input type="number" class="form-control" name="amount" required [(ngModel)]="product.amount">
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable">Discount</label>
+                <input type="number" class="form-control" name="discount" [(ngModel)]="product.discount">
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable">Time Sale</label>
+                <!-- Message -->
+                <label class="message" *ngIf="product.isSale == false">* Enter when Is Sale Valid</label>
+                <!-- Message -->
+                <input type="number" class="form-control" name="time_Sale" [(ngModel)]="product.time_Sale"
+                  [disabled]="product.isSale == false" [min]="0">
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable">From Date Sale</label>
+                <!-- Message -->
+                <label class="message" *ngIf="product.isSale == false">* Enter when Is Sale Valid</label>
+                <!-- Message -->
+                <input type="text" placeholder="Please enter day begin sale ..." class="form-control" 
+                  bsDatepicker name="from_Date_Sale" [(ngModel)]="product.from_Date_Sale"
+                  [bsConfig]="{ isAnimated: true, dateInputFormat: 'YYYY-MM-DD', showClearButton: true, clearPosition: 'right' }" 
+                  [maxDate]="product.to_Date_Sale" [disabled]="product.isSale == false">
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable">To Date Sale</label>
+                <!-- Message -->
+                <label class="message" *ngIf="product.isSale == false">* Enter when Is Sale Valid</label>
+                <!-- Message -->
+                <input type="text" placeholder="Please enter day end sale ..." class="form-control" 
+                  bsDatepicker name="to_Date_Sale" [(ngModel)]="product.to_Date_Sale"
+                  [bsConfig]="{ isAnimated: true, dateInputFormat: 'YYYY-MM-DD', showClearButton: true, clearPosition: 'right' }" 
+                  [minDate]="product.from_Date_Sale" [disabled]="product.isSale == false">
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable">Content</label>
+                <textarea class="form-control" style="height: 200px;" name="content"
+                  [(ngModel)]="product.content"></textarea>
+              </div>
+              <div class="form-group col-md-4">
+                <!-- Dropzone import images -->
+                <label class="badge badge-warning font-lable">Upload File Images</label>
+                <div class="custom-dropzone" ngx-dropzone [accept]="'image/*'"
+                  (change)="onSelectImages($event)">
+                  <ngx-dropzone-label>
+                    <div>
+                      <h2>Import Images</h2>
+                    </div>
+                  </ngx-dropzone-label>
+                  <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of fileImages" [file]="f"
+                    [removable]="true" (removed)="onRemoveImages(f)">
+                    <!-- <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label> -->
+                  </ngx-dropzone-image-preview>
+                </div>
+                <!-- Dropzone import images -->
+              </div>
+              <div class="form-group col-md-4">
+                <!-- Dropzone import videos -->
+                <label class="badge badge-warning font-lable">Upload File Videos</label>
+                <div class="custom-dropzone" ngx-dropzone [accept]="'video/*'"
+                  (change)="onSelectVideos($event)">
+                  <ngx-dropzone-label>
+                    <div>
+                      <h2>Import Videos</h2>
+                    </div>
+                  </ngx-dropzone-label>
+                  <ngx-dropzone-video-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of fileVideos" [file]="f"
+                    [removable]="true" (removed)="onRemoveVideos(f)">
+                    <!-- <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label> -->
+                  </ngx-dropzone-video-preview>
+                </div>
+                <!-- Dropzone import videos -->
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button type="button" *ngIf="flag==='0'" class="btn btn-sm btn-danger mr-1" (click)="cancel()">
+              <i class="fa fa-ban"></i> Cancel
+            </button>
+            <button type="submit" *ngIf="flag==='0'" class="btn btn-sm btn-primary mr-1"
+              [disabled]="!addProductForm.valid || product.price == 0 || product.amount == 0">
+              <i class="fa fa-check"></i> Save & Next
+            </button>
+            <button type="button" class="btn btn-sm btn-success mr-1"
+              [disabled]="!addProductForm.valid || product.price == 0 || product.amount == 0" (click)="save()"><i
+                class="fa fa-check"></i> Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

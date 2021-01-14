@@ -1,0 +1,146 @@
+<div class="animated fadeIn">
+  <div class="card">
+    <div class="card-header">
+      <div class="row" style="align-items: center;">
+        <div class="col-md-3 col-lg-2">
+          <strong>Product List</strong>
+        </div>
+        <div class="col-md-none col-lg-3">
+          <div action="" class="search-box">
+            <input type="text" name="search" placeholder="Enter Product Data..." [(ngModel)]="text"
+              (keyup)="getDataPaginations()">
+
+            <button class="search-button" type="button" name="Tìm Kiếm">
+              <i class="fa fa-search" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-none">
+          <input type="text" class="form-control" name="search" placeholder="Enter Product Data..." [(ngModel)]="text"
+            (keyup)="getDataPaginations()">
+        </div>
+        <div class="col-lg-2 col-md-none p-0">
+          <div class="select-list">
+            <ng-select2 width="100%" [data]="productCateList" [(ngModel)]="productCateID" name="productCateList"
+              (ngModelChange)="changeProductCateID($event)">
+            </ng-select2>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-none">
+          <div class="select-list">
+            <ng-select2 width="100%" [data]="productList" [(ngModel)]="product_Name" name="productList">
+            </ng-select2>
+          </div>
+        </div>
+        <div class="col-lg-1 col-md-none p-0">
+          <button type="button" style="font-size: 12px;" class="btn btn-query1 btn-success" (click)="searchDataPaginations()">
+            <i class="fa fa-search"></i> Search
+          </button>
+        </div>
+        <div class="col-md-3 col-lg-2">
+          <!-- Button Add -->
+          <button type="button" style="font-size: 12px;" class="btn btn-sm btn-primary float-right height34px" (click)="addNew()"
+            style="float: right;">
+            <i class="fa fa-plus"></i> Add new
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- Form Search -->
+      <!-- Product Table -->
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product Cate ID</th>
+              <th>Product ID</th>
+              <th>Product Name</th>
+              <th>Price</th>
+              <th>New</th>
+              <th>Hot Sale</th>
+              <th>Is Sale</th>
+              <th>Update By</th>
+              <th>Update Time</th>
+              <th>Status</th>
+              <th colspan="3">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of products; let i=index">
+              <td>{{ (pagination.currentPage - 1) * pagination.pageSize + i + 1 }}</td>
+              <td>{{ product.product_Cate_ID }}</td>
+              <td>{{ product.product_ID }}</td>
+              <td>{{ product.product_Name}}</td>
+              <td>{{ product.price }}</td>
+              <td>
+                <div class="pretty p-icon p-round p-jelly">
+                  <input type="checkbox" [id]="product.product_ID" [checked]="product.new" (change)="changeNew(product)"
+                    name="product.new">
+                  <div class="state p-success">
+                    <i class="icon fa fa-check"></i>
+                    <label></label>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="pretty p-icon p-round p-jelly">
+                  <input type="checkbox" [id]="product.product_ID" [checked]="product.hot_Sale"
+                    (change)="changeHotSale(product)" name="product.hot_Sale">
+                  <div class="state p-success">
+                    <i class="icon fa fa-check"></i>
+                    <label></label>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="pretty p-icon p-round p-jelly">
+                  <input type="checkbox" [id]="product.product_ID" [checked]="product.isSale"
+                    (change)="changeIsSale(product)" name="product.isSale">
+                  <div class="state p-success">
+                    <i class="icon fa fa-check"></i>
+                    <label></label>
+                  </div>
+                </div>
+              </td>
+              <td>{{ product.update_By }}</td>
+              <td>{{ product.update_Time | date: 'MM/dd/yyyy, HH:mm:ss' }}</td>
+              <td>
+                <div class="pretty p-icon p-round p-jelly">
+                  <input type="checkbox" [id]="product.product_ID" [checked]="product.status"
+                    (change)="changeStatus(product)" name="product.status">
+                  <div class="state p-success">
+                    <i class="icon fa fa-check"></i>
+                    <label></label>
+                  </div>
+                </div>
+              </td>
+              <td class="w-1rem">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-primary" (click)="edit(product)">
+                    <i class="fa fa-edit fa-lg"></i>
+                  </button>
+                </div>
+              </td>
+              <td class="w-1rem">
+                <button type="button" class="btn btn-sm btn-danger">
+                  <i class="fa fa-trash fa-lg"></i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="products.length === 0">
+              <td colspan="100%" class="table-warning text-center font-weight-bold"> NO DATA! </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Pagination -->
+      <div class="d-flex" *ngIf="pagination.totalPage > 1">
+        <pagination [boundaryLinks]="true" [totalItems]="pagination.totalCount" [(ngModel)]="pagination.currentPage"
+          [itemsPerPage]="pagination.pageSize" (pageChanged)="pageChanged($event)" previousText="&lsaquo;"
+          nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" [maxSize]=5></pagination>
+      </div>
+    </div>
+  </div>
+</div>

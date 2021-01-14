@@ -1,0 +1,21 @@
+// If you want to override variables do it here
+@import "variables";
+
+// Import styles
+@import "~@coreui/coreui/scss/coreui";
+
+// If you want to add something do it here
+@import "custom";
+
+// Import bsdatepicker
+@import "../../node_modules/ngx-bootstrap/datepicker/bs-datepicker.scss";
+
+// Import alertify
+@import "../../node_modules/alertifyjs/build/css/alertify.min.css";
+@import "../../node_modules/alertifyjs/build/css/themes/bootstrap.min.css";
+
+// Import select 2
+@import "../../node_modules/select2/dist/css/select2.min.css";
+@import "../../node_modules/select2-bootstrap-theme/dist/select2-bootstrap.min.css";
+
+@import "../../node_modules/pretty-checkbox/src/pretty-checkbox.scss"

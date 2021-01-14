@@ -1,0 +1,76 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <strong *ngIf="!article.article_Name;else elseBlock">Add new article</strong>
+          <ng-template #elseBlock><strong>Update article</strong></ng-template>
+          <button type="button" class="btn btn-sm btn-primary float-right" (click)="backList()"><i
+              class="fa fa-chevron-left"></i>
+            Back</button>
+        </div>
+        <form class="form-horizontal" #addArticleForm="ngForm" (ngSubmit)="addArticleForm.valid && saveAndNext()">
+          <div class="card-body">
+            <div class="form-group row">
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable">Article Cate ID</label>
+                <div class="select-list">
+                  <ng-select2 width="100%" [data]="articleCateList" [value]="article.article_Cate_ID"
+                    [(ngModel)]="article.article_Cate_ID" name="articleCateList">
+                  </ng-select2>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable">Article Name</label>
+                <input type="text" class="form-control" name="article_Name" required [(ngModel)]="article.article_Name">
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable" for="status">Status</label>
+                <select class="form-control" id="status" [(ngModel)]="article.status" name="status">
+                  <option value='1'>Valid</option>
+                  <option value='0'>Invalid</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable">Content</label>
+                <textarea class="form-control" name="content" required [(ngModel)]="article.content"></textarea>
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable">Alias</label>
+                <textarea class="form-control" name="alias" [(ngModel)]="article.alias"></textarea>
+              </div>
+              <div class="form-group col-md-4">
+                <label class="badge badge-warning font-lable">Link</label>
+                <textarea class="form-control" name="link" [(ngModel)]="article.link"></textarea>
+              </div>
+            </div>
+          </div>
+          <!-- Dropzone -->
+          <div class="custom-dropzone" ngx-dropzone [accept]="'image/*'" (change)="onSelect($event)">
+            <ngx-dropzone-label>
+              <div>
+                <h2>Import Images Or Video</h2>
+              </div>
+            </ngx-dropzone-label>
+            <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
+              [removable]="true" (removed)="onRemove(f)">
+              <ngx-dropzone-label>{{ f.name }}</ngx-dropzone-label>
+            </ngx-dropzone-image-preview>
+          </div>
+          <!-- Dropzone -->
+          <div class="card-footer">
+            <button type="button" *ngIf="flag==='0'" class="btn btn-sm btn-danger mr-1" (click)="cancel()">
+              <i class="fa fa-ban"></i> Cancel
+            </button>
+            <button type="submit" *ngIf="flag==='0'" class="btn btn-sm btn-primary mr-1"
+              [disabled]="!addArticleForm.valid"><i class="fa fa-check"></i> Save & Next
+            </button>
+            <button type="button" class="btn btn-sm btn-success mr-1" [disabled]="!addArticleForm.valid"
+              (click)="save()"><i class="fa fa-check"></i> Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

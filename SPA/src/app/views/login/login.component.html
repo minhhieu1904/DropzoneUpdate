@@ -1,0 +1,49 @@
+<div class="app-body">
+    <main class="main d-flex align-items-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 mx-auto">
+            <div class="login-title">
+              <img src="../../../assets/img/logo/LogoSYF.png" alt="" width="70"> <span>QMS system</span> 
+            </div>
+            
+            <div class="card-group">
+              <div class="card p-4">
+                <div class="card-body">
+                  <form (ngSubmit)="login()" #form="ngForm">
+                    <p class="text-muted text-center">Sign in to start your session</p>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="icon-user"></i></span>
+                      </div>
+                      <input type="text" class="form-control" placeholder="Username" [(ngModel)]="user.userName" name="username" 
+                       autocomplete="username" required>
+                    </div>
+                    <div class="input-group mb-4">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="icon-lock"></i></span>
+                      </div>
+                      <input type="password" class="form-control" placeholder="Password" [(ngModel)]="user.password" name="password"
+                       autocomplete="current-password" required>
+                    </div>
+                    <div class="row">
+                      <div class="col-6">
+                        
+                      </div>
+                      <div class="col-6 text-right">
+                        <button type="submit" class="btn btn-primary px-4" [disabled]="!form.valid">Sign in</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-clip-rotate" [fullScreen]="true">
+  </ngx-spinner>
+  

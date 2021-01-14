@@ -1,0 +1,217 @@
+<div class="animated fadeIn">
+    <div class="card">
+      <div class="card-header">
+        <strong>User List</strong>
+        <!-- Button Add -->
+        <button type="button" class="btn btn-sm btn-primary float-right" (click)="addUserModal.show()"
+          (click)="resetUser()" (click)="setFlag(0)">
+          <i class="fa fa-plus"></i> Add new
+        </button>
+      </div>
+      <div class="card-body">
+        <!-- Form Search -->
+        <form #searchForm="ngForm" (ngSubmit)="searchUser()">
+          <div class="form-group form-row">
+            <div class="col-lg-3"></div>
+            <div class="col-6 col-lg-3">
+              <input type="text" class="form-control" name="search" placeholder="Enter User Data..." [(ngModel)]="text">
+            </div>
+            <div class="col-6 col-lg-3">
+              <button type="submit" class="btn btn-success mr-1">
+                <i class="fa fa-search"></i> Search
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="clearSearch()">
+                <i class="fa fa-remove"></i> Clear
+              </button>
+            </div>
+          </div>
+        </form>
+        <!-- User Table -->
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover text-center">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Factory ID</th>
+                <th>User Account</th>
+                <th>User Name</th>
+                <th>Email</th>
+                <!-- <th >Valid From</th>
+                <th >Valid To</th>
+                <th >Last Login</th> -->
+                <th>Update By</th>
+                <th>Update Time</th>
+                <th colspan="3">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of users; let i=index">
+                <td>{{ (pagination.currentPage - 1) * pagination.pageSize + i + 1 }}</td>
+                <td>{{ user.factory_ID }}</td>
+                <td>{{user.user_Account}}</td>
+                <td>{{ user.user_Name }}</td>
+                <td>{{ user.email }}</td>
+                <!-- <td>{{ user.valid_From | date: 'MM/dd/yyyy' }}</td>
+                <td>{{ user.valid_To | date: 'MM/dd/yyyy' }}</td>
+                <td>{{ user.last_Login | date: 'MM/dd/yyyy, HH:mm:ss' }}</td> -->
+                <td>{{ user.update_By }}</td>
+                <td>{{ user.update_Time | date: 'MM/dd/yyyy, HH:mm:ss' }}</td>
+                <td class="w-1rem">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-primary" (click)="setUser(user)"
+                      (click)="addUserModal.show()" (click)="setFlag(1)">
+                      <i class="fa fa-edit fa-lg"></i>
+                    </button>
+                  </div>
+                </td>
+                <td class="w-1rem">
+                  <button type="button" class="btn btn-sm btn-warning"
+                    (click)="authorizeModal.show()" (click)="setUser(user)" (click)="setAuthorizeList()">
+                    <i class=" fa fa-cog fa-lg"></i>
+                  </button>
+                </td>
+                <td class="w-1rem">
+                  <button type="button" class="btn btn-sm btn-danger"
+                    (click)="deleteUser(user.factory_ID, user.user_Account)">
+                    <i class="fa fa-trash fa-lg"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="users.length === 0">
+                <td colspan="100%" class="table-warning text-center font-weight-bold"> NO DATA! </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Pagination -->
+        <div class="d-flex" *ngIf="pagination.totalPage > 1">
+          <pagination [boundaryLinks]="true" [totalItems]="pagination.totalCount" [(ngModel)]="pagination.currentPage"
+            [itemsPerPage]="pagination.pageSize" (pageChanged)="pageChanged($event)" previousText="&lsaquo;"
+            nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" [maxSize]=5></pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modals -->
+  <div #addUserModal="bs-modal" bsModal class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <form #addUserForm="ngForm" (ngSubmit)="addUserForm.valid && addorEditUser()">
+          <div class="modal-header">
+            <strong>{{flag === 0 ? 'New' : 'Edit'}} User</strong>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="addUserModal.hide()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Factory ID</label>
+              <select class="form-control" [(ngModel)]="user.factory_ID" name="factory_ID"
+                [disabled]="flag === 1" required>
+                <option *ngFor="let factory of factories" [value]="factory">{{factory}}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>User Account</label>
+              <input type="text" class="form-control" name="user_Account" required [disabled]="flag === 1" maxlength="20"
+                [(ngModel)]="user.user_Account">
+            </div>
+            <div class="form-group">
+              <label>User Name</label>
+              <input type="text" class="form-control" name="user_Name" required maxlength="50"
+                [(ngModel)]="user.user_Name">
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" class="form-control" name="email" required maxlength="254" [(ngModel)]="user.email">
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" class="form-control" name="password" [required]="flag === 0" maxlength="20"
+                [(ngModel)]="user.password">
+            </div>
+            <!-- <div class="form-group">
+              <label>Valid From</label>
+              <input type="text" class="form-control" name="valid_From">
+            </div>
+            <div class="form-group">
+              <label>Valid To</label>
+              <input type="text" class="form-control" name="valid_To">
+            </div> -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="addUserModal.hide()">Cancel</button>
+            <button type="submit" class="btn btn-success" [disabled]="addUserForm.invalid">
+              {{flag === 0 ? 'Add' : 'Save'}}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div #authorizeModal="bs-modal" bsModal class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <form #authorizeForm="ngForm" (ngSubmit)="authorizeSave()">
+          <div class="modal-header">
+            <strong>Authorize</strong>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="authorizeModal.hide()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-3">
+                <label>Authorize for user</label>
+              </div>
+              <div class="col-3">
+                <input type="text" class="form-control" value="{{user.factory_ID}}" disabled>
+              </div>
+              <div class="col-3">
+                <input type="text" class="form-control" value="{{user.user_Account}}" disabled>
+              </div>
+              <div class="col-3">
+                <input type="text" class="form-control" value="{{user.user_Name}}" disabled>
+              </div>
+            </div>
+            <hr />
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>
+                    <div class="custom-control">
+                      <input type="checkbox" class="form-check-input" id="all-roles"
+                        [checked]="isAllRolesChecked" (click)="handleAllRolesChanges()">
+                    </div>
+                  </th>
+                  <th>Role Name</th>
+                  <th>Role Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let role of roles">
+                  <td>
+                    <div class="custom-control">
+                      <input type="checkbox" class="form-check-input" [id]="role.role_Unique"
+                        [checked]="role.status" (click)="handleRoleChanges(role)">
+                    </div>
+                  </td>
+                  <td>
+                    <label class="form-check-label" [for]="role.role_Unique">{{role.role_Name}}</label>
+                  </td>
+                  <td>
+                    <label class="form-check-label" [for]="role.role_Unique">{{role.role_Type}}</label>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="authorizeModal.hide()">Cancel</button>
+            <button type="submit" class="btn btn-success">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

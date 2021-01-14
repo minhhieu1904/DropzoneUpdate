@@ -1,0 +1,27 @@
+// ngx-dropzone,
+// .custom-dropzone {
+//   margin: 0 20px 20px 20px;
+// }
+
+.custom-dropzone {
+  height: 200px;
+  color: rgb(85, 159, 255);
+  border: 2px dashed rgb(85, 159, 255);
+  border-radius: 5px;
+  font-size: 20px;
+  padding: 0 20px 0 20px;
+  background-color: #f0f3f5;
+}
+
+label.message {
+  float: right;
+  color: red;
+}
+
+@media screen and (max-width: 768px) {
+  label.message {
+    font-size: 8px;
+    line-height: 3;
+    margin-bottom: 0;
+  }
+}
