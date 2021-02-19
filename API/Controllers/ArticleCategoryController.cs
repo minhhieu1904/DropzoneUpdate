@@ -73,10 +73,10 @@ namespace API.Controllers
             return Ok(data);
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Remove(string articleCateID)
+        [HttpPost("delete")]
+        public async Task<IActionResult> Remove(ArticleCategory_Dto model)
         {
-            var data = await _articleCategoryService.Remove(articleCateID);
+            var data = await _articleCategoryService.Remove(model);
             return Ok(data);
         }
     }

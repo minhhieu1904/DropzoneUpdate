@@ -102,9 +102,9 @@ namespace API._Services.Services
             return operationResult;
         }
 
-        public async Task<OperationResult> Remove(string articleCateID, int articleID)
+        public async Task<OperationResult> Remove(Article_Dto model)
         {
-            var item = await GetArticleByID(articleCateID, articleID);
+            var item = await _articleRepository.FindAll(x => x.Article_Cate_ID == model.Article_Cate_ID && x.Article_ID == model.Article_ID).FirstOrDefaultAsync();
             try
             {
                 if (item != null)
@@ -115,14 +115,13 @@ namespace API._Services.Services
                 }
                 else
                 {
-                    operationResult = new OperationResult { Success = true, Message = "Article was delete failse." };
+                    operationResult = new OperationResult { Success = false, Message = "Article was delete failse." };
                 }
             }
             catch (System.Exception ex)
             {
-                operationResult = new OperationResult { Success = true, Message = ex.ToString() };
+                operationResult = new OperationResult { Success = false, Message = ex.ToString() };
             }
-
             return operationResult;
         }
 
@@ -148,11 +147,12 @@ namespace API._Services.Services
                             Article_ID = y.Article_ID,
                             Article_Name = y.Article_Name,
                             Content = y.Content,
-                            Files = y.Files,
                             Link = y.Link,
                             Status = y.Status,
                             Update_By = y.Update_By,
-                            Update_Time = y.Update_Time
+                            Update_Time = y.Update_Time,
+                            FileImages = y.FileImages,
+                            FileVideos = y.FileVideos
                         }).OrderByDescending(x => x.Update_Time);
             return await PageListUtility<Article_Dto>.PageListAsync(query, param.PageNumber, param.PageSize);
         }

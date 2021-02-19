@@ -17,8 +17,8 @@ export class AddComponent implements OnInit {
   productCateList: Array<Select2OptionData>;
   fileImages: File[] = [];
   fileVideos: File[] = [];
-  urlImage = commonPerFactory.imageUrl;
-  urlVideo = commonPerFactory.videoUrl;
+  urlImage = commonPerFactory.imageProductUrl;
+  urlVideo = commonPerFactory.videoProductUrl;
   linkFileImage: string[] = [];
   linkFileVideo: string[] = [];
   fileSize = 0;

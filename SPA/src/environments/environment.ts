@@ -5,6 +5,11 @@ export const environment = {
 };
 
 export const commonPerFactory = {
-  imageUrl: 'http://localhost:5000/uploaded/images/',
-  videoUrl: 'http://localhost:5000/uploaded/video/',
+  // Product
+  imageProductUrl: 'http://localhost:5000/uploaded/images/product/',
+  videoProductUrl: 'http://localhost:5000/uploaded/video/product/',
+
+  // Article
+  imageArticleUrl: 'http://localhost:5000/uploaded/images/article/',
+  videoArticleUrl: 'http://localhost:5000/uploaded/video/article/',
 }

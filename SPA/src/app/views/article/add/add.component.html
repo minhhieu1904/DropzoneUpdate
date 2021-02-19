@@ -43,21 +43,43 @@
                 <label class="badge badge-warning font-lable">Link</label>
                 <textarea class="form-control" name="link" [(ngModel)]="article.link"></textarea>
               </div>
+              <div class="form-group col-md-6">
+                <!-- Dropzone import images -->
+                <label class="badge badge-warning font-lable">Upload File Images</label>
+                <div class="custom-dropzone" ngx-dropzone [accept]="'image/*'"
+                  (change)="onSelectImages($event)">
+                  <ngx-dropzone-label>
+                    <div>
+                      <h2>Import Images</h2>
+                    </div>
+                  </ngx-dropzone-label>
+                  <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of fileImages" [file]="f"
+                    [removable]="true" (removed)="onRemoveImages(f)">
+                    <!-- <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label> -->
+                  </ngx-dropzone-image-preview>
+                </div>
+                <!-- Dropzone import images -->
+              </div>
+              <div class="form-group col-md-6">
+                <!-- Dropzone import videos -->
+                <label class="badge badge-warning font-lable">Upload File Videos</label>
+                <div class="custom-dropzone" ngx-dropzone [accept]="'video/*'"
+                  (change)="onSelectVideos($event)">
+                  <ngx-dropzone-label>
+                    <div>
+                      <h2>Import Videos</h2>
+                    </div>
+                  </ngx-dropzone-label>
+                  <ngx-dropzone-video-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of fileVideos" [file]="f"
+                    [removable]="true" (removed)="onRemoveVideos(f)">
+                    <!-- <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label> -->
+                  </ngx-dropzone-video-preview>
+                </div>
+                <!-- Dropzone import videos -->
+              </div>
             </div>
           </div>
-          <!-- Dropzone -->
-          <div class="custom-dropzone" ngx-dropzone [accept]="'image/*'" (change)="onSelect($event)">
-            <ngx-dropzone-label>
-              <div>
-                <h2>Import Images</h2>
-              </div>
-            </ngx-dropzone-label>
-            <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
-              [removable]="true" (removed)="onRemove(f)">
-              <ngx-dropzone-label></ngx-dropzone-label>
-            </ngx-dropzone-image-preview>
-          </div>
-          <!-- Dropzone -->
+          
           <div class="card-footer">
             <button type="button" *ngIf="flag==='0'" class="btn btn-sm btn-danger mr-1" (click)="cancel()">
               <i class="fa fa-ban"></i> Cancel

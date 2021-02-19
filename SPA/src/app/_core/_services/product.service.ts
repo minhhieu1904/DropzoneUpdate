@@ -23,7 +23,7 @@ export class ProductService {
 
   create(product: any, fileImages: File[], fileVideos: File[]) {
     const formData = this.utilityService.getFormData(product, fileImages, fileVideos);
-    return this.http.post<OperationResult>(this.baseUrl + 'Product/uploadFile', formData);
+    return this.http.post<OperationResult>(this.baseUrl + 'Product/create', formData);
   }
 
   getByID(productCateID: string, productID: string) {

@@ -49,7 +49,7 @@ export class ArticleCategoryService {
     return this.http.put<OperationResult>(this.baseUrl + 'ArticleCategory/changeStatus', articleCategory);
   }
 
-  remove(articleCateID: string) {
-    return this.http.delete<OperationResult>(this.baseUrl + 'ArticleCategory' + articleCateID);
+  remove(articleCategory: ArticleCategory) {
+    return this.http.post<OperationResult>(this.baseUrl + 'ArticleCategory/delete', articleCategory);
   }
 }

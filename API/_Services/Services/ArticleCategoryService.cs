@@ -88,9 +88,9 @@ namespace API._Services.Services
             return operationResult;
         }
 
-        public async Task<OperationResult> Remove(string articleCateID)
+        public async Task<OperationResult> Remove(ArticleCategory_Dto model)
         {
-            var item = await GetArticleCategoryByID(articleCateID);
+            var item = await _articleCategoryRepository.FindAll(x => x.Article_Cate_ID == model.Article_Cate_ID).FirstOrDefaultAsync();
             if (item != null)
             {
                 try

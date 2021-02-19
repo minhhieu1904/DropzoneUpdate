@@ -108,4 +108,23 @@ export class ListComponent implements OnInit {
     this.pagination.currentPage = event.page;
     this.getDataPaginations();
   }
+
+  remove(articleCategory: ArticleCategory) {
+    this.alertUtility.confirmDelete('Are you sure delete item?', () => {
+      debugger
+      this.articleCateService.remove(articleCategory).subscribe(res => {
+        debugger
+        if (res.success) {
+          this.alertUtility.success('Success!', res.message);
+          this.getDataPaginations();
+        }
+        else {
+          this.alertUtility.error('Error!', res.message);
+        }
+      },
+        error => {
+          console.log(error);
+        });
+    });
+  }
 }

@@ -22,8 +22,9 @@ export class ArticleService {
     private utilityService: UtilityService
   ) { }
 
-  create(article: Article) {
-    return this.http.post<OperationResult>(this.baseUrl + 'Article', article);
+  create(article: any, fileImages: File[], fileVideos: File[]) {
+    const formData = this.utilityService.getFormDataArticle(article, fileImages, fileVideos);
+    return this.http.post<OperationResult>(this.baseUrl + 'Article', formData);
   }
 
   getByID(articleCateID: string, articleID: string) {
@@ -59,19 +60,18 @@ export class ArticleService {
     return this.http.get<PaginationResult<Article>>(this.baseUrl + 'Article/search', { params });
   }
 
-  update(article: Article) {
-    return this.http.put<OperationResult>(this.baseUrl + 'Article', article);
+  update(article: any, fileImages: File[], fileVideos: File[]) {
+    const formData = this.utilityService.getFormDataArticle(article, fileImages, fileVideos);
+    formData.append('Article_ID', article.article_ID);
+    return this.http.put<OperationResult>(this.baseUrl + 'Article', formData);
   }
 
   changeStatus(article: Article) {
     return this.http.put<OperationResult>(this.baseUrl + 'Article/changeStatus', article);
   }
 
-  remove(articleCateID: string, articleID: string) {
-    let params = new HttpParams();
-    params = params.append('articleCateID', articleCateID);
-    params = params.append('articleID', articleID);
-    return this.http.delete<OperationResult>(this.baseUrl + 'Article', { params });
+  remove(article : Article) {
+    return this.http.post<OperationResult>(this.baseUrl + 'Article/delete', article);
   }
 
   changeArticle(article: Article) {

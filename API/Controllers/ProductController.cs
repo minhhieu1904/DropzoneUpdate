@@ -31,11 +31,11 @@ namespace API.Controllers
             _dropzoneService = dropzoneService;
         }
 
-        [HttpPost("uploadFile")]
+        [HttpPost("create")]
         public async Task<IActionResult> Create([FromForm] Product_Dto model)
         {
-            model.FileImages = await _dropzoneService.UploadFile(model.Images, model.Product_Cate_ID + "_" + model.Product_Name + "_", "\\uploaded\\images");
-            model.FileVideos = await _dropzoneService.UploadFile(model.Videos, model.Product_Cate_ID + "_" + model.Product_Name + "_", "\\uploaded\\video");
+            model.FileImages = await _dropzoneService.UploadFile(model.Images, model.Product_Cate_ID + "_" + model.Product_ID + "_", "\\uploaded\\images\\product");
+            model.FileVideos = await _dropzoneService.UploadFile(model.Videos, model.Product_Cate_ID + "_" + model.Product_ID + "_", "\\uploaded\\video\\product");
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             var data = await _productService.Create(model);
@@ -103,19 +103,19 @@ namespace API.Controllers
                                                     x.Product_Name == model.Product_Name).Select(x => x.FileVideos).Distinct().FirstOrDefaultAsync();
             if (!string.IsNullOrEmpty(images))
             {
-                _dropzoneService.DeleteFileUpload(images, "\\uploaded\\images");
+                _dropzoneService.DeleteFileUpload(images, "\\uploaded\\images\\product");
             }
             if (!string.IsNullOrEmpty(videos))
             {
-                _dropzoneService.DeleteFileUpload(videos, "\\uploaded\\video");
+                _dropzoneService.DeleteFileUpload(videos, "\\uploaded\\video\\product");
             }
 
             // Add images, videos
             model.FileImages = null;
             model.FileVideos = null;
 
-            model.FileImages = await _dropzoneService.UploadFile(model.Images, model.Product_Cate_ID + "_" + model.Product_Name + "_", "\\uploaded\\images");
-            model.FileVideos = await _dropzoneService.UploadFile(model.Videos, model.Product_Cate_ID + "_" + model.Product_Name + "_", "\\uploaded\\video");
+            model.FileImages = await _dropzoneService.UploadFile(model.Images, model.Product_Cate_ID + "_" + model.Product_ID + "_", "\\uploaded\\images\\product");
+            model.FileVideos = await _dropzoneService.UploadFile(model.Videos, model.Product_Cate_ID + "_" + model.Product_ID + "_", "\\uploaded\\video\\product");
             
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
@@ -181,11 +181,11 @@ namespace API.Controllers
                                                     x.Product_Name == model.Product_Name).Select(x => x.FileVideos).Distinct().FirstOrDefaultAsync();
             if (!string.IsNullOrEmpty(images))
             {
-                _dropzoneService.DeleteFileUpload(images, "\\uploaded\\images");
+                _dropzoneService.DeleteFileUpload(images, "\\uploaded\\images\\product");
             }
             if (!string.IsNullOrEmpty(videos))
             {
-                _dropzoneService.DeleteFileUpload(videos, "\\uploaded\\video");
+                _dropzoneService.DeleteFileUpload(videos, "\\uploaded\\video\\product");
             }
             var data = await _productService.Remove(model);
             return Ok(data);

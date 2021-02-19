@@ -44,6 +44,23 @@ export class UtilityService {
     return formData;
   }
 
+  getFormDataArticle(article: any, fileImages: File[], fileVideos: File[]) {
+    const formData = new FormData();
+    formData.append('Article_Cate_ID', article.article_Cate_ID);
+    formData.append('Article_Name', article.article_Name);
+    formData.append('Content', article.content);
+    formData.append('Status', article.status);
+    formData.append('Link', article.link);
+    formData.append('Alias', article.alias);
+    for (var i = 0; i < fileImages.length; i++) {
+      formData.append('Images', fileImages[i]);
+    }
+    for (var i = 0; i < fileVideos.length; i++) {
+      formData.append('Videos', fileVideos[i]);
+    }
+    return formData;
+  }
+
   getParamPagination(page?, itemsPerPage?) {
     let params = new HttpParams();
     if (page != null && itemsPerPage != null) {

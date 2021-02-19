@@ -115,4 +115,21 @@ export class ListComponent implements OnInit {
     this.articleCateID = event;
     this.getArticleListByArticleCateID();
   }
+
+  remove(article: Article) {
+    this.alertUtility.confirmDelete('Are you sure delete item?', () => {
+      this.articleService.remove(article).subscribe(res => {
+        if (res.success) {
+          this.alertUtility.success('Success!', res.message);
+          this.getDataPaginations();
+        }
+        else {
+          this.alertUtility.error('Error!', res.message);
+        }
+      },
+        error => {
+          console.log(error);
+        });
+    });
+  }
 }
