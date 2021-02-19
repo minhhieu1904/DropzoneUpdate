@@ -7,6 +7,7 @@ import { OperationResult } from '../_utility/operation-result';
 import { PaginationResult } from '../_utility/pagination';
 import { RoleUserAuthorize } from '../_models/role-user-authorize';
 import { User } from '../_models/user';
+import { UtilityService } from './utility.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,26 +16,17 @@ export class UserService {
   baseUrl = environment.apiUrl;
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private utilityService: UtilityService
   ) { }
 
   getUsers(page?, itemsPerPage?): Observable<PaginationResult<User>> {
-    debugger
-    let params = new HttpParams();
-    if (page != null && itemsPerPage != null) {
-      params = params.append('pageNumber', page);
-      params = params.append('pageSize', itemsPerPage);
-    }
-
+    let params = this.utilityService.getParamPagination(page, itemsPerPage);
     return this.http.get<PaginationResult<User>>(this.baseUrl + 'User/GetAll', { params });
   }
 
   searchUser(page?, itemsPerPage?, text?) {
-    let params = new HttpParams();
-    if (page != null && itemsPerPage != null) {
-      params = params.append('pageNumber', page);
-      params = params.append('pageSize', itemsPerPage);
-    }
+    let params = this.utilityService.getParamPagination(page, itemsPerPage);
 
     return this.http.get<PaginationResult<User>>(this.baseUrl + 'User/Search/' + text, { params });
   }

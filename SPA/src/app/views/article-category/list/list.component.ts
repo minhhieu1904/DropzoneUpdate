@@ -3,10 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ArticleCategory } from 'src/app/_core/_models/article-category';
-import { RoleUserAuthorize } from 'src/app/_core/_models/role-user-authorize';
-import { AlertifyService } from 'src/app/_core/_services/alertify.service';
+import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { ArticleCategoryService } from 'src/app/_core/_services/article-category.service';
-import { SweetAlertService } from 'src/app/_core/_services/sweet-alert.service';
 import { Pagination, PaginationResult } from 'src/app/_core/_utility/pagination';
 
 @Component({
@@ -24,9 +22,8 @@ export class ListComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private articleCateService: ArticleCategoryService,
-    private sweetAlert: SweetAlertService,
     private spinner: NgxSpinnerService,
-    private alertify: AlertifyService
+    private alertUtility: AlertUtilityService
   ) { }
 
   ngOnInit() {
@@ -41,10 +38,10 @@ export class ListComponent implements OnInit {
     if (this.flag === 0) {
       this.articleCateService.create(this.articleCate).subscribe(res => {
         if (res.success) {
-          this.sweetAlert.success('Success!', res.message);
+          this.alertUtility.success('Success!', res.message);
           this.getDataPaginations();
         } else {
-          this.sweetAlert.error('Error!', res.message);
+          this.alertUtility.error('Error!', res.message);
         }
       },
         error => {
@@ -54,10 +51,10 @@ export class ListComponent implements OnInit {
     } else {
       this.articleCateService.update(this.articleCate).subscribe(res => {
         if (res.success) {
-          this.sweetAlert.success('Success!', res.message);
+          this.alertUtility.success('Success!', res.message);
           this.getDataPaginations();
         } else {
-          this.sweetAlert.error('Error!', res.message);
+          this.alertUtility.error('Error!', res.message);
         }
       },
         error => {
@@ -70,10 +67,10 @@ export class ListComponent implements OnInit {
   changeStatus(articleCate: ArticleCategory) {
     this.articleCateService.changeStatus(articleCate).subscribe(res => {
       if (res.success) {
-        this.sweetAlert.success('Success!', res.message);
+        this.alertUtility.success('Success!', res.message);
         this.getDataPaginations();
       } else {
-        this.sweetAlert.error('Error!', res.message);
+        this.alertUtility.error('Error!', res.message);
       }
     },
       error => {
@@ -88,7 +85,7 @@ export class ListComponent implements OnInit {
         this.articleCates = res.result;
         this.pagination = res.pagination;
       }), error => {
-        this.alertify.error(error);
+        this.alertUtility.error('Error!', error);
       };
   }
 

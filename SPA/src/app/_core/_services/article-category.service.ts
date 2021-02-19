@@ -5,13 +5,17 @@ import { environment } from 'src/environments/environment';
 import { ArticleCategory } from '../_models/article-category';
 import { OperationResult } from '../_utility/operation-result';
 import { PaginationResult } from '../_utility/pagination';
+import { UtilityService } from './utility.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ArticleCategoryService {
   baseUrl = environment.apiUrl;
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private utilityService: UtilityService
+  ) { }
 
   create(articleCategory: ArticleCategory) {
     return this.http.post<OperationResult>(this.baseUrl + 'ArticleCategory', articleCategory);
@@ -32,12 +36,7 @@ export class ArticleCategoryService {
   }
 
   getDataPaginations(page?, itemsPerPage?, text?): Observable<PaginationResult<ArticleCategory>> {
-    let params = new HttpParams();
-    if (page != null && itemsPerPage != null) {
-      params = params.append('pageNumber', page);
-      params = params.append('pageSize', itemsPerPage);
-    }
-    params = params.append('text', text);
+    let params = this.utilityService.getParamSearchPagination(page, itemsPerPage, text);
 
     return this.http.get<PaginationResult<ArticleCategory>>(this.baseUrl + 'ArticleCategory/pagination', { params });
   }

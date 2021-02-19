@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { AlertifyService } from 'src/app/_core/_services/alertify.service';
+import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { AuthService } from 'src/app/_core/_services/auth.service';
 
 @Component({
@@ -15,7 +15,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private spinnerService: NgxSpinnerService,
-    private alertifyService: AlertifyService,
+    private alertUtility: AlertUtilityService,
     private router: Router
   ) {}
 
@@ -29,11 +29,11 @@ export class LoginComponent implements OnInit {
     this.spinnerService.show();
     this.authService.login(this.user.userName, this.user.password).subscribe(
       (next) => {
-        this.alertifyService.success('Login Success!!');
+        this.alertUtility.message('Login Success!!');
         this.spinnerService.hide();
       },
       (error) => {
-        this.alertifyService.error('Login failed!!');
+        this.alertUtility.message('Login failed!!');
         this.spinnerService.hide();
       },
       () => {

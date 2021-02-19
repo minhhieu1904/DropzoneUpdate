@@ -14,6 +14,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -46,7 +47,7 @@ namespace API
             services.AddDbContext<DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             // Add Server Kestrel
-            services.Configure<KestrelServerOptions>(Configuration.GetSection("Kestrel"));
+            // services.Configure<KestrelServerOptions>(Configuration.GetSection("Kestrel"));
 
             //Json
             services.AddControllersWithViews()
@@ -95,6 +96,7 @@ namespace API
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IProductCategoryService, ProductCategoryService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IDropzoneService, DropzoneService>();
 
             // Swagger
             services.AddSwaggerGen(c =>
@@ -126,6 +128,14 @@ namespace API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // app.Use(async (context, next) =>
+            // {
+            //     context.Features.Get<IHttpMaxRequestBodySizeFeature>()
+            //         .MaxRequestBodySize = null;
+        
+            //     await next.Invoke();
+            // });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

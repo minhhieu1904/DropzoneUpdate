@@ -71,7 +71,7 @@ namespace API._Services.Services
 
         public async Task<PageListUtility<Article_Dto>> GetArticleWithPaginations(PaginationParams param, string text)
         {
-            var data = _articleRepository.FindAll().ProjectTo<Article_Dto>(_configuration).OrderByDescending(x => x.Article_Cate_ID).ThenBy(x => x.Article_ID);
+            var data = _articleRepository.FindAll().ProjectTo<Article_Dto>(_configuration).OrderByDescending(x => x.Update_Time);
             if (!string.IsNullOrEmpty(text))
             {
                 data = data.Where(x => x.Article_ID.ToString().ToLower().Contains(text.ToLower())
@@ -80,7 +80,7 @@ namespace API._Services.Services
                 || x.Content.ToLower().Contains(text.ToLower())
                 || x.Alias.ToLower().Contains(text.ToLower())
                 || x.Article_Cate_ID.ToLower().Contains(text.ToLower())
-                ).OrderByDescending(x => x.Article_Cate_ID).ThenBy(x => x.Article_ID);
+                ).OrderByDescending(x => x.Update_Time);
             }
             return await PageListUtility<Article_Dto>.PageListAsync(data, param.PageNumber, param.PageSize);
         }
@@ -153,7 +153,7 @@ namespace API._Services.Services
                             Status = y.Status,
                             Update_By = y.Update_By,
                             Update_Time = y.Update_Time
-                        }).OrderByDescending(x => x.Article_Cate_ID).ThenBy(x => x.Article_ID);
+                        }).OrderByDescending(x => x.Update_Time);
             return await PageListUtility<Article_Dto>.PageListAsync(query, param.PageNumber, param.PageSize);
         }
 

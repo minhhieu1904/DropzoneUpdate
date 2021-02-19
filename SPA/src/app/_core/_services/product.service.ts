@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { Product } from '../_models/product';
 import { OperationResult } from '../_utility/operation-result';
 import { PaginationResult } from '../_utility/pagination';
+import { UtilityService } from './utility.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,39 +16,13 @@ export class ProductService {
   currentProduct = this.productSource.asObservable();
   flagSource = new BehaviorSubject<string>('0');
   currentFlag = this.flagSource.asObservable();
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private utilityService: UtilityService
+  ) { }
 
   create(product: any, fileImages: File[], fileVideos: File[]) {
-    const formData = new FormData();
-    if (product.from_Date_Sale === null || product.from_Date_Sale === '' || product.from_Date_Sale === undefined) {
-      delete product.from_Date_Sale;
-    }
-    else {
-      formData.append('From_Date_Sale', new Date(product.from_Date_Sale).toDateString());
-    }
-    if (product.to_Date_Sale === null || product.to_Date_Sale === '' || product.to_Date_Sale === undefined) {
-      delete product.to_Date_Sale;
-    }
-    else {
-      formData.append('To_Date_Sale', new Date(product.to_Date_Sale).toDateString());
-    }
-    formData.append('Product_Cate_ID', product.product_Cate_ID);
-    formData.append('Product_Name', product.product_Name);
-    formData.append('Time_Sale', product.time_Sale);
-    formData.append('Content', product.content);
-    formData.append('Price', product.price);
-    formData.append('Amount', product.amount);
-    formData.append('IsSale', product.isSale);
-    formData.append('Discount', product.discount);
-    formData.append('New', product.new);
-    formData.append('Hot_Sale', product.hot_Sale);
-    formData.append('Status', product.status);
-    for (var i = 0; i < fileImages.length; i++) {
-      formData.append('Images', fileImages[i]);
-    }
-    for (var i = 0; i < fileVideos.length; i++) {
-      formData.append('Videos', fileVideos[i]);
-    }
+    const formData = this.utilityService.getFormData(product, fileImages, fileVideos);
     return this.http.post<OperationResult>(this.baseUrl + 'Product/uploadFile', formData);
   }
 
@@ -69,12 +44,7 @@ export class ProductService {
   }
 
   getDataPaginations(page?, itemsPerPage?, text?): Observable<PaginationResult<Product>> {
-    let params = new HttpParams();
-    if (page != null && itemsPerPage != null) {
-      params = params.append('pageNumber', page);
-      params = params.append('pageSize', itemsPerPage);
-    }
-    params = params.append('text', text);
+    let params = this.utilityService.getParamSearchPagination(page, itemsPerPage, text);
 
     return this.http.get<PaginationResult<Product>>(this.baseUrl + 'Product/pagination', { params });
   }
@@ -82,11 +52,7 @@ export class ProductService {
   searchDataPaginations(page?, itemsPerPage?, productCateID?, productName?): Observable<PaginationResult<Product>> {
     productCateID = productCateID === 'all' ? '' : productCateID;
     productName = productName === 'all' ? '' : productName;
-    let params = new HttpParams();
-    if (page != null && itemsPerPage != null) {
-      params = params.append('pageNumber', page);
-      params = params.append('pageSize', itemsPerPage);
-    }
+    let params = this.utilityService.getParamPagination(page, itemsPerPage);
     params = params.append('productCateID', productCateID);
     params = params.append('productName', productName);
 
@@ -94,39 +60,8 @@ export class ProductService {
   }
 
   update(product: any, fileImages: File[], fileVideos: File[]) {
-    const formData = new FormData();
-    if (product.from_Date_Sale === null || product.from_Date_Sale === '' || product.from_Date_Sale === undefined) {
-      delete product.from_Date_Sale;
-    }
-    else {
-      formData.append('From_Date_Sale', new Date(product.from_Date_Sale).toDateString());
-    }
-    if (product.to_Date_Sale === null || product.to_Date_Sale === '' || product.to_Date_Sale === undefined) {
-      delete product.to_Date_Sale;
-    }
-    else {
-      formData.append('To_Date_Sale', new Date(product.to_Date_Sale).toDateString());
-    }
-    formData.append('Product_Cate_ID', product.product_Cate_ID);
+    const formData = this.utilityService.getFormData(product, fileImages, fileVideos);
     formData.append('Product_ID', product.product_ID);
-    formData.append('Product_Name', product.product_Name);
-    formData.append('Time_Sale', product.time_Sale);
-    formData.append('Content', product.content);
-    formData.append('FileImages', product.fileImages);
-    formData.append('FileVideos', product.fileVideos);
-    formData.append('Price', product.price);
-    formData.append('Amount', product.amount);
-    formData.append('IsSale', product.isSale);
-    formData.append('Discount', product.discount);
-    formData.append('New', product.new);
-    formData.append('Hot_Sale', product.hot_Sale);
-    formData.append('Status', product.status);
-    for (var i = 0; i < fileImages.length; i++) {
-      formData.append('Images', fileImages[i]);
-    }
-    for (var i = 0; i < fileVideos.length; i++) {
-      formData.append('Videos', fileVideos[i]);
-    }
     return this.http.put<OperationResult>(this.baseUrl + 'Product', formData);
   }
 
@@ -146,11 +81,8 @@ export class ProductService {
     return this.http.put<OperationResult>(this.baseUrl + 'Product/changeStatus', product);
   }
 
-  remove(productCateID: string, productID: string) {
-    let params = new HttpParams();
-    params = params.append('productCateID', productCateID);
-    params = params.append('productID', productID);
-    return this.http.delete<OperationResult>(this.baseUrl + 'Product', { params });
+  remove(product: Product) {
+    return this.http.post<OperationResult>(this.baseUrl + 'Product/delete', product);
   }
 
   changeProduct(product: Product) {

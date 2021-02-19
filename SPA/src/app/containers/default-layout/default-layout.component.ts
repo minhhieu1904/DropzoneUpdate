@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 import { NavItem } from '../../_nav';
 import { User } from '../../_core/_models/user';
 import { AuthService } from '../../_core/_services/auth.service';
-import { AlertifyService } from '../../_core/_services/alertify.service';
 import { Router } from '@angular/router';
+import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,7 +17,7 @@ export class DefaultLayoutComponent {
   currentUser: User = JSON.parse(localStorage.getItem('user'));
   constructor(
     private authService: AuthService,
-    private alertify: AlertifyService,
+    private alertUtility: AlertUtilityService,
     private router: Router,
     private nav: NavItem
   ) {
@@ -32,7 +32,7 @@ export class DefaultLayoutComponent {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     this.authService.decodedToken = null;
-    this.alertify.message('Logged out');
+    this.alertUtility.message('Logged out');
     this.router.navigate(['/login']);
   }
 }

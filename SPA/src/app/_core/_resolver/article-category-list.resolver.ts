@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ArticleCategory } from '../_models/article-category';
-import { AlertifyService } from '../_services/alertify.service';
+import { AlertUtilityService } from '../_services/alert-utility.service';
 import { ArticleCategoryService } from '../_services/article-category.service'
 
 @Injectable()
@@ -14,14 +14,14 @@ export class ArticleCategoryListResolver implements Resolve<ArticleCategory[]> {
   constructor(
     private articleCategoryService: ArticleCategoryService,
     private router: Router,
-    private alertify: AlertifyService
+    private alertUtility: AlertUtilityService
   ) { }
 
   resolve(route: ActivatedRouteSnapshot): Observable<ArticleCategory[]> {
     this.text = this.text === '' ? '' : this.text;
     return this.articleCategoryService.getDataPaginations(this.pageNumber, this.pageSize, this.text).pipe(
       catchError(error => {
-        this.alertify.error('Problem retrieving data');
+        this.alertUtility.error('Error', 'Problem retrieving data');
         this.router.navigate(['/dashboard']);
         return of(null);
       })

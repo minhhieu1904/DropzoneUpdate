@@ -3,11 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { RoleUserAuthorize } from 'src/app/_core/_models/role-user-authorize';
 import { User } from 'src/app/_core/_models/user';
-import { AlertifyService } from 'src/app/_core/_services/alertify.service';
-import { SweetAlertService } from 'src/app/_core/_services/sweet-alert.service';
 import { UserService } from 'src/app/_core/_services/user.service';
 import { Pagination, PaginationResult } from 'src/app/_core/_utility/pagination';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 
 @Component({
   selector: 'app-user',
@@ -30,9 +29,8 @@ export class UserComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
-    private sweetAlert: SweetAlertService,
     private spinnerService: NgxSpinnerService,
-    private alertifyService: AlertifyService
+    private alertUtility: AlertUtilityService
   ) { }
 
   ngOnInit(): void {
@@ -107,11 +105,11 @@ export class UserComponent implements OnInit {
       this.userService.addUser(this.user).subscribe(res => {
         this.spinnerService.hide();
         if (res.success) {
-          this.sweetAlert.success('Success!', res.message);
+          this.alertUtility.success('Success!', res.message);
           this.loadUsers();
           this.addUserModal.hide();
         } else {
-          this.sweetAlert.error('Error!', res.message);
+          this.alertUtility.error('Error!', res.message);
         }
       }, error => {
         console.log(error);
@@ -123,10 +121,10 @@ export class UserComponent implements OnInit {
         this.spinnerService.hide();
         if (res.success) {
           this.loadUsers();
-          this.sweetAlert.success('Success!', res.message);
+          this.alertUtility.success('Success!', res.message);
           this.addUserModal.hide();
         } else {
-          this.sweetAlert.error('Error!', res.message);
+          this.alertUtility.error('Error!', res.message);
         }
       }, error => {
         console.log(error);
@@ -136,11 +134,11 @@ export class UserComponent implements OnInit {
   }
 
   deleteUser(factoryID: string, userAccount: string) {
-    this.sweetAlert.confirm('Delete User!', 'Are you sure you want to delete this record?', () => {
+    this.alertUtility.confirmDelete('Are you sure you want to delete this record?', () => {
       // Prevent from deleting current user
       const currentUser: User = JSON.parse(localStorage.getItem('user'));
       if (factoryID === currentUser.factory_ID && userAccount === currentUser.user_Account) {
-        this.sweetAlert.error('The current user cannot be deleted.');
+        this.alertUtility.error('Error!', 'The current user cannot be deleted.');
       } else {
         // Execute delete user
         this.spinnerService.show();
@@ -148,9 +146,9 @@ export class UserComponent implements OnInit {
           this.spinnerService.hide();
           if (res.success) {
             this.loadUsers();
-            this.sweetAlert.success('Deleted!', res.message);
+            this.alertUtility.success('Deleted!', res.message);
           } else {
-            this.sweetAlert.error('Error!', res.message);
+            this.alertUtility.error('Error!', res.message);
           }
         }, error => {
           console.log(error);
@@ -226,11 +224,11 @@ export class UserComponent implements OnInit {
     this.userService.saveUserRole(this.roles).subscribe(res => {
       this.spinnerService.hide();
       if (res.success) {
-        this.sweetAlert.success('Success!', res.message);
+        this.alertUtility.success('Success!', res.message);
         this.authorizeModal.hide();
         this.loadUsers();
       } else {
-        this.sweetAlert.error('Oops!', res.message);
+        this.alertUtility.error('Oops!', res.message);
       }
     }, error => {
       console.log(error);
@@ -240,16 +238,16 @@ export class UserComponent implements OnInit {
 
   validate() {
     if (this.user.factory_ID === null || this.user.factory_ID.trim() === '') {
-      this.alertifyService.error('Invalid Factory'); return false;
+      this.alertUtility.error('Error!', 'Invalid Factory'); return false;
     }
     if (this.user.user_Account === null || this.user.user_Account.trim() === '') {
-      this.alertifyService.error('Invalid User Account'); return false;
+      this.alertUtility.error('Error!', 'Invalid User Account'); return false;
     }
     if (this.user.user_Name === null || this.user.user_Name.trim() === '') {
-      this.alertifyService.error('Invalid User Name'); return false;
+      this.alertUtility.error('Error!', 'Invalid User Name'); return false;
     }
     if (this.user.email === null || this.user.email.trim() === '') {
-      this.alertifyService.error('Invalid Email'); return false;
+      this.alertUtility.error('Error!', 'Invalid Email'); return false;
     }
 
     this.user.factory_ID = this.user.factory_ID.trim();

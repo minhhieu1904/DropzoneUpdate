@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Select2OptionData } from 'ng-select2';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { AlertifyService } from 'src/app/_core/_services/alertify.service';
+import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { ArticleCategoryService } from 'src/app/_core/_services/article-category.service';
 import { ArticleService } from 'src/app/_core/_services/article.service';
-import { SweetAlertService } from 'src/app/_core/_services/sweet-alert.service';
 
 @Component({
   selector: 'app-add',
@@ -21,9 +20,8 @@ export class AddComponent implements OnInit {
     private router: Router,
     private articleService: ArticleService,
     private articleCategoryService: ArticleCategoryService,
-    private sweetAlert: SweetAlertService,
     private spinner: NgxSpinnerService,
-    private alertify: AlertifyService
+    private alertUtility: AlertUtilityService
   ) { }
 
   ngOnInit() {
@@ -49,11 +47,11 @@ export class AddComponent implements OnInit {
     this.checkStatus();
     this.articleService.create(this.article).subscribe(res => {
       if (res.success) {
-        this.sweetAlert.success('Success!', res.message);
+        this.alertUtility.success('Success!', res.message);
         this.cancel();
       }
       else {
-        this.sweetAlert.error('Error!', res.message);
+        this.alertUtility.error('Error!', res.message);
       }
     },
       error => {
@@ -66,11 +64,11 @@ export class AddComponent implements OnInit {
     if (this.flag === '0') {
       this.articleService.create(this.article).subscribe(res => {
         if (res.success) {
-          this.sweetAlert.success('Success!', res.message);
+          this.alertUtility.success('Success!', res.message);
           this.backList();
         }
         else {
-          this.sweetAlert.error('Error!', res.message);
+          this.alertUtility.error('Error!', res.message);
         }
       },
         error => {
@@ -81,11 +79,11 @@ export class AddComponent implements OnInit {
       this.checkStatus();
       this.articleService.update(this.article).subscribe(res => {
         if (res.success) {
-          this.sweetAlert.success('Success!', res.message);
+          this.alertUtility.success('Success!', res.message);
           this.backList();
         }
         else {
-          this.sweetAlert.error('Error!', res.message);
+          this.alertUtility.error('Error!', res.message);
         }
       },
         error => {

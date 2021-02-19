@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Select2OptionData } from 'ng-select2';
+import { SnotifyPosition, SnotifyService, SnotifyToastConfig } from 'ng-snotify';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Product } from 'src/app/_core/_models/product';
+import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { AlertifyService } from 'src/app/_core/_services/alertify.service';
 import { ProductCategoryService } from 'src/app/_core/_services/product-category.service';
 import { ProductService } from 'src/app/_core/_services/product.service';
@@ -29,9 +31,7 @@ export class ListComponent implements OnInit {
     private router: Router,
     private productService: ProductService,
     private productCategoryService: ProductCategoryService,
-    private sweetAlert: SweetAlertService,
-    private spinner: NgxSpinnerService,
-    private alertify: AlertifyService
+    private alertUtility: AlertUtilityService
   ) { }
 
   ngOnInit() {
@@ -55,13 +55,30 @@ export class ListComponent implements OnInit {
     this.router.navigate(['/product/edit']);
   }
 
+  remove(product: Product) {
+    this.alertUtility.confirmDelete('Are you sure delete item?', () => {
+      this.productService.remove(product).subscribe(res => {
+        if (res.success) {
+          this.alertUtility.success('Success!', res.message);
+          this.getDataPaginations();
+        }
+        else {
+          this.alertUtility.error('Error!', res.message);
+        }
+      },
+        error => {
+          console.log(error);
+        });
+    });
+  }
+
   getDataPaginations() {
     this.productService.getDataPaginations(this.pagination.currentPage, this.pagination.pageSize, this.text)
       .subscribe((res: PaginationResult<Product>) => {
         this.products = res.result;
         this.pagination = res.pagination;
       }), error => {
-        this.alertify.error(error);
+        this.alertUtility.error('Error!', error);
       };
   }
 
@@ -71,17 +88,17 @@ export class ListComponent implements OnInit {
         this.products = res.result;
         this.pagination = res.pagination;
       }), error => {
-        this.alertify.error(error);
+        this.alertUtility.error('Error!', error);
       };
   }
 
   changeNew(product: Product) {
     this.productService.changeNew(product).subscribe(res => {
       if (res.success) {
-        this.sweetAlert.success('Success!', res.message);
+        this.alertUtility.success('Success!', res.message);
         this.getDataPaginations();
       } else {
-        this.sweetAlert.error('Error!', res.message);
+        this.alertUtility.error('Error!', res.message);
       }
     },
       error => {
@@ -93,10 +110,10 @@ export class ListComponent implements OnInit {
   changeHotSale(product: Product) {
     this.productService.changeHotSale(product).subscribe(res => {
       if (res.success) {
-        this.sweetAlert.success('Success!', res.message);
+        this.alertUtility.success('Success!', res.message);
         this.getDataPaginations();
       } else {
-        this.sweetAlert.error('Error!', res.message);
+        this.alertUtility.error('Error!', res.message);
       }
     },
       error => {
@@ -108,10 +125,10 @@ export class ListComponent implements OnInit {
   changeIsSale(product: Product) {
     this.productService.changeIsSale(product).subscribe(res => {
       if (res.success) {
-        this.sweetAlert.success('Success!', res.message);
+        this.alertUtility.success('Success!', res.message);
         this.getDataPaginations();
       } else {
-        this.sweetAlert.error('Error!', res.message);
+        this.alertUtility.error('Error!', res.message);
       }
     },
       error => {
@@ -123,10 +140,10 @@ export class ListComponent implements OnInit {
   changeStatus(product: Product) {
     this.productService.changeStatus(product).subscribe(res => {
       if (res.success) {
-        this.sweetAlert.success('Success!', res.message);
+        this.alertUtility.success('Success!', res.message);
         this.getDataPaginations();
       } else {
-        this.sweetAlert.error('Error!', res.message);
+        this.alertUtility.error('Error!', res.message);
       }
     },
       error => {

@@ -75,45 +75,45 @@
               <td>{{ product.product_Name}}</td>
               <td>{{ product.price }}</td>
               <td>
-                <div class="pretty p-icon p-round p-jelly">
+                <div class="pretty p-icon p-round p-jelly p-bigger">
                   <input type="checkbox" [id]="product.product_ID" [checked]="product.new" (change)="changeNew(product)"
                     name="product.new">
-                  <div class="state p-success">
-                    <i class="icon fa fa-check"></i>
+                  <div class="state p-danger">
+                    <i class="icon fa fa-heart"></i>
                     <label></label>
                   </div>
                 </div>
               </td>
               <td>
-                <div class="pretty p-icon p-round p-jelly">
+                <div class="pretty p-icon p-round p-jelly p-bigger">
                   <input type="checkbox" [id]="product.product_ID" [checked]="product.hot_Sale"
                     (change)="changeHotSale(product)" name="product.hot_Sale">
-                  <div class="state p-success">
-                    <i class="icon fa fa-check"></i>
-                    <label></label>
-                  </div>
+                    <div class="state p-danger">
+                      <i class="icon fa fa-heart"></i>
+                      <label></label>
+                    </div>
                 </div>
               </td>
               <td>
-                <div class="pretty p-icon p-round p-jelly">
+                <div class="pretty p-icon p-round p-jelly p-bigger">
                   <input type="checkbox" [id]="product.product_ID" [checked]="product.isSale"
                     (change)="changeIsSale(product)" name="product.isSale">
-                  <div class="state p-success">
-                    <i class="icon fa fa-check"></i>
-                    <label></label>
-                  </div>
+                    <div class="state p-danger">
+                      <i class="icon fa fa-heart"></i>
+                      <label></label>
+                    </div>
                 </div>
               </td>
               <td>{{ product.update_By }}</td>
               <td>{{ product.update_Time | date: 'MM/dd/yyyy, HH:mm:ss' }}</td>
               <td>
-                <div class="pretty p-icon p-round p-jelly">
+                <div class="pretty p-icon p-round p-jelly p-bigger">
                   <input type="checkbox" [id]="product.product_ID" [checked]="product.status"
                     (change)="changeStatus(product)" name="product.status">
-                  <div class="state p-success">
-                    <i class="icon fa fa-check"></i>
-                    <label></label>
-                  </div>
+                    <div class="state p-success">
+                      <i class="icon fa fa-heart"></i>
+                      <label></label>
+                    </div>
                 </div>
               </td>
               <td class="w-1rem">
@@ -124,7 +124,7 @@
                 </div>
               </td>
               <td class="w-1rem">
-                <button type="button" class="btn btn-sm btn-danger">
+                <button type="button" class="btn btn-sm btn-danger" (click)="remove(product)">
                   <i class="fa fa-trash fa-lg"></i>
                 </button>
               </td>

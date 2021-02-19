@@ -22,7 +22,6 @@ export class AuthService {
   }
 
   login(userName: string, password: string) {
-    debugger
     const loginModel = {
       userName: userName,
       password: password

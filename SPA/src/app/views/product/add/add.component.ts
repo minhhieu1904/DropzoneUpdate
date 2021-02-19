@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Select2OptionData } from 'ng-select2';
+import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { ProductCategoryService } from 'src/app/_core/_services/product-category.service';
 import { ProductService } from 'src/app/_core/_services/product.service';
-import { SweetAlertService } from 'src/app/_core/_services/sweet-alert.service';
-import { listFileExtension } from 'src/app/_core/_utility/common-fer-factory';
 import { commonPerFactory } from 'src/environments/environment';
 
 @Component({
@@ -26,15 +25,15 @@ export class AddComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private productService: ProductService,
     private productCategoryService: ProductCategoryService,
-    private sweetAlert: SweetAlertService
+    private alertUtility: AlertUtilityService
   ) { }
 
   ngOnInit() {
     this.productService.currentProduct.subscribe(product => {
       this.product = product;
-      debugger
       if (this.product.from_Date_Sale !== null)
         this.product.from_Date_Sale = new Date(this.product.from_Date_Sale);
       if (this.product.to_Date_Sale !== null)
@@ -150,11 +149,11 @@ export class AddComponent implements OnInit {
     this.checkStatus();
     this.productService.create(this.product, this.fileImages, this.fileVideos).subscribe(res => {
       if (res.success) {
-        this.sweetAlert.success('Success!', res.message);
+        this.alertUtility.success('Success!', res.message);
         this.cancel();
       }
       else {
-        this.sweetAlert.error('Error!', res.message);
+        this.alertUtility.error('Error!', res.message);
       }
     },
       error => {
@@ -170,11 +169,11 @@ export class AddComponent implements OnInit {
     if (this.flag === '0') {
       this.productService.create(this.product, this.fileImages, this.fileVideos).subscribe(res => {
         if (res.success) {
-          this.sweetAlert.success('Success!', res.message);
+          this.alertUtility.success('Success!', res.message);
           this.backList();
         }
         else {
-          this.sweetAlert.error('Error!', res.message);
+          this.alertUtility.error('Error!', res.message);
         }
       },
         error => {
@@ -184,11 +183,11 @@ export class AddComponent implements OnInit {
     else {
       this.productService.update(this.product, this.fileImages, this.fileVideos).subscribe(res => {
         if (res.success) {
-          this.sweetAlert.success('Success!', res.message);
+          this.alertUtility.success('Success!', res.message);
           this.backList();
         }
         else {
-          this.sweetAlert.error('Error!', res.message);
+          this.alertUtility.error('Error!', res.message);
         }
       },
         error => {
@@ -259,7 +258,7 @@ export class AddComponent implements OnInit {
   onSelectImages(event) {
     // Kiểm tra rejectedFiles ( file không hợp lệ )
     if (event.rejectedFiles && event.rejectedFiles[0]) {
-      this.sweetAlert.warning('Error', 'Please select file images');
+      this.alertUtility.warning('Error', 'Please select file images');
       return;
     }
 
@@ -269,7 +268,7 @@ export class AddComponent implements OnInit {
     //     this.fileSize += element.size;
     //   });
     //   if (this.fileSize > 8388608) {
-    //     this.sweetAlert.warning('Error', 'Sum all image file size upload more than 8MB');
+    //     this.alertUtility.warning('Error', 'Sum all image file size upload more than 8MB');
     //     return;
     //   }
     // }
@@ -284,7 +283,7 @@ export class AddComponent implements OnInit {
   onSelectVideos(event) {
     // Kiểm tra rejectedFiles ( file không hợp lệ )
     if (event.rejectedFiles && event.rejectedFiles[0]) {
-      this.sweetAlert.warning('Error', 'Please select file videos');
+      this.alertUtility.warning('Error', 'Please select file videos');
       return;
     }
 
@@ -294,7 +293,7 @@ export class AddComponent implements OnInit {
     //     this.fileSize += element.size;
     //   });
     //   if (this.fileSize > 20971520) {
-    //     this.sweetAlert.warning('Error', 'Sum all video file size upload more than 20MB');
+    //     this.alertUtility.warning('Error', 'Sum all video file size upload more than 20MB');
     //     return;
     //   }
     // }

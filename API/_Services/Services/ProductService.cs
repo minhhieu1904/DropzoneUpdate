@@ -24,7 +24,7 @@ namespace API._Services.Services
         public ProductService(
             IProductRepository productRepository,
             IMapper mapper,
-            MapperConfiguration configuration, 
+            MapperConfiguration configuration,
             IProductCategoryRepository productCategoryRepository)
         {
             _productRepository = productRepository;
@@ -70,14 +70,14 @@ namespace API._Services.Services
 
         public async Task<PageListUtility<Product_Dto>> GetProductWithPaginations(PaginationParams param, string text)
         {
-            var data = _productRepository.FindAll().ProjectTo<Product_Dto>(_configuration).OrderByDescending(x => x.Product_Cate_ID).ThenBy(x => x.Product_ID);
+            var data = _productRepository.FindAll().ProjectTo<Product_Dto>(_configuration).OrderByDescending(x => x.Update_Time);
             if (!string.IsNullOrEmpty(text))
             {
                 data = data.Where(x => x.Product_ID.ToString().ToLower().Contains(text.ToLower())
                 || x.Product_Name.ToLower().Contains(text.ToLower())
                 || x.Update_By.ToLower().Contains(text.ToLower())
                 || x.Product_Cate_ID.ToLower().Contains(text.ToLower())
-                ).OrderByDescending(x => x.Product_Cate_ID).ThenBy(x => x.Product_ID);
+                ).OrderByDescending(x => x.Update_Time);
             }
             return await PageListUtility<Product_Dto>.PageListAsync(data, param.PageNumber, param.PageSize);
         }
@@ -98,9 +98,9 @@ namespace API._Services.Services
             return operationResult;
         }
 
-        public async Task<OperationResult> Remove(string productCateID, int productID)
+        public async Task<OperationResult> Remove(Product_Dto model)
         {
-            var item = await GetProductByID(productCateID, productID);
+            var item = await _productRepository.FindAll(x => x.Product_Cate_ID == model.Product_Cate_ID && x.Product_ID == model.Product_ID).FirstOrDefaultAsync();
             try
             {
                 if (item != null)
@@ -156,7 +156,7 @@ namespace API._Services.Services
                             Update_Time = y.Update_Time,
                             FileImages = y.FileImages,
                             FileVideos = y.FileVideos
-                        }).OrderByDescending(x => x.Product_Cate_ID).ThenBy(x => x.Product_ID);
+                        }).OrderByDescending(x => x.Update_Time);
             return await PageListUtility<Product_Dto>.PageListAsync(query, param.PageNumber, param.PageSize);
         }
 

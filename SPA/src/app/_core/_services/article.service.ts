@@ -6,6 +6,7 @@ import { Article } from '../_models/article';
 import { ArticleCategory } from '../_models/article-category';
 import { OperationResult } from '../_utility/operation-result';
 import { PaginationResult } from '../_utility/pagination';
+import { UtilityService } from './utility.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,10 @@ export class ArticleService {
   currentArticle = this.articleSource.asObservable();
   flagSource = new BehaviorSubject<string>('0');
   currentFlag = this.flagSource.asObservable();
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private utilityService: UtilityService
+  ) { }
 
   create(article: Article) {
     return this.http.post<OperationResult>(this.baseUrl + 'Article', article);
@@ -40,12 +44,7 @@ export class ArticleService {
   }
 
   getDataPaginations(page?, itemsPerPage?, text?): Observable<PaginationResult<Article>> {
-    let params = new HttpParams();
-    if (page != null && itemsPerPage != null) {
-      params = params.append('pageNumber', page);
-      params = params.append('pageSize', itemsPerPage);
-    }
-    params = params.append('text', text);
+    let params = this.utilityService.getParamSearchPagination(page, itemsPerPage, text);
 
     return this.http.get<PaginationResult<Article>>(this.baseUrl + 'Article/pagination', { params });
   }
@@ -53,11 +52,7 @@ export class ArticleService {
   searchDataPaginations(page?, itemsPerPage?, articleCateID?, articleName?): Observable<PaginationResult<Article>> {
     articleCateID = articleCateID === 'all' ? '' : articleCateID;
     articleName = articleName === 'all' ? '' : articleName;
-    let params = new HttpParams();
-    if (page != null && itemsPerPage != null) {
-      params = params.append('pageNumber', page);
-      params = params.append('pageSize', itemsPerPage);
-    }
+    let params = this.utilityService.getParamSearchPagination(page, itemsPerPage);
     params = params.append('articleCateID', articleCateID);
     params = params.append('articleName', articleName);
 

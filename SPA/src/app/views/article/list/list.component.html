@@ -63,12 +63,12 @@
               <td>{{ article.update_By }}</td>
               <td>{{ article.update_Time | date: 'MM/dd/yyyy, HH:mm:ss' }}</td>
               <td>
-                <div class="pretty p-icon p-round p-jelly">
+                <div class="pretty p-icon p-round p-jelly p-bigger">
                   <input type="checkbox" class="custom-control-input"
                     [id]="article.article_ID" [checked]="article.status"
                     (change)="changeStatus(article)">
                     <div class="state p-success">
-                      <i class="icon fa fa-check"></i>
+                      <i class="icon fa fa-heart"></i>
                       <label></label>
                   </div>
                 </div>

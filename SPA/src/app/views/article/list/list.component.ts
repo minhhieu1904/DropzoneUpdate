@@ -3,10 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Select2OptionData } from 'ng-select2';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Article } from 'src/app/_core/_models/article';
-import { AlertifyService } from 'src/app/_core/_services/alertify.service';
+import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { ArticleCategoryService } from 'src/app/_core/_services/article-category.service';
 import { ArticleService } from 'src/app/_core/_services/article.service';
-import { SweetAlertService } from 'src/app/_core/_services/sweet-alert.service';
 import { Pagination, PaginationResult } from 'src/app/_core/_utility/pagination';
 
 @Component({
@@ -29,9 +28,8 @@ export class ListComponent implements OnInit {
     private router: Router,
     private articleService: ArticleService,
     private articleCategoryService: ArticleCategoryService,
-    private sweetAlert: SweetAlertService,
     private spinner: NgxSpinnerService,
-    private alertify: AlertifyService
+    private alertUtility: AlertUtilityService
   ) { }
 
   ngOnInit() {
@@ -61,7 +59,7 @@ export class ListComponent implements OnInit {
         this.articles = res.result;
         this.pagination = res.pagination;
       }), error => {
-        this.alertify.error(error);
+        this.alertUtility.error('Error!', error);
       };
   }
 
@@ -71,17 +69,17 @@ export class ListComponent implements OnInit {
         this.articles = res.result;
         this.pagination = res.pagination;
       }), error => {
-        this.alertify.error(error);
+        this.alertUtility.error('Error!', error);
       };
   }
 
   changeStatus(article: Article) {
     this.articleService.changeStatus(article).subscribe(res => {
       if (res.success) {
-        this.sweetAlert.success('Success!', res.message);
+        this.alertUtility.success('Success!', res.message);
         this.getDataPaginations();
       } else {
-        this.sweetAlert.error('Error!', res.message);
+        this.alertUtility.error('Error!', res.message);
       }
     },
       error => {

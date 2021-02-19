@@ -24,6 +24,7 @@ import { DefaultLayoutComponent } from './containers';
 import { ErrorInterceptorProvider } from './_core/_services/error.interceptor';
 import { AppAsideModule, AppBreadcrumbModule, AppFooterModule, AppHeaderModule, AppSidebarModule } from '@coreui/angular';
 import { AppRoutingModule } from './views/app.routing';
+import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
 
 const APP_CONTAINERS = [
   DefaultLayoutComponent
@@ -65,6 +66,7 @@ export function tokenGetter() {
     AppAsideModule,
     AppBreadcrumbModule.forRoot(),
     BsDropdownModule.forRoot(),
+    SnotifyModule
   ],
   providers: [
     {
@@ -72,7 +74,9 @@ export function tokenGetter() {
       useClass: HashLocationStrategy,
     },
     AuthGuard,
-    ErrorInterceptorProvider
+    ErrorInterceptorProvider,
+    { provide: 'SnotifyToastConfig', useValue: ToastDefaults},
+    SnotifyService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
