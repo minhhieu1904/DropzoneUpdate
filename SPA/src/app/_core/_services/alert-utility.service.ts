@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AlertUtilityService {
-  style = 'material';
   timeout = 3000;
   progressBar = true;
   closeClick = true;

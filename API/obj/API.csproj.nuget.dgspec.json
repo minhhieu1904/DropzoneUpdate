@@ -38,6 +38,10 @@
       "frameworks": {
         "netcoreapp3.1": {
           "dependencies": {
+            "Aspose.Cells": {
+              "target": "Package",
+              "version": "[20.1.0, )"
+            },
             "AutoMapper": {
               "target": "Package",
               "version": "[10.1.1, )"
@@ -45,6 +49,10 @@
             "AutoMapper.Extensions.Microsoft.DependencyInjection": {
               "target": "Package",
               "version": "[8.1.0, )"
+            },
+            "EPPlus": {
+              "target": "Package",
+              "version": "[5.5.4, )"
             },
             "LinqKit.Core": {
               "target": "Package",

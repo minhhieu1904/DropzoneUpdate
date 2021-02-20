@@ -214,3 +214,16 @@ D:\HIEU\hoc\Dropzone\API\obj\Debug\netcoreapp3.1\staticwebassets\API.StaticWebAs
 D:\HIEU\hoc\Dropzone\API\obj\Debug\netcoreapp3.1\API.dll
 D:\HIEU\hoc\Dropzone\API\obj\Debug\netcoreapp3.1\API.pdb
 D:\HIEU\hoc\Dropzone\API\obj\Debug\netcoreapp3.1\API.genruntimeconfig.cache
+D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\EPPlus.dll
+D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.FileExtensions.dll
+D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Json.dll
+D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileProviders.Abstractions.dll
+D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileProviders.Physical.dll
+D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileSystemGlobbing.dll
+D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\Microsoft.IO.RecyclableMemoryStream.dll
+D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\System.Text.Encoding.CodePages.dll
+D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\System.Xml.XPath.XmlDocument.dll
+D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
+D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
+D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Text.Encoding.CodePages.dll
+D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\Aspose.Cells.dll
