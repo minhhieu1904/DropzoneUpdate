@@ -16,7 +16,7 @@ const routes: Routes = [
   {
     path: '',
     component: DefaultLayoutComponent,
-    data: { title: 'QMS' },
+    data: { title: 'DASHBOARD' },
     canActivate: [AuthGuard],
     children: [
       {

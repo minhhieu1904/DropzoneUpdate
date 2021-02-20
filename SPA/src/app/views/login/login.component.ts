@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { SnotifyPosition } from 'ng-snotify';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { AuthService } from 'src/app/_core/_services/auth.service';
@@ -29,11 +30,11 @@ export class LoginComponent implements OnInit {
     this.spinnerService.show();
     this.authService.login(this.user.userName, this.user.password).subscribe(
       (next) => {
-        this.alertUtility.message('Login Success!!');
+        this.alertUtility.message('Login Success!!', SnotifyPosition.rightTop);
         this.spinnerService.hide();
       },
       (error) => {
-        this.alertUtility.message('Login failed!!');
+        this.alertUtility.error('Error', 'Login failed!!', SnotifyPosition.rightTop);
         this.spinnerService.hide();
       },
       () => {

@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { SnotifyPosition } from 'ng-snotify';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ProductCategory } from 'src/app/_core/_models/product-category';
@@ -39,10 +40,10 @@ export class ListComponent implements OnInit {
       this.productCateService.create(this.productCate).subscribe(res => {
         debugger
         if (res.success) {
-          this.alertUtility.success('Success!', res.message);
+          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
           this.getDataPaginations();
         } else {
-          this.alertUtility.error('Error!', res.message);
+          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
         }
       },
         error => {
@@ -52,10 +53,10 @@ export class ListComponent implements OnInit {
     } else {
       this.productCateService.update(this.productCate).subscribe(res => {
         if (res.success) {
-          this.alertUtility.success('Success!', res.message);
+          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
           this.getDataPaginations();
         } else {
-          this.alertUtility.error('Error!', res.message);
+          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
         }
       },
         error => {
@@ -68,10 +69,10 @@ export class ListComponent implements OnInit {
   changeStatus(productCate: ProductCategory) {
     this.productCateService.changeStatus(productCate).subscribe(res => {
       if (res.success) {
-        this.alertUtility.success('Success!', res.message);
+        this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
         this.getDataPaginations();
       } else {
-        this.alertUtility.error('Error!', res.message);
+        this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
       }
     },
       error => {
@@ -86,7 +87,7 @@ export class ListComponent implements OnInit {
         this.productCates = res.result;
         this.pagination = res.pagination;
       }), error => {
-        this.alertUtility.error('Error!', error);
+        this.alertUtility.error('Error!', error, SnotifyPosition.rightTop);
       };
   }
 
@@ -111,21 +112,27 @@ export class ListComponent implements OnInit {
   }
 
   remove(productCategory: ProductCategory) {
-    this.alertUtility.confirmDelete('Are you sure delete item?', () => {
-      debugger
+    this.alertUtility.confirmDelete('Are you sure delete item?', SnotifyPosition.centerCenter, () => {
       this.productCateService.remove(productCategory).subscribe(res => {
-        debugger
         if (res.success) {
-          this.alertUtility.success('Success!', res.message);
+          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
           this.getDataPaginations();
         }
         else {
-          this.alertUtility.error('Error!', res.message);
+          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
         }
       },
         error => {
           console.log(error);
         });
     });
+  }
+
+  success() {
+    this.alertUtility.asyncLoadingSuccess('Waiting loaded...!', 'Success', SnotifyPosition.rightTop);
+  }
+
+  error() {
+    this.alertUtility.asyncLoadingError('Waiting loaded...!', 'Error', SnotifyPosition.rightTop);
   }
 }

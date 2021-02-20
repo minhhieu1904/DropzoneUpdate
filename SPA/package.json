@@ -42,7 +42,6 @@
     "@coreui/icons": "^1.0.1",
     "@datorama/akita": "^4.22.0",
     "@mdi/font": "^5.8.55",
-    "alertifyjs": "^1.13.1",
     "bootstrap": "4.1.1",
     "flag-icon-css": "^3.5.0",
     "font-awesome": "^4.7.0",
@@ -57,7 +56,6 @@
     "select2": "^4.0.13",
     "select2-bootstrap-theme": "0.1.0-beta.10",
     "simple-line-icons": "^2.5.5",
-    "sweetalert2": "^10.12.6",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
   },

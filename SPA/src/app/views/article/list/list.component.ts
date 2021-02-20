@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Select2OptionData } from 'ng-select2';
+import { SnotifyPosition } from 'ng-snotify';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Article } from 'src/app/_core/_models/article';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
@@ -59,7 +60,7 @@ export class ListComponent implements OnInit {
         this.articles = res.result;
         this.pagination = res.pagination;
       }), error => {
-        this.alertUtility.error('Error!', error);
+        this.alertUtility.error('Error!', error, SnotifyPosition.rightTop);
       };
   }
 
@@ -69,17 +70,17 @@ export class ListComponent implements OnInit {
         this.articles = res.result;
         this.pagination = res.pagination;
       }), error => {
-        this.alertUtility.error('Error!', error);
+        this.alertUtility.error('Error!', error, SnotifyPosition.rightTop);
       };
   }
 
   changeStatus(article: Article) {
     this.articleService.changeStatus(article).subscribe(res => {
       if (res.success) {
-        this.alertUtility.success('Success!', res.message);
+        this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
         this.getDataPaginations();
       } else {
-        this.alertUtility.error('Error!', res.message);
+        this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
       }
     },
       error => {
@@ -117,14 +118,14 @@ export class ListComponent implements OnInit {
   }
 
   remove(article: Article) {
-    this.alertUtility.confirmDelete('Are you sure delete item?', () => {
+    this.alertUtility.confirmDelete('Are you sure delete item?', SnotifyPosition.centerCenter, () => {
       this.articleService.remove(article).subscribe(res => {
         if (res.success) {
-          this.alertUtility.success('Success!', res.message);
+          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
           this.getDataPaginations();
         }
         else {
-          this.alertUtility.error('Error!', res.message);
+          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
         }
       },
         error => {

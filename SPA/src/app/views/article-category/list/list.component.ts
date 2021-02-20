@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { SnotifyPosition } from 'ng-snotify';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ArticleCategory } from 'src/app/_core/_models/article-category';
@@ -38,10 +39,10 @@ export class ListComponent implements OnInit {
     if (this.flag === 0) {
       this.articleCateService.create(this.articleCate).subscribe(res => {
         if (res.success) {
-          this.alertUtility.success('Success!', res.message);
+          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
           this.getDataPaginations();
         } else {
-          this.alertUtility.error('Error!', res.message);
+          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
         }
       },
         error => {
@@ -51,10 +52,10 @@ export class ListComponent implements OnInit {
     } else {
       this.articleCateService.update(this.articleCate).subscribe(res => {
         if (res.success) {
-          this.alertUtility.success('Success!', res.message);
+          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
           this.getDataPaginations();
         } else {
-          this.alertUtility.error('Error!', res.message);
+          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
         }
       },
         error => {
@@ -67,10 +68,10 @@ export class ListComponent implements OnInit {
   changeStatus(articleCate: ArticleCategory) {
     this.articleCateService.changeStatus(articleCate).subscribe(res => {
       if (res.success) {
-        this.alertUtility.success('Success!', res.message);
+        this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
         this.getDataPaginations();
       } else {
-        this.alertUtility.error('Error!', res.message);
+        this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
       }
     },
       error => {
@@ -85,7 +86,7 @@ export class ListComponent implements OnInit {
         this.articleCates = res.result;
         this.pagination = res.pagination;
       }), error => {
-        this.alertUtility.error('Error!', error);
+        this.alertUtility.error('Error!', error, SnotifyPosition.rightTop);
       };
   }
 
@@ -110,16 +111,16 @@ export class ListComponent implements OnInit {
   }
 
   remove(articleCategory: ArticleCategory) {
-    this.alertUtility.confirmDelete('Are you sure delete item?', () => {
+    this.alertUtility.confirmDelete('Are you sure delete item?', SnotifyPosition.centerCenter, () => {
       debugger
       this.articleCateService.remove(articleCategory).subscribe(res => {
         debugger
         if (res.success) {
-          this.alertUtility.success('Success!', res.message);
+          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
           this.getDataPaginations();
         }
         else {
-          this.alertUtility.error('Error!', res.message);
+          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
         }
       },
         error => {

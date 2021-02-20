@@ -5,6 +5,7 @@ import { User } from '../../_core/_models/user';
 import { AuthService } from '../../_core/_services/auth.service';
 import { Router } from '@angular/router';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
+import { SnotifyPosition } from 'ng-snotify';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,7 +33,7 @@ export class DefaultLayoutComponent {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     this.authService.decodedToken = null;
-    this.alertUtility.message('Logged out');
+    this.alertUtility.message('Logged out', SnotifyPosition.rightTop);
     this.router.navigate(['/login']);
   }
 }

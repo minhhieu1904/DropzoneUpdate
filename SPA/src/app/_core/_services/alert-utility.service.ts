@@ -43,38 +43,38 @@ export class AlertUtilityService {
     };
   }
 
-  success(body: string, title: string) {
-    this.snotifyService.success(body, title, this.getConfig(SnotifyPosition.rightTop));
+  success(body: string, title: string, position: SnotifyPosition) {
+    this.snotifyService.success(body, title, this.getConfig(position));
   }
 
-  info(body: string, title: string) {
-    this.snotifyService.info(body, title, this.getConfig(SnotifyPosition.rightTop));
+  info(body: string, title: string, position: SnotifyPosition) {
+    this.snotifyService.info(body, title, this.getConfig(position));
   }
 
-  error(body: string, title: string) {
-    this.snotifyService.error(body, title, this.getConfig(SnotifyPosition.rightTop));
+  error(body: string, title: string, position: SnotifyPosition) {
+    this.snotifyService.error(body, title, this.getConfig(position));
   }
 
-  warning(body: string, title: string) {
-    this.snotifyService.warning(body, title, this.getConfig(SnotifyPosition.centerTop));
+  warning(body: string, title: string, position: SnotifyPosition) {
+    this.snotifyService.warning(body, title, this.getConfig(position));
   }
 
-  simple(body: string, title: string) {
-    // const icon = `assets/custom-svg.svg`;
+  simple(body: string, title: string, position: SnotifyPosition) {
+    // Custom icon
     const icon = `https://placehold.it/48x100`;
 
     this.snotifyService.simple(body, title, {
-      ...this.getConfig(SnotifyPosition.rightTop),
+      ...this.getConfig(position),
       icon
     });
   }
 
-  message(body: string) {
-    this.snotifyService.success(body, this.getConfig(SnotifyPosition.rightTop));
+  message(body: string, position: SnotifyPosition) {
+    this.snotifyService.success(body, this.getConfig(position));
   }
 
-  confirmDelete(body: string, okCallback: () => any) {
-    const { timeout, closeOnClick, ...config } = this.getConfig(SnotifyPosition.centerCenter); // Omit props what i don't need
+  confirmDelete(body: string, position: SnotifyPosition, okCallback: () => any) {
+    const { timeout, closeOnClick, ...config } = this.getConfig(position);
     this.snotifyService.confirm(body, {
       ...config,
       buttons: [
@@ -83,26 +83,66 @@ export class AlertUtilityService {
           action: (toast) => {
             this.snotifyService.remove(toast.id);
             okCallback();
-          }
+          },
+          bold: true
         },
         {
           text: 'Cancle',
           action: toast => {
             this.snotifyService.remove(toast.id);
-          },
-          bold: true
+          }
         }
       ]
     });
   }
 
-  html() {
+  html(position: SnotifyPosition) {
     const html = `<div class="snotifyToast__title"><b>Html Bold Title</b></div>
     <div class="snotifyToast__body"><i>Html</i> <b>toast</b> <u>content</u></div>`;
-    this.snotifyService.html(html, this.getConfig(SnotifyPosition.rightTop));
+    this.snotifyService.html(html, this.getConfig(position));
   }
 
   clear() {
     this.snotifyService.clear();
+  }
+
+  asyncLoadingSuccess(body: string, success: string, position: SnotifyPosition) {
+    const successAction = new Observable(observer => {
+      setTimeout(() => {
+        observer.next({
+          body: 'Still loading.....'
+        });
+      }, 2000);
+
+      setTimeout(() => {
+        observer.next({
+          title: success,
+          body: 'Success',
+          config: {
+            closeOnClick: true,
+            timeout: 3000,
+            showProgressBar: true
+          }
+        });
+        observer.complete();
+      }, 3000);
+    });
+
+    const { timeout, ...config } = this.getConfig(position);
+    this.snotifyService.async(body, successAction, config);
+  }
+
+  asyncLoadingError(body: string, error: string, position: SnotifyPosition) {
+    const errorAction = new Observable(observer => {
+      setTimeout(() => {
+        observer.error({
+          title: error,
+          body: 'Error'
+        });
+      }, 2000);
+    });
+
+    const { timeout, ...config } = this.getConfig(position);
+    this.snotifyService.async(body, errorAction, config);
   }
 }

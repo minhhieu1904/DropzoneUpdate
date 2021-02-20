@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
+import { SnotifyPosition } from 'ng-snotify';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Product } from '../_models/product';
@@ -21,7 +22,7 @@ export class ProductListResolver implements Resolve<Product[]> {
     this.text = this.text === '' ? '' : this.text;
     return this.productService.getDataPaginations(this.pageNumber, this.pageSize, this.text).pipe(
       catchError(error => {
-        this.alertUtility.error('Error', 'Problem retrieving data');
+        this.alertUtility.error('Error', 'Problem retrieving data', SnotifyPosition.rightTop);
         this.router.navigate(['/dashboard']);
         return of(null);
       })
