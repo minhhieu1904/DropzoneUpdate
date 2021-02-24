@@ -1,22 +1,11 @@
 import { Injectable } from '@angular/core';
-import { SnotifyPosition, SnotifyService, SnotifyToastConfig } from 'ng-snotify';
+import { SnotifyAnimate, SnotifyPosition, SnotifyService, SnotifyToastConfig, SnotifyType } from 'ng-snotify';
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlertUtilityService {
-  timeout = 3000;
-  progressBar = true;
-  closeClick = true;
-  newTop = true;
-  filterDuplicates = false;
-  backdrop = -1;
-  dockMax = 8;
-  blockMax = 8;
-  pauseHover = true;
-  titleMaxLength = 50;
-  bodyMaxLength = 100;
   constructor(
     private snotifyService: SnotifyService
   ) { }
@@ -24,21 +13,21 @@ export class AlertUtilityService {
   getConfig(position: SnotifyPosition): SnotifyToastConfig {
     this.snotifyService.setDefaults({
       global: {
-        newOnTop: this.newTop,
-        maxAtPosition: this.blockMax,
-        maxOnScreen: this.dockMax,
-        filterDuplicates: this.filterDuplicates
+        newOnTop: true,
+        maxAtPosition: 8,
+        maxOnScreen: 8,
+        filterDuplicates: false
       }
     });
     return {
-      bodyMaxLength: this.bodyMaxLength,
-      titleMaxLength: this.titleMaxLength,
-      backdrop: this.backdrop,
+      bodyMaxLength: 50,
+      titleMaxLength: 50,
+      backdrop: -1,
       position: position,
-      timeout: this.timeout,
-      showProgressBar: this.progressBar,
-      closeOnClick: this.closeClick,
-      pauseOnHover: this.pauseHover
+      timeout: 3000,
+      showProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true
     };
   }
 
@@ -95,10 +84,25 @@ export class AlertUtilityService {
     });
   }
 
-  html(position: SnotifyPosition) {
-    const html = `<div class="snotifyToast__title"><b>Html Bold Title</b></div>
-    <div class="snotifyToast__body"><i>Html</i> <b>toast</b> <u>content</u></div>`;
+  html(body: string, title: string, position: SnotifyPosition, icon?: string) {
+    const html = `<div class="snotifyToast__title"><b>${title}</b></div>
+                  <div class="snotifyToast__body"><b>${body}</b></div>
+                  <div class="snotify-icon ng-star-inserted">
+                    <img src="${icon}" width='48px' heght='48px'/>
+                  </div>`;
     this.snotifyService.html(html, this.getConfig(position));
+  }
+
+  htmlAnimation(body: string, title: string, position: SnotifyPosition, type: SnotifyType, animation: SnotifyAnimate, icon?: string) {
+    if (icon === undefined || icon === null) {
+      icon = '';
+    }
+    const html = `<div class="snotifyToast__title"><b>${title}</b></div>
+                  <div class="snotifyToast__body"><b>${body}</b></div>
+                  <div class="snotify-icon ng-star-inserted">
+                    <img src="${icon}" width='48px' heght='48px'/>
+                  </div>`;
+    this.snotifyService.html(html, { ...this.getConfig(position), type, animation });
   }
 
   clear() {
