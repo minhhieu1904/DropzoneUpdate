@@ -22,6 +22,8 @@ export class ListComponent implements OnInit {
   text: string = '';
   flag: number = 0;
   mailContent: MailContent;
+
+  fileImportExcel: any = null;
   constructor(
     private route: ActivatedRoute,
     private productCateService: ProductCategoryService,
@@ -150,12 +152,65 @@ export class ListComponent implements OnInit {
     };
     this.productCateService.sendMail(this.mailContent).subscribe(res => {
       debugger
-      if(res.success) {
+      if (res.success) {
         this.alertUtility.asyncLoadingSuccess('Success!', res.message, SnotifyPosition.centerCenter);
       }
       else {
         this.alertUtility.asyncLoadingError('Error!', res.message, SnotifyPosition.centerCenter);
       }
     });
+  }
+
+  import() {
+    if (this.fileImportExcel == null) {
+      this.alertUtility.warning('Warning', 'Please choose file upload!', SnotifyPosition.centerTop);
+      return;
+    }
+
+    this.alertUtility.confirmDelete('Are you sure import file?', SnotifyPosition.centerCenter, () => {
+      this.productCateService.importExcel(this.fileImportExcel).subscribe((res) => {
+        if (res.success) {
+          this.alertUtility.success('Success!', 'Import file successfuly', SnotifyPosition.rightTop);
+        } else {
+          this.alertUtility.error('Error!', 'Import file failse', SnotifyPosition.rightTop);
+        }
+        this.getDataPaginations();
+      }, error => {
+        this.alertUtility.error('Error', 'Upload Data Fail!', SnotifyPosition.rightTop);
+      });
+    });
+  }
+
+  onSelectFile(event, number) {
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+
+      reader.readAsDataURL(event.target.files[0]); // read file as data url
+      const file = event.target.files[0];
+      // check file name extension
+      const fileNameExtension = event.target.files[0].name.split('.').pop();
+      if (fileNameExtension != 'xlsx' && fileNameExtension != 'xlsm') {
+        this.alertUtility.warning('Warning', "Please select a file '.xlsx' or '.xls'", SnotifyPosition.centerCenter);
+        return;
+      }
+
+      this.fileImportExcel = file;
+    }
+  }
+
+  export() {
+    return this.productCateService.export(this.pagination.currentPage, this.pagination.pageSize, this.text);
+  }
+
+  exportAspose(checkExport: number) {
+    return this.productCateService.exportAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport);
+  }
+
+  exportPdfAspose(checkExport: number) {
+    return this.productCateService.exportAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport);
+  }
+
+  downloadExcelTemplate() {
+    window.location.href = '../../../../assets/fileExcelTemplate/product_category.xlsx';
   }
 }

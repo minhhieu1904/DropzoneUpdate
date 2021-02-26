@@ -83,6 +83,7 @@ namespace API.Helpers.Utilities
             smtpServer.Port = Convert.ToInt32(_configuration.GetSection("MailSettingServer:Port").Value);
             smtpServer.Credentials = new NetworkCredential(_configuration.GetSection("MailSettingServer:UserName").Value, _configuration.GetSection("MailSettingServer:Password").Value);
             smtpServer.EnableSsl = Convert.ToBoolean(_configuration.GetSection("MailSettingServer:EnableSsl").Value);
+            smtpServer.UseDefaultCredentials =  Convert.ToBoolean(_configuration.GetSection("MailSettingServer:DefaultCredentials").Value);
 
             try
             {
@@ -93,9 +94,6 @@ namespace API.Helpers.Utilities
             {
                 operationResult = new OperationResult { Success = false, Message = ex.Message };
             }
-
-            mail.Dispose();
-            smtpServer.Dispose();
             return operationResult;
         }
 

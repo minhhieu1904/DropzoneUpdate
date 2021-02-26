@@ -55,17 +55,32 @@ export class ProductCategoryService {
   }
 
   sendMailKit(mailContent: MailContent) {
-    debugger
     return this.http.post<OperationResult>(this.baseUrl + 'SendMail', mailContent);
   }
 
   sendMail(mailContent: MailContent) {
-    debugger
     return this.http.post<OperationResult>(this.baseUrl + 'SendMail/sendMailUtility', mailContent);
   }
 
   sendMailByGmail(mailContent: MailContent) {
-    debugger
     return this.http.post<OperationResult>(this.baseUrl + 'SendMail/sendMailByGmail', mailContent);
+  }
+
+  importExcel(fileImportExcel) {
+    const formData = new FormData();
+    formData.append('files', fileImportExcel);
+    return this.http.post<OperationResult>(this.baseUrl + 'ProductCategory/import', formData);
+  }
+
+  export(page?, itemsPerPage?, text?) {
+    let params = this.utilityService.getParamSearchPagination(page, itemsPerPage, text);
+
+    return this.utilityService.exportExcelParams(params, 'ProductCategory/exportExcelEpplus', 'Product_Category_');
+  }
+
+  exportAspose(page?, itemsPerPage?, text?, checkExport?: number) {
+    let params = this.utilityService.getParamSearchPagination(page, itemsPerPage, text);
+
+    return this.utilityService.exportExcelAuditWithCheckExport(params, 'ProductCategory/exportExcelAspose?checkExport=', 'Product_Category_', checkExport);
   }
 }

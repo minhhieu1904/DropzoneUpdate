@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using API._Repositories.Interfaces;
@@ -10,6 +12,7 @@ using API.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 
 namespace API._Services.Services
 {
@@ -134,8 +137,46 @@ namespace API._Services.Services
         public async Task<object> GetIDAndName()
         {
             var data = await _productCategoryRepository.FindAll()
-            .Select(x => new { Id = x.Product_Cate_ID, Name = x.Product_Cate_ID + "_" + x.Product_Cate_Name}).ToListAsync();
+            .Select(x => new { Id = x.Product_Cate_ID, Name = x.Product_Cate_ID + "_" + x.Product_Cate_Name }).ToListAsync();
             return data;
+        }
+
+        public async Task<OperationResult> ImportExcel(string pathFile, string user)
+        {
+            List<ProductCategory_Dto> listProductCategory = new List<ProductCategory_Dto>();
+            using (var package = new ExcelPackage(new FileInfo(pathFile)))
+            {
+                ExcelWorksheet workSheet = package.Workbook.Worksheets[0];
+                int totalRows = workSheet.Dimension.Rows;
+                for (int i = 2; i <= totalRows; i++)
+                {
+                    ProductCategory_Dto productCategory = new ProductCategory_Dto();
+                    productCategory.Product_Cate_Name = workSheet.Cells[i, 1].Value.ToSafetyString().Trim();
+                    productCategory.Status = workSheet.Cells[i, 2].Value.ToBool();
+                    productCategory.Position = workSheet.Cells[i, 3].Value.ToInt();
+
+                    listProductCategory.Add(productCategory);
+                }
+                foreach (var item in listProductCategory)
+                {
+                    ProductCategory_Dto productCategory = new ProductCategory_Dto();
+                    productCategory.Product_Cate_Name = item.Product_Cate_Name;
+                    productCategory.Status = item.Status;
+                    productCategory.Position = item.Position;
+                    productCategory.Update_By = user;
+                    productCategory.Update_Time = DateTime.Now;
+                    try
+                    {
+                        await Create(productCategory);
+                        operationResult = new OperationResult { Message = "Import Success", Success = true };
+                    }
+                    catch
+                    {
+                        operationResult = new OperationResult { Message = "Import Faild", Success = false };
+                    }
+                }
+            }
+            return await Task.FromResult(operationResult);
         }
     }
 }

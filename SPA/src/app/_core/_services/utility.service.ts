@@ -1,13 +1,16 @@
-import { HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import { FunctionUtility } from '../_utility/fucntion-utility';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilityService {
-
+  baseUrl = environment.apiUrl;
   constructor(
-
+    private http: HttpClient,
+    private functionUtility: FunctionUtility
   ) { }
 
   getFormData(product: any, fileImages: File[], fileVideos: File[]) {
@@ -115,4 +118,58 @@ export class UtilityService {
       }
     });
   }
+  // End Converting "String" to javascript "File Object"
+
+  // Export excel with Params
+  exportExcelParams(params: HttpParams, urlController: string, nameString: string) {
+    return this.http.get(this.baseUrl + urlController, { responseType: 'blob', params })
+      .subscribe((result: Blob) => {
+        const blob = new Blob([result]);
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const currentTime = new Date();
+
+        let filename = nameString + currentTime.getFullYear().toString() +
+          (currentTime.getMonth() + 1) + currentTime.getDate() +
+          currentTime.toLocaleTimeString().replace(/[ ]|[,]|[:]/g, '').trim() + '.xlsx';
+
+        link.href = url;
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+      });
+  }
+  // End export excel with Params
+
+  // Export excel with checkExport
+  exportExcelAuditWithCheckExport(params: HttpParams, urlController: string, nameString: string, checkExport: number) {
+    debugger
+    return this.http.get(this.baseUrl + urlController + checkExport, { responseType: 'blob', params })
+      .subscribe((result: Blob) => {
+        const blob = new Blob([result]);
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const currentTime = new Date();
+
+        let fileExtension = '';
+        let filename = nameString + currentTime.getFullYear().toString() +
+          (currentTime.getMonth() + 1) + currentTime.getDate() +
+          currentTime.toLocaleTimeString().replace(/[ ]|[,]|[:]/g, '').trim();
+
+        if (checkExport === 1) {
+          fileExtension = '.xlsx';
+        }
+        if (checkExport === 2) {
+          fileExtension = '.pdf';
+        }
+
+        filename = filename + fileExtension;
+
+        link.href = url;
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+      });
+  }
+  // End export excel with checkExport
 }
