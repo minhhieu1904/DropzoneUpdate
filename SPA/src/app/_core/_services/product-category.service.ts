@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { MailContent } from '../_models/mailContent';
 import { ProductCategory } from '../_models/product-category';
 import { OperationResult } from '../_utility/operation-result';
 import { PaginationResult } from '../_utility/pagination';
@@ -51,5 +52,20 @@ export class ProductCategoryService {
 
   remove(productCategory: ProductCategory) {
     return this.http.post<OperationResult>(this.baseUrl + 'ProductCategory/delete', productCategory);
+  }
+
+  sendMailKit(mailContent: MailContent) {
+    debugger
+    return this.http.post<OperationResult>(this.baseUrl + 'SendMail', mailContent);
+  }
+
+  sendMail(mailContent: MailContent) {
+    debugger
+    return this.http.post<OperationResult>(this.baseUrl + 'SendMail/sendMailUtility', mailContent);
+  }
+
+  sendMailByGmail(mailContent: MailContent) {
+    debugger
+    return this.http.post<OperationResult>(this.baseUrl + 'SendMail/sendMailByGmail', mailContent);
   }
 }

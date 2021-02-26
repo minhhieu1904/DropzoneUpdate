@@ -227,3 +227,6 @@ D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp3.0
 D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
 D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Text.Encoding.CodePages.dll
 D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\Aspose.Cells.dll
+D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\MailKit.dll
+D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\MimeKit.dll
+D:\HIEU\hoc\Dropzone\API\bin\Debug\netcoreapp3.1\BouncyCastle.Crypto.dll

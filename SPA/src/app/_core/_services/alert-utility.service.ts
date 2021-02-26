@@ -113,14 +113,14 @@ export class AlertUtilityService {
     const successAction = new Observable(observer => {
       setTimeout(() => {
         observer.next({
-          body: 'Still loading.....'
+          body: 'Wating for love.....'
         });
       }, 2000);
 
       setTimeout(() => {
         observer.next({
           title: success,
-          body: 'Success',
+          body: body,
           config: {
             closeOnClick: true,
             timeout: 3000,
@@ -132,20 +132,31 @@ export class AlertUtilityService {
     });
 
     const { timeout, ...config } = this.getConfig(position);
-    this.snotifyService.async(body, successAction, config);
+    this.snotifyService.async('Still loading.....', successAction, config);
   }
 
   asyncLoadingError(body: string, error: string, position: SnotifyPosition) {
     const errorAction = new Observable(observer => {
       setTimeout(() => {
-        observer.error({
-          title: error,
-          body: 'Error'
+        observer.next({
+          body: 'Wating for love.....'
         });
       }, 2000);
-    });
 
+      setTimeout(() => {
+        observer.error({
+          title: error,
+          body: body,
+          config: {
+            closeOnClick: true,
+            timeout: 3000,
+            showProgressBar: true
+          }
+        });
+        observer.complete();
+      }, 3000);
+    });
     const { timeout, ...config } = this.getConfig(position);
-    this.snotifyService.async(body, errorAction, config);
+    this.snotifyService.async('Still loading.....', errorAction, config);
   }
 }

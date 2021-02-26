@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { SnotifyPosition } from 'ng-snotify';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { MailContent } from 'src/app/_core/_models/mailContent';
 import { ProductCategory } from 'src/app/_core/_models/product-category';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { ProductCategoryService } from 'src/app/_core/_services/product-category.service';
@@ -20,6 +21,7 @@ export class ListComponent implements OnInit {
   pagination: Pagination;
   text: string = '';
   flag: number = 0;
+  mailContent: MailContent;
   constructor(
     private route: ActivatedRoute,
     private productCateService: ProductCategoryService,
@@ -129,10 +131,31 @@ export class ListComponent implements OnInit {
   }
 
   success() {
-    this.alertUtility.asyncLoadingSuccess('Waiting loaded...!', 'Success', SnotifyPosition.rightTop);
+    this.alertUtility.asyncLoadingSuccess('Success!', 'Success', SnotifyPosition.rightTop);
   }
 
   error() {
-    this.alertUtility.asyncLoadingError('Waiting loaded...!', 'Error', SnotifyPosition.rightTop);
+    this.alertUtility.asyncLoadingError('Error!', 'Error', SnotifyPosition.rightTop);
+  }
+
+  html() {
+    this.alertUtility.htmlAnimation('Test', 'Try me', SnotifyPosition.centerCenter, 'error', { enter: 'animate__bounceInLeft2', exit: 'animate__bounceInLeft2', time: 5000 });
+  }
+
+  sendMail() {
+    this.mailContent = {
+      to: 'ken0502arima@gmail.com',
+      subject: 'Test',
+      body: '<p><strong>Say hello me!!!</strong></p>'
+    };
+    this.productCateService.sendMail(this.mailContent).subscribe(res => {
+      debugger
+      if(res.success) {
+        this.alertUtility.asyncLoadingSuccess('Success!', res.message, SnotifyPosition.centerCenter);
+      }
+      else {
+        this.alertUtility.asyncLoadingError('Error!', res.message, SnotifyPosition.centerCenter);
+      }
+    });
   }
 }

@@ -22,11 +22,11 @@ namespace API._Services.Services
         public void DeleteFileUpload(string files, string fileFolder)
         {
             string[] listResult = files.Split(";");
+            string folder = _webHostEnvironment.WebRootPath + fileFolder;
             foreach (var item in listResult)
             {
                 if (item != "")
                 {
-                    string folder = _webHostEnvironment.WebRootPath + fileFolder;
                     string filePath = Path.Combine(folder, item);
 
                     // kiểm tra file cũ có không, nếu có thì xóa đi
@@ -41,6 +41,7 @@ namespace API._Services.Services
         public async Task<string> UploadFile(List<IFormFile> files, string name, string fileFolder)
         {
             string fileUploads = "";
+            string folder = _webHostEnvironment.WebRootPath + fileFolder;
 
             if (files != null)
             {
@@ -51,7 +52,6 @@ namespace API._Services.Services
 
                     var check = Path.GetExtension(filename);
                     var uploadPicture = name + randomGiud + check;
-                    string folder = _webHostEnvironment.WebRootPath + fileFolder;
 
                     if (!Directory.Exists(folder))
                     {

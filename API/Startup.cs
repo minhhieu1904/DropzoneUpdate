@@ -9,11 +9,14 @@ using API._Services.Interface;
 using API._Services.Interfaces;
 using API._Services.Services;
 using API.Data;
+using API.Dtos;
 using API.Helpers.AutoMapper;
+using API.Helpers.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +51,9 @@ namespace API
 
             // Add Server Kestrel
             // services.Configure<KestrelServerOptions>(Configuration.GetSection("Kestrel"));
+            services.AddOptions (); 
+
+            services.Configure<MailSetting_Dto>(Configuration.GetSection("MailSettings"));
 
             //Json
             services.AddControllersWithViews()
@@ -98,6 +104,10 @@ namespace API
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IDropzoneService, DropzoneService>();
 
+            services.AddScoped<ISendMailService, SendMailService>();
+            services.AddScoped<IMailUtility, MailUtility>();
+            services.AddScoped<ISendMailByGmail, SendMailByGmail>();
+
             // Swagger
             services.AddSwaggerGen(c =>
             {
@@ -132,7 +142,7 @@ namespace API
             // {
             //     context.Features.Get<IHttpMaxRequestBodySizeFeature>()
             //         .MaxRequestBodySize = null;
-        
+
             //     await next.Invoke();
             // });
 
