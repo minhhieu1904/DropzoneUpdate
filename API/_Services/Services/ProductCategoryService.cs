@@ -61,7 +61,7 @@ namespace API._Services.Services
             return await _productCategoryRepository.FindAll().ProjectTo<ProductCategory_Dto>(_configuration).ToListAsync();
         }
 
-        public async Task<PageListUtility<ProductCategory_Dto>> GetProductCategoryWithPaginations(PaginationParams param, string text)
+        public async Task<PageListUtility<ProductCategory_Dto>> GetProductCategoryWithPaginations(PaginationParams param, string text, bool isPaging = true)
         {
             var data = _productCategoryRepository.FindAll().ProjectTo<ProductCategory_Dto>(_configuration).OrderByDescending(x => x.Update_Time);
             if (text != null)
@@ -70,7 +70,7 @@ namespace API._Services.Services
                 || x.Update_By.ToLower().Contains(text.ToLower())
                 || x.Product_Cate_ID.ToLower().Contains(text.ToLower())).OrderByDescending(x => x.Update_Time);
             }
-            return await PageListUtility<ProductCategory_Dto>.PageListAsync(data, param.PageNumber, param.PageSize);
+            return await PageListUtility<ProductCategory_Dto>.PageListAsync(data, param.PageNumber, param.PageSize, isPaging);
         }
 
         public async Task<OperationResult> Update(ProductCategory_Dto model)

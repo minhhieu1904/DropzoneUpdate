@@ -121,7 +121,7 @@ namespace API.Controllers
         [HttpGet("exportExcelEpplus")]
         public async Task<ActionResult> ExportExcelEpplus([FromQuery] PaginationParams param, string text)
         {
-            var data = await _productCategoryService.GetProductCategoryWithPaginations(param, text);
+            var data = await _productCategoryService.GetProductCategoryWithPaginations(param, text, false);
 
             var stream = new MemoryStream();
             using (var package = new ExcelPackage(stream))
@@ -198,7 +198,7 @@ namespace API.Controllers
         [HttpGet("exportExcelAspose")]
         public async Task<ActionResult> ExportExcelAspose([FromQuery] PaginationParams param, string text, int checkExport)
         {
-            var data = await _productCategoryService.GetProductCategoryWithPaginations(param, text);
+            var data = await _productCategoryService.GetProductCategoryWithPaginations(param, text, false);
             var path = Path.Combine(_webHostEnvironment.ContentRootPath, "Resources\\Template\\ProductCategory\\ProductCategoryListTemplate.xlsx");
             WorkbookDesigner designer = new WorkbookDesigner();
             designer.Workbook = new Workbook(path);
