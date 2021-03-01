@@ -11,7 +11,7 @@
         </div>
         <div class="col-md-3 col-lg-7">
           <!-- Button Add -->
-          <button type="button" class="btn btn-sm btn-success float-right" (click)="success()">
+          <!-- <button type="button" class="btn btn-sm btn-success float-right" (click)="success()">
             Success
           </button>
           <button type="button" class="btn btn-sm btn-danger float-right mr-2" (click)="html()">
@@ -19,7 +19,7 @@
           </button>
           <button type="button" class="btn btn-sm btn-warning float-right mr-2" (click)="sendMail()">
             <i class="fa fa-envelope-o"></i> SendMail
-          </button>
+          </button> -->
           <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="export()">
             <i class="fa fa-file-excel-o"></i> Export
           </button>
@@ -32,8 +32,10 @@
           <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="importExcelModel.show()">
             <i class="fa fa-file-excel-o"></i> Import
           </button>
-          <button type="button" class="btn btn-sm btn-primary float-right mr-2" (click)="addOrEditProductCateModal.show()"
-            (click)="cancel()" (click)="setFlag(0)">
+          <button type="button" class="btn btn-sm btn-success float-right mr-2" printSectionId="dataTable" [useExistingCss]="true"
+            ngxPrint printTitle="Product Category">Print</button>
+          <button type="button" class="btn btn-sm btn-primary float-right mr-2"
+            (click)="[addOrEditProductCateModal.show(), cancel(), setFlag(0)]">
             <i class="fa fa-plus"></i> Add new
           </button>
         </div>
@@ -42,7 +44,7 @@
     <div class="card-body">
       <!-- Form Search -->
       <!-- ProductCate Table -->
-      <div class="table-responsive">
+      <div class="table-responsive" id="dataTable">
         <table class="table table-bordered table-hover text-center">
           <thead>
             <tr>
@@ -66,19 +68,18 @@
               <td>{{ productCate.update_Time | date: 'MM/dd/yyyy, HH:mm:ss' }}</td>
               <td>
                 <div class="pretty p-icon p-round p-jelly">
-                  <input type="checkbox" class="custom-control-input"
-                    [id]="productCate.product_Cate_ID" [checked]="productCate.status"
-                    (change)="changeStatus(productCate)">
-                    <div class="state p-success">
-                      <i class="icon fa fa-check"></i>
-                      <label></label>
+                  <input type="checkbox" class="custom-control-input" [id]="productCate.product_Cate_ID"
+                    [checked]="productCate.status" (change)="changeStatus(productCate)">
+                  <div class="state p-success">
+                    <i class="icon fa fa-check"></i>
+                    <label></label>
                   </div>
                 </div>
               </td>
               <td class="w-1rem">
                 <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-primary" (click)="setFlag(1)"
-                    (click)="addOrEditProductCateModal.show()" (click)="edit(productCate)">
+                  <button type="button" class="btn btn-sm btn-primary"
+                    (click)="[addOrEditProductCateModal.show(), setFlag(1), edit(productCate)]">
                     <i class="fa fa-edit fa-lg"></i>
                   </button>
                 </div>
@@ -133,8 +134,8 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="addOrEditProductCateModal.hide()">Cancel</button>
-          <button type="submit" class="btn btn-success" (click)="addOrEditProductCateModal.hide()" (click)="save()" 
-          [disabled]="addProductCateForm.invalid">
+          <button type="submit" class="btn btn-success" (click)="[addOrEditProductCateModal.hide(), save()]"
+            [disabled]="addProductCateForm.invalid">
             {{flag === 0 ? 'Add' : 'Save'}}
           </button>
         </div>
@@ -163,17 +164,18 @@
             <div class="custom-file b-form-file">
               <label data-browse="Browse" class="custom-file-label">
                 <p *ngIf="fileImportExcel === null">Choose a file...</p>
-                <input accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" 
-                       type="file" (change)="onSelectFile($event, 2)" style="line-height: 1 !important; outline: none;"
-                       [ngClass]="(fileImportExcel !== null) ? 'opacity1' : 'opacity0'">
+                <input
+                  accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                  type="file" (change)="onSelectFile($event, 2)" style="line-height: 1 !important; outline: none;"
+                  [ngClass]="(fileImportExcel !== null) ? 'opacity1' : 'opacity0'">
               </label>
             </div>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="importExcelModel.hide()">Cancel</button>
-          <button type="submit" class="btn btn-success" (click)="importExcelModel.hide()" (click)="import()"
-          [disabled]="fileImportExcel === null">
+          <button type="submit" class="btn btn-success" (click)="[importExcelModel.hide(), import()]"
+            [disabled]="fileImportExcel === null">
             Import
           </button>
         </div>

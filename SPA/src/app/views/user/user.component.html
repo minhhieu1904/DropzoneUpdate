@@ -3,8 +3,8 @@
       <div class="card-header">
         <strong>User List</strong>
         <!-- Button Add -->
-        <button type="button" class="btn btn-sm btn-primary float-right" (click)="addUserModal.show()"
-          (click)="resetUser()" (click)="setFlag(0)">
+        <button type="button" class="btn btn-sm btn-primary float-right"
+          (click)="[resetUser(), setFlag(0), addUserModal.show()]">
           <i class="fa fa-plus"></i> Add new
         </button>
       </div>
@@ -58,15 +58,15 @@
                 <td>{{ user.update_Time | date: 'MM/dd/yyyy, HH:mm:ss' }}</td>
                 <td class="w-1rem">
                   <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-primary" (click)="setUser(user)"
-                      (click)="addUserModal.show()" (click)="setFlag(1)">
+                    <button type="button" class="btn btn-sm btn-primary"
+                      (click)="[addUserModal.show(), setUser(user), setFlag(1)]">
                       <i class="fa fa-edit fa-lg"></i>
                     </button>
                   </div>
                 </td>
                 <td class="w-1rem">
                   <button type="button" class="btn btn-sm btn-warning"
-                    (click)="authorizeModal.show()" (click)="setUser(user)" (click)="setAuthorizeList()">
+                    (click)="[authorizeModal.show(), setUser(user), setAuthorizeList()]">
                     <i class=" fa fa-cog fa-lg"></i>
                   </button>
                 </td>

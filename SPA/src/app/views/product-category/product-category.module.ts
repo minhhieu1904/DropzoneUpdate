@@ -8,6 +8,7 @@ import { AddComponent } from './add/add.component';
 import { FormsModule } from '@angular/forms';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import {NgxPrintModule} from 'ngx-print';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     ProductCategoryRoutingModule,
     FormsModule,
     PaginationModule.forRoot(),
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    NgxPrintModule
   ],
   declarations: [
     ListComponent,

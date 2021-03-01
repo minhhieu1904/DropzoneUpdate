@@ -20,6 +20,7 @@ export class ListComponent implements OnInit {
   pagination: Pagination;
   text: string = '';
   flag: number = 0;
+  fileImportExcel: any = null;
   constructor(
     private route: ActivatedRoute,
     private articleCateService: ArticleCategoryService,
@@ -127,5 +128,58 @@ export class ListComponent implements OnInit {
           console.log(error);
         });
     });
+  }
+
+  import() {
+    if (this.fileImportExcel == null) {
+      this.alertUtility.warning('Warning', 'Please choose file upload!', SnotifyPosition.centerTop);
+      return;
+    }
+
+    this.alertUtility.confirmDelete('Are you sure import file?', SnotifyPosition.centerCenter, () => {
+      this.articleCateService.importExcel(this.fileImportExcel).subscribe((res) => {
+        if (res.success) {
+          this.alertUtility.success('Success!', 'Import file successfuly', SnotifyPosition.rightTop);
+        } else {
+          this.alertUtility.error('Error!', 'Import file failse', SnotifyPosition.rightTop);
+        }
+        this.getDataPaginations();
+      }, error => {
+        this.alertUtility.error('Error', 'Upload Data Fail!', SnotifyPosition.rightTop);
+      });
+    });
+  }
+
+  onSelectFile(event, number) {
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+
+      reader.readAsDataURL(event.target.files[0]); // read file as data url
+      const file = event.target.files[0];
+      // check file name extension
+      const fileNameExtension = event.target.files[0].name.split('.').pop();
+      if (fileNameExtension != 'xlsx' && fileNameExtension != 'xlsm') {
+        this.alertUtility.warning('Warning', "Please select a file '.xlsx' or '.xls'", SnotifyPosition.centerCenter);
+        return;
+      }
+
+      this.fileImportExcel = file;
+    }
+  }
+
+  export() {
+    return this.articleCateService.export(this.pagination.currentPage, this.pagination.pageSize, this.text);
+  }
+
+  exportAspose(checkExport: number) {
+    return this.articleCateService.exportAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport);
+  }
+
+  exportPdfAspose(checkExport: number) {
+    return this.articleCateService.exportAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport);
+  }
+
+  downloadExcelTemplate() {
+    window.location.href = '../../../../assets/fileExcelTemplate/article_category.xlsx';
   }
 }

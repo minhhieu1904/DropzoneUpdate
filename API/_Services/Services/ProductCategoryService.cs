@@ -19,6 +19,7 @@ namespace API._Services.Services
     public class ProductCategoryService : IProductCategoryService
     {
         private readonly IProductCategoryRepository _productCategoryRepository;
+        private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configuration;
         private OperationResult operationResult;
@@ -26,11 +27,13 @@ namespace API._Services.Services
         public ProductCategoryService(
             IProductCategoryRepository productCategoryRepository,
             IMapper mapper,
-            MapperConfiguration configuration)
+            MapperConfiguration configuration, 
+            IProductRepository productRepository)
         {
             _productCategoryRepository = productCategoryRepository;
             _mapper = mapper;
             _configuration = configuration;
+            _productRepository = productRepository;
         }
 
         public async Task<OperationResult> Create(ProductCategory_Dto model)
@@ -93,7 +96,8 @@ namespace API._Services.Services
         public async Task<OperationResult> Remove(ProductCategory_Dto model)
         {
             var item = await _productCategoryRepository.FindAll(x => x.Product_Cate_ID == model.Product_Cate_ID).FirstOrDefaultAsync();
-            if (item != null)
+            var products = await _productRepository.FindAll(x => x.Product_Cate_ID == model.Product_Cate_ID).ToListAsync();
+            if (item != null && products.Count == 0)
             {
                 try
                 {
@@ -154,20 +158,16 @@ namespace API._Services.Services
                     productCategory.Product_Cate_Name = workSheet.Cells[i, 1].Value.ToSafetyString().Trim();
                     productCategory.Status = workSheet.Cells[i, 2].Value.ToBool();
                     productCategory.Position = workSheet.Cells[i, 3].Value.ToInt();
+                    productCategory.Update_By = user;
 
                     listProductCategory.Add(productCategory);
                 }
                 foreach (var item in listProductCategory)
                 {
-                    ProductCategory_Dto productCategory = new ProductCategory_Dto();
-                    productCategory.Product_Cate_Name = item.Product_Cate_Name;
-                    productCategory.Status = item.Status;
-                    productCategory.Position = item.Position;
-                    productCategory.Update_By = user;
-                    productCategory.Update_Time = DateTime.Now;
+                    item.Update_Time = DateTime.Now;
                     try
                     {
-                        await Create(productCategory);
+                        await Create(item);
                         operationResult = new OperationResult { Message = "Import Success", Success = true };
                     }
                     catch

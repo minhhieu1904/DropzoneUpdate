@@ -193,4 +193,8 @@ export class AddComponent implements OnInit {
   onRemoveVideos(event) {
     this.fileVideos.splice(this.fileVideos.indexOf(event), 1);
   }
+
+  exportAspose(checkExport: number) {
+    return this.articleService.exportAspose(this.article.article_Cate_ID, this.article.article_ID, checkExport);
+  }
 }

@@ -14,6 +14,7 @@ namespace API._Services.Interfaces
         Task<ArticleCategory_Dto> GetArticleCategoryByID(string articleCateID);
         Task<List<ArticleCategory_Dto>> GetAllAsync();
         Task<object> GetIDAndName();
-        Task<PageListUtility<ArticleCategory_Dto>> GetArticleCategoryWithPaginations(PaginationParams param, string text);
+        Task<PageListUtility<ArticleCategory_Dto>> GetArticleCategoryWithPaginations(PaginationParams param, string text, bool isPaging = true);
+        Task<OperationResult> ImportExcel(string pathFile, string user);
     }
 }

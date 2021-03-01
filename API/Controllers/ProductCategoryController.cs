@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
-
 namespace API.Controllers
 {
     public class ProductCategoryController : ApiController
@@ -233,7 +232,9 @@ namespace API.Controllers
                 // custom size ( width: in, height: in )
                 //ws.PageSetup.CustomPaperSize(12.5, 8);
                 ws.PageSetup.FitToPagesTall = 0;
-                ws.PageSetup.SetHeader(0, "Product Category " + DateTime.Now.ToString());
+                ws.PageSetup.SetHeader(0, "&D &T");
+                ws.PageSetup.SetHeader(1, "&B Product Category");
+                ws.PageSetup.SetFooter(0, "&B SYSTEM BY MINH HIEU");
                 ws.PageSetup.SetFooter(2, "&P/&N");
                 ws.PageSetup.PrintQuality = 1200;
                 designer.Workbook.Save(stream, SaveFormat.Pdf);
@@ -242,7 +243,7 @@ namespace API.Controllers
             }
 
             byte[] result = stream.ToArray();
-            
+
             return File(result, fileKind, "Product_Category_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + fileExtension);
         }
     }

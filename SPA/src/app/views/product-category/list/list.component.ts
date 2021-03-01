@@ -116,7 +116,7 @@ export class ListComponent implements OnInit {
   }
 
   remove(productCategory: ProductCategory) {
-    this.alertUtility.confirmDelete('Are you sure delete item?', SnotifyPosition.centerCenter, () => {
+    this.alertUtility.confirmDelete("Are you sure delete item '" + productCategory.product_Cate_ID + "' ?", SnotifyPosition.rightCenter, () => {
       this.productCateService.remove(productCategory).subscribe(res => {
         if (res.success) {
           this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
@@ -141,17 +141,16 @@ export class ListComponent implements OnInit {
   }
 
   html() {
-    this.alertUtility.htmlAnimation('Test', 'Try me', SnotifyPosition.centerCenter, 'error', { enter: 'animate__bounceInLeft2', exit: 'animate__bounceInLeft2', time: 5000 });
+    this.alertUtility.htmlAnimation('Test', 'Try me', SnotifyPosition.centerCenter, 'error', { enter: 'animate__bounceInLeft2', exit: 'animate__bounceInLeft2', time: 10000 });
   }
 
   sendMail() {
     this.mailContent = {
-      to: 'ken0502arima@gmail.com',
+      to: 'exemple@gmail.com',
       subject: 'Test',
       body: '<p><strong>Say hello me!!!</strong></p>'
     };
-    this.productCateService.sendMail(this.mailContent).subscribe(res => {
-      debugger
+    this.productCateService.sendMailKit(this.mailContent).subscribe(res => {
       if (res.success) {
         this.alertUtility.asyncLoadingSuccess('Success!', res.message, SnotifyPosition.centerCenter);
       }

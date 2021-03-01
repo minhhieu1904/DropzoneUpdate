@@ -81,4 +81,12 @@ export class ArticleService {
   changeFlag(flag: string) {
     this.flagSource.next(flag);
   }
+
+  exportAspose(articleCateID : string, articleID: number, checkExport?: number) {
+    let params = new HttpParams();
+    params = params.append("articleCateID", articleCateID);
+    params = params.append("articleID", articleID.toString());
+
+    return this.utilityService.exportExcelAuditWithCheckExport(params, 'Article/exportExcelAspose?changeExport=', 'Article_', checkExport);
+  }
 }

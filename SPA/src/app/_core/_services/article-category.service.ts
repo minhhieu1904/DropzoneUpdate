@@ -52,4 +52,22 @@ export class ArticleCategoryService {
   remove(articleCategory: ArticleCategory) {
     return this.http.post<OperationResult>(this.baseUrl + 'ArticleCategory/delete', articleCategory);
   }
+
+  importExcel(fileImportExcel) {
+    const formData = new FormData();
+    formData.append('files', fileImportExcel);
+    return this.http.post<OperationResult>(this.baseUrl + 'ArticleCategory/import', formData);
+  }
+
+  export(page?, itemsPerPage?, text?) {
+    let params = this.utilityService.getParamSearchPagination(page, itemsPerPage, text);
+
+    return this.utilityService.exportExcelParams(params, 'ArticleCategory/exportExcelEpplus', 'Article_Category_');
+  }
+
+  exportAspose(page?, itemsPerPage?, text?, checkExport?: number) {
+    let params = this.utilityService.getParamSearchPagination(page, itemsPerPage, text);
+
+    return this.utilityService.exportExcelAuditWithCheckExport(params, 'ArticleCategory/exportExcelAspose?checkExport=', 'Article_Category_', checkExport);
+  }
 }
