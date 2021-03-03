@@ -118,7 +118,7 @@ export class ListComponent implements OnInit {
   }
 
   remove(article: Article) {
-    this.alertUtility.confirmDelete('Are you sure delete item?', SnotifyPosition.centerCenter, () => {
+    this.alertUtility.confirmDelete('Are you sure delete item?', SnotifyPosition.rightCenter, () => {
       this.articleService.remove(article).subscribe(res => {
         if (res.success) {
           this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
@@ -132,5 +132,14 @@ export class ListComponent implements OnInit {
           console.log(error);
         });
     });
+  }
+
+  exportExcel(checkExport: number) {
+    let checkSearch;
+    if (this.articleCateID === 'all')
+      checkSearch = 1;
+    else
+      checkSearch = 2;
+    return this.articleService.exportListAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport, this.articleCateID, this.article_Name, checkSearch);
   }
 }

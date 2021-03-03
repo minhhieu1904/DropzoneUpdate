@@ -147,7 +147,6 @@ namespace API._Services.Services
 
         public async Task<OperationResult> ImportExcel(string pathFile, string user)
         {
-            List<ProductCategory_Dto> listProductCategory = new List<ProductCategory_Dto>();
             using (var package = new ExcelPackage(new FileInfo(pathFile)))
             {
                 ExcelWorksheet workSheet = package.Workbook.Worksheets[0];
@@ -159,15 +158,11 @@ namespace API._Services.Services
                     productCategory.Status = workSheet.Cells[i, 2].Value.ToBool();
                     productCategory.Position = workSheet.Cells[i, 3].Value.ToInt();
                     productCategory.Update_By = user;
+                    productCategory.Update_Time = DateTime.Now;
 
-                    listProductCategory.Add(productCategory);
-                }
-                foreach (var item in listProductCategory)
-                {
-                    item.Update_Time = DateTime.Now;
                     try
                     {
-                        await Create(item);
+                        await Create(productCategory);
                         operationResult = new OperationResult { Message = "Import Success", Success = true };
                     }
                     catch

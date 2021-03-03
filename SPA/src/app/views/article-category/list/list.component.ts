@@ -112,10 +112,8 @@ export class ListComponent implements OnInit {
   }
 
   remove(articleCategory: ArticleCategory) {
-    this.alertUtility.confirmDelete('Are you sure delete item?', SnotifyPosition.centerCenter, () => {
-      debugger
+    this.alertUtility.confirmDelete('Are you sure delete item?', SnotifyPosition.rightCenter, () => {
       this.articleCateService.remove(articleCategory).subscribe(res => {
-        debugger
         if (res.success) {
           this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
           this.getDataPaginations();

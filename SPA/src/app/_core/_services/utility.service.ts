@@ -143,8 +143,7 @@ export class UtilityService {
 
   // Export excel with checkExport
   exportExcelAuditWithCheckExport(params: HttpParams, urlController: string, nameString: string, checkExport: number) {
-    debugger
-    return this.http.get(this.baseUrl + urlController + checkExport, { responseType: 'blob', params })
+    return this.http.get(this.baseUrl + urlController, { responseType: 'blob', params })
       .subscribe((result: Blob) => {
         const blob = new Blob([result]);
         const url = window.URL.createObjectURL(blob);

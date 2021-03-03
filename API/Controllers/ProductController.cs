@@ -35,7 +35,6 @@ namespace API.Controllers
         }
 
         [HttpPost("create")]
-        // [RequestSizeLimit(100000000)]
         public async Task<IActionResult> Create([FromForm] Product_Dto model)
         {
             model.FileImages = await _dropzoneService.UploadFile(model.Images, model.Product_Cate_ID + "_" + model.Product_ID + "_", "\\uploaded\\images\\product");
@@ -82,7 +81,6 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        // [RequestSizeLimit(100000000)]
         public async Task<IActionResult> Update([FromForm] Product_Dto model)
         {
             if (model.Content == "null")
@@ -196,12 +194,78 @@ namespace API.Controllers
             return Ok(data);
         }
 
-        // Export Excel and PDF Article with Aspose.Cell
-        [HttpGet("exportExcelAspose")]
-        public async Task<ActionResult> ExportExcelAspose([FromQuery] string productCateID, string productID, int changeExport)
+        // Export Excel and PDF Product List with Aspose.Cell
+        [HttpGet("exportExcelListAspose")]
+        public async Task<ActionResult> ExportExcelListAspose([FromQuery] PaginationParams param, string text, int checkExport, string productCateID, string productName, int checkSearch)
+        {
+            PageListUtility<Product_Dto> data;
+            if (checkSearch == 1)
+            {
+                data = await _productService.GetProductWithPaginations(param, text, false);
+            }
+            else
+            {
+                data = await _productService.SearchProductWithPaginations(param, productCateID, productName, false);
+            }
+            var path = Path.Combine(_webHostEnvironment.ContentRootPath, "Resources\\Template\\Product\\ProductListTemplate.xlsx");
+            WorkbookDesigner designer = new WorkbookDesigner();
+            designer.Workbook = new Workbook(path);
+
+            Cell cell = designer.Workbook.Worksheets[0].Cells["A1"];
+            Worksheet ws = designer.Workbook.Worksheets[0];
+
+            designer.SetDataSource("result", data.Result);
+            designer.Process();
+
+            Style styleDecimal = ws.Cells["G2"].GetStyle();
+            styleDecimal.Custom = "0.00";
+
+            Style styleDateTime = ws.Cells["J2"].GetStyle();
+            styleDateTime.Custom = "dd/MM/yyyy hh:mm:ss";
+
+            for (int i = 1; i <= data.Result.Count; i++)
+            {
+                ws.AutoFitRow(i);
+                ws.Cells["G" + (i + 1)].SetStyle(styleDecimal);
+                ws.Cells["J" + (i + 1)].SetStyle(styleDateTime);
+            }
+
+            MemoryStream stream = new MemoryStream();
+
+            string fileKind = "";
+            string fileExtension = "";
+
+            if (checkExport == 1)
+            {
+                designer.Workbook.Save(stream, SaveFormat.Xlsx);
+                fileKind = "application/xlsx";
+                fileExtension = ".xlsx";
+            }
+            if (checkExport == 2)
+            {
+                // custom size ( width: in, height: in )
+                ws.PageSetup.FitToPagesTall = 0;
+                ws.PageSetup.SetHeader(0, "&D &T");
+                ws.PageSetup.SetHeader(1, "&B Article");
+                ws.PageSetup.SetFooter(0, "&B SYSTEM BY MINH HIEU");
+                ws.PageSetup.SetFooter(2, "&P/&N");
+                ws.PageSetup.PrintQuality = 1200;
+                designer.Workbook.Save(stream, SaveFormat.Pdf);
+                fileKind = "application/pdf";
+                fileExtension = ".pdf";
+            }
+
+            byte[] result = stream.ToArray();
+
+            return File(result, fileKind, "Product_List_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + fileExtension);
+        }
+
+        // Export Excel and PDF Product Detail with Aspose.Cell
+        [HttpGet("exportExcelDetailAspose")]
+        public async Task<ActionResult> ExportExcelDetailAspose([FromQuery] string productCateID, string productID, int checkExport)
         {
             var data = await _productService.GetProductByID(productCateID, productID.ToInt());
-            var path = Path.Combine(_webHostEnvironment.ContentRootPath, "Resources\\Template\\Product\\ProductTemplate.xlsx");
+            var path = Path.Combine(_webHostEnvironment.ContentRootPath, "Resources\\Template\\Product\\ProductDetailTemplate.xlsx");
             WorkbookDesigner designer = new WorkbookDesigner();
             designer.Workbook = new Workbook(path);
 
@@ -286,31 +350,20 @@ namespace API.Controllers
                 else
                     index3 = index1;
 
-                cells.Merge(1, 0, index3 - 2, 1);
-                cells.Merge(1, 1, index3 - 2, 1);
-                cells.Merge(1, 2, index3 - 2, 1);
-                cells.Merge(1, 3, index3 - 2, 1);
-                cells.Merge(1, 4, index3 - 2, 1);
-                cells.Merge(1, 5, index3 - 2, 1);
-                cells.Merge(1, 6, index3 - 2, 1);
-                cells.Merge(1, 7, index3 - 2, 1);
-                cells.Merge(1, 8, index3 - 2, 1);
-                cells.Merge(1, 9, index3 - 2, 1);
-
+                // Merge column not image, video
+                int[] number = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+                foreach (var item in number)
+                {
+                    cells.Merge(1, item, index3 - 2, 1);
+                }
+                // Set style
                 for (int i = 1; i < index3 - 1; i++)
                 {
-                    ws.Cells["A" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["B" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["C" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["D" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["E" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["F" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["G" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["H" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["I" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["J" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["K" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["L" + (i + 1)].SetStyle(style, flg);
+                    string[] text = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L" };
+                    foreach (var item in text)
+                    {
+                        ws.Cells[item + (i + 1)].SetStyle(style, flg);
+                    }
                 }
             }
 
@@ -319,13 +372,13 @@ namespace API.Controllers
             string fileKind = "";
             string fileExtension = "";
 
-            if (changeExport == 1)
+            if (checkExport == 1)
             {
                 designer.Workbook.Save(stream, SaveFormat.Xlsx);
                 fileKind = "application/xlsx";
                 fileExtension = ".xlsx";
             }
-            if (changeExport == 2)
+            if (checkExport == 2)
             {
                 // custom size ( width: in, height: in )
                 ws.PageSetup.FitToPagesTall = 0;
@@ -341,7 +394,7 @@ namespace API.Controllers
 
             byte[] result = stream.ToArray();
 
-            return File(result, fileKind, "Article_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + fileExtension);
+            return File(result, fileKind, "Product_Detail_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + fileExtension);
         }
     }
 }

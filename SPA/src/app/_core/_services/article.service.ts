@@ -70,7 +70,7 @@ export class ArticleService {
     return this.http.put<OperationResult>(this.baseUrl + 'Article/changeStatus', article);
   }
 
-  remove(article : Article) {
+  remove(article: Article) {
     return this.http.post<OperationResult>(this.baseUrl + 'Article/delete', article);
   }
 
@@ -82,11 +82,24 @@ export class ArticleService {
     this.flagSource.next(flag);
   }
 
-  exportAspose(articleCateID : string, articleID: number, checkExport?: number) {
+  exportListAspose(page?, itemsPerPage?, text?, checkExport?: number, articleCateID?, articleName?, checkSearch?: number) {
+    articleCateID = articleCateID === 'all' ? '' : articleCateID;
+    articleName = articleName === 'all' ? '' : articleName;
+    let params = this.utilityService.getParamSearchPagination(page, itemsPerPage, text);
+    params = params.append("checkExport", checkExport.toString());
+    params = params.append("articleCateID", articleCateID);
+    params = params.append("articleName", articleName);
+    params = params.append("checkSearch", checkSearch.toString());
+
+    return this.utilityService.exportExcelAuditWithCheckExport(params, 'Article/exportExcelListAspose', 'Article_List_', checkExport);
+  }
+
+  exportAspose(articleCateID: string, articleID: number, checkExport?: number) {
     let params = new HttpParams();
     params = params.append("articleCateID", articleCateID);
     params = params.append("articleID", articleID.toString());
+    params = params.append("checkExport", checkExport.toString());
 
-    return this.utilityService.exportExcelAuditWithCheckExport(params, 'Article/exportExcelAspose?changeExport=', 'Article_', checkExport);
+    return this.utilityService.exportExcelAuditWithCheckExport(params, 'Article/exportExcelDetailAspose', 'Article_Detail_', checkExport);
   }
 }

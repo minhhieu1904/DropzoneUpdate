@@ -14,7 +14,7 @@ namespace API._Services.Interfaces
         Task<Article_Dto> GetArticleByID(string articleCateID, int articleID);
         Task<List<Article_Dto>> GetAllAsync();
         Task<object> GetListArticleByArticleCateID(string articleCateID);
-        Task<PageListUtility<Article_Dto>> GetArticleWithPaginations(PaginationParams param, string text);
-        Task<PageListUtility<Article_Dto>> SearchArticleWithPaginations(PaginationParams param, string articleCateID, string articleName);
+        Task<PageListUtility<Article_Dto>> GetArticleWithPaginations(PaginationParams param, string text, bool isPaging = true);
+        Task<PageListUtility<Article_Dto>> SearchArticleWithPaginations(PaginationParams param, string articleCateID, string articleName, bool isPaging = true);
     }
 }

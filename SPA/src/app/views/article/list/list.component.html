@@ -32,6 +32,12 @@
           <button type="button" class="btn btn-sm btn-primary float-right height34px" (click)="addNew()" style="float: right;">
             <i class="fa fa-plus"></i> Add new
           </button>
+          <button type="button" class="btn btn-sm btn-success float-right height34px mr-2" (click)="exportExcel(1)">
+            <i class="fa fa-file-excel-o"></i> ExportAspose
+          </button>
+          <!-- <button type="button" class="btn btn-sm btn-warning float-right mr-2" (click)="exportExcel(2)">
+            <i class="fa fa-file-pdf-o"></i> Pdf
+          </button> -->
         </div>
       </div>
     </div>
@@ -39,7 +45,7 @@
       <!-- Form Search -->
       <!-- Article Table -->
       <div class="table-responsive">
-        <table class="table table-bordered table-hover text-center">
+        <table class="table table-bordered table-hover text-center" style="word-break: break-all;">
           <thead>
             <tr>
               <th>#</th>
@@ -59,7 +65,7 @@
               <td>{{ article.article_Cate_ID }}</td>
               <td>{{ article.article_ID }}</td>
               <td>{{ article.article_Name}}</td>
-              <td>{{ article.content }}</td>
+              <td style="width: 25%">{{ article.content }}</td>
               <td>{{ article.update_By }}</td>
               <td>{{ article.update_Time | date: 'MM/dd/yyyy, HH:mm:ss' }}</td>
               <td>

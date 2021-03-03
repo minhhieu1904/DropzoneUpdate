@@ -33,7 +33,8 @@
             <i class="fa fa-file-excel-o"></i> Import
           </button>
           <button type="button" class="btn btn-sm btn-success float-right mr-2" printSectionId="dataTable" [useExistingCss]="true"
-            ngxPrint printTitle="Product Category">Print</button>
+            ngxPrint printTitle="Product Category">Print
+          </button>
           <button type="button" class="btn btn-sm btn-primary float-right mr-2"
             (click)="[addOrEditProductCateModal.show(), cancel(), setFlag(0)]">
             <i class="fa fa-plus"></i> Add new
@@ -45,7 +46,7 @@
       <!-- Form Search -->
       <!-- ProductCate Table -->
       <div class="table-responsive" id="dataTable">
-        <table class="table table-bordered table-hover text-center">
+        <table class="table table-bordered table-hover text-center" matSort>
           <thead>
             <tr>
               <th>#</th>

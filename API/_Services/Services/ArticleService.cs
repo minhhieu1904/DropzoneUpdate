@@ -69,7 +69,7 @@ namespace API._Services.Services
             return await _articleRepository.FindAll().ProjectTo<Article_Dto>(_configuration).ToListAsync();
         }
 
-        public async Task<PageListUtility<Article_Dto>> GetArticleWithPaginations(PaginationParams param, string text)
+        public async Task<PageListUtility<Article_Dto>> GetArticleWithPaginations(PaginationParams param, string text, bool isPaging = true)
         {
             var data = _articleRepository.FindAll().ProjectTo<Article_Dto>(_configuration).OrderByDescending(x => x.Update_Time);
             if (!string.IsNullOrEmpty(text))
@@ -125,7 +125,7 @@ namespace API._Services.Services
             return operationResult;
         }
 
-        public async Task<PageListUtility<Article_Dto>> SearchArticleWithPaginations(PaginationParams param, string articleCateID, string articleName)
+        public async Task<PageListUtility<Article_Dto>> SearchArticleWithPaginations(PaginationParams param, string articleCateID, string articleName, bool isPaging = true)
         {
             var articleCateList = _articleCategoryRepository.FindAll();
             var articleList = _articleRepository.FindAll();

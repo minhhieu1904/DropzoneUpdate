@@ -27,7 +27,7 @@ namespace API._Services.Services
         public ArticleCategoryService(
             IArticleCategoryRepository articleCategoryRepository,
             IMapper mapper,
-            MapperConfiguration configuration, 
+            MapperConfiguration configuration,
             IArticleRepository articleRepository)
         {
             _articleCategoryRepository = articleCategoryRepository;
@@ -142,13 +142,12 @@ namespace API._Services.Services
         public async Task<object> GetIDAndName()
         {
             var data = await _articleCategoryRepository.FindAll()
-            .Select(x => new { Id = x.Article_Cate_ID, Name = x.Article_Cate_ID + "_" + x.Article_Cate_Name}).ToListAsync();
+            .Select(x => new { Id = x.Article_Cate_ID, Name = x.Article_Cate_ID + "_" + x.Article_Cate_Name }).ToListAsync();
             return data;
         }
 
         public async Task<OperationResult> ImportExcel(string pathFile, string user)
         {
-            List<ArticleCategory_Dto> listArticleCategory = new List<ArticleCategory_Dto>();
             using (var package = new ExcelPackage(new FileInfo(pathFile)))
             {
                 ExcelWorksheet workSheet = package.Workbook.Worksheets[0];
@@ -160,15 +159,11 @@ namespace API._Services.Services
                     articleCategory.Status = workSheet.Cells[i, 2].Value.ToBool();
                     articleCategory.Position = workSheet.Cells[i, 3].Value.ToInt();
                     articleCategory.Update_By = user;
+                    articleCategory.Update_Time = DateTime.Now;
 
-                    listArticleCategory.Add(articleCategory);
-                }
-                foreach (var item in listArticleCategory)
-                {
-                    item.Update_Time = DateTime.Now;
                     try
                     {
-                        await Create(item);
+                        await Create(articleCategory);
                         operationResult = new OperationResult { Message = "Import Success", Success = true };
                     }
                     catch

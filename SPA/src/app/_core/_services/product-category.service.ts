@@ -80,7 +80,8 @@ export class ProductCategoryService {
 
   exportAspose(page?, itemsPerPage?, text?, checkExport?: number) {
     let params = this.utilityService.getParamSearchPagination(page, itemsPerPage, text);
+    params = params.append("checkExport", checkExport.toString());
 
-    return this.utilityService.exportExcelAuditWithCheckExport(params, 'ProductCategory/exportExcelAspose?checkExport=', 'Product_Category_', checkExport);
+    return this.utilityService.exportExcelAuditWithCheckExport(params, 'ProductCategory/exportExcelAspose', 'Product_Category_', checkExport);
   }
 }

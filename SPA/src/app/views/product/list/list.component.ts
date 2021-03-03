@@ -53,7 +53,7 @@ export class ListComponent implements OnInit {
   }
 
   remove(product: Product) {
-    this.alertUtility.confirmDelete('Are you sure delete item?', SnotifyPosition.centerCenter, () => {
+    this.alertUtility.confirmDelete('Are you sure delete item?', SnotifyPosition.rightCenter, () => {
       this.productService.remove(product).subscribe(res => {
         if (res.success) {
           this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
@@ -175,5 +175,14 @@ export class ListComponent implements OnInit {
   changeProductCateID(event) {
     this.productCateID = event;
     this.getProductListByProductCateID();
+  }
+
+  exportExcel(checkExport: number) {
+    let checkSearch;
+    if (this.productCateID === 'all')
+      checkSearch = 1;
+    else
+      checkSearch = 2;
+    return this.productService.exportListAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport, this.productCateID, this.product_Name, checkSearch);
   }
 }

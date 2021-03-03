@@ -68,7 +68,7 @@ namespace API._Services.Services
             return await _productRepository.FindAll().ProjectTo<Product_Dto>(_configuration).ToListAsync();
         }
 
-        public async Task<PageListUtility<Product_Dto>> GetProductWithPaginations(PaginationParams param, string text)
+        public async Task<PageListUtility<Product_Dto>> GetProductWithPaginations(PaginationParams param, string text, bool isPaging = true)
         {
             var data = _productRepository.FindAll().ProjectTo<Product_Dto>(_configuration).OrderByDescending(x => x.Update_Time);
             if (!string.IsNullOrEmpty(text))
@@ -121,7 +121,7 @@ namespace API._Services.Services
             return operationResult;
         }
 
-        public async Task<PageListUtility<Product_Dto>> SearchProductWithPaginations(PaginationParams param, string productCateID, string productName)
+        public async Task<PageListUtility<Product_Dto>> SearchProductWithPaginations(PaginationParams param, string productCateID, string productName, bool isPaging = true)
         {
             var productCateList = _productCategoryRepository.FindAll();
             var productList = _productRepository.FindAll();

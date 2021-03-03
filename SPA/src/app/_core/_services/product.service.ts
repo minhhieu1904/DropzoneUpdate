@@ -93,11 +93,24 @@ export class ProductService {
     this.flagSource.next(flag);
   }
 
+  exportListAspose(page?, itemsPerPage?, text?, checkExport?: number, productCateID?, productName?, checkSearch?: number) {
+    productCateID = productCateID === 'all' ? '' : productCateID;
+    productName = productName === 'all' ? '' : productName;
+    let params = this.utilityService.getParamSearchPagination(page, itemsPerPage, text);
+    params = params.append("checkExport", checkExport.toString());
+    params = params.append("productCateID", productCateID);
+    params = params.append("productName", productName);
+    params = params.append("checkSearch", checkSearch.toString());
+
+    return this.utilityService.exportExcelAuditWithCheckExport(params, 'Product/exportExcelListAspose', 'Product_List_', checkExport);
+  }
+
   exportAspose(productCateID : string, productID: number, checkExport?: number) {
     let params = new HttpParams();
     params = params.append("productCateID", productCateID);
     params = params.append("productID", productID.toString());
+    params = params.append("checkExport", checkExport.toString());
 
-    return this.utilityService.exportExcelAuditWithCheckExport(params, 'Product/exportExcelAspose?changeExport=', 'Product_', checkExport);
+    return this.utilityService.exportExcelAuditWithCheckExport(params, 'Product/exportExcelDetailAspose', 'Product_Detail_', checkExport);
   }
 }

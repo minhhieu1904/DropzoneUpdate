@@ -156,12 +156,74 @@ namespace API.Controllers
             return Ok(data);
         }
 
-        // Export Excel and PDF Article with Aspose.Cell
-        [HttpGet("exportExcelAspose")]
-        public async Task<ActionResult> ExportExcelAspose([FromQuery] string articleCateID, string articleID, int changeExport)
+        // Export Excel and PDF Article List with Aspose.Cell
+        [HttpGet("exportExcelListAspose")]
+        public async Task<ActionResult> ExportExcelListAspose([FromQuery] PaginationParams param, string text, int checkExport, string articleCateID, string articleName, int checkSearch)
+        {
+            PageListUtility<Article_Dto> data;
+            if (checkSearch == 1)
+            {
+                data = await _articleService.GetArticleWithPaginations(param, text, false);
+            }
+            else
+            {
+                data = await _articleService.SearchArticleWithPaginations(param, articleCateID, articleName, false);
+            }
+            var path = Path.Combine(_webHostEnvironment.ContentRootPath, "Resources\\Template\\Article\\ArticleListTemplate.xlsx");
+            WorkbookDesigner designer = new WorkbookDesigner();
+            designer.Workbook = new Workbook(path);
+
+            Cell cell = designer.Workbook.Worksheets[0].Cells["A1"];
+            Worksheet ws = designer.Workbook.Worksheets[0];
+
+            designer.SetDataSource("result", data.Result);
+            designer.Process();
+
+            Style style = ws.Cells["F2"].GetStyle();
+            style.Custom = "dd/MM/yyyy hh:mm:ss";
+
+            for (int i = 1; i <= data.Result.Count; i++)
+            {
+                ws.AutoFitRow(i);
+                ws.Cells["F" + (i + 1)].SetStyle(style);
+            }
+
+            MemoryStream stream = new MemoryStream();
+
+            string fileKind = "";
+            string fileExtension = "";
+
+            if (checkExport == 1)
+            {
+                designer.Workbook.Save(stream, SaveFormat.Xlsx);
+                fileKind = "application/xlsx";
+                fileExtension = ".xlsx";
+            }
+            if (checkExport == 2)
+            {
+                // custom size ( width: in, height: in )
+                ws.PageSetup.FitToPagesTall = 0;
+                ws.PageSetup.SetHeader(0, "&D &T");
+                ws.PageSetup.SetHeader(1, "&B Article");
+                ws.PageSetup.SetFooter(0, "&B SYSTEM BY MINH HIEU");
+                ws.PageSetup.SetFooter(2, "&P/&N");
+                ws.PageSetup.PrintQuality = 1200;
+                designer.Workbook.Save(stream, SaveFormat.Pdf);
+                fileKind = "application/pdf";
+                fileExtension = ".pdf";
+            }
+
+            byte[] result = stream.ToArray();
+
+            return File(result, fileKind, "Article_List_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + fileExtension);
+        }
+
+        // Export Excel and PDF Article Detail with Aspose.Cell
+        [HttpGet("exportExcelDetailAspose")]
+        public async Task<ActionResult> ExportExcelDetailAspose([FromQuery] string articleCateID, string articleID, int checkExport)
         {
             var data = await _articleService.GetArticleByID(articleCateID, articleID.ToInt());
-            var path = Path.Combine(_webHostEnvironment.ContentRootPath, "Resources\\Template\\Article\\ArticleTemplate.xlsx");
+            var path = Path.Combine(_webHostEnvironment.ContentRootPath, "Resources\\Template\\Article\\ArticleDetailTemplate.xlsx");
             WorkbookDesigner designer = new WorkbookDesigner();
             designer.Workbook = new Workbook(path);
 
@@ -242,23 +304,20 @@ namespace API.Controllers
                 else
                     index3 = index1;
 
-                cells.Merge(1, 0, index3 - 2, 1);
-                cells.Merge(1, 1, index3 - 2, 1);
-                cells.Merge(1, 2, index3 - 2, 1);
-                cells.Merge(1, 3, index3 - 2, 1);
-                cells.Merge(1, 4, index3 - 2, 1);
-                cells.Merge(1, 5, index3 - 2, 1);
-
+                // Merge column not image, video
+                int[] number = { 0, 1, 2, 3, 4, 5 };
+                foreach (var item in number)
+                {
+                    cells.Merge(1, item, index3 - 2, 1);
+                }
+                // Set style
                 for (int i = 1; i < index3 - 1; i++)
                 {
-                    ws.Cells["A" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["B" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["C" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["D" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["E" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["F" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["G" + (i + 1)].SetStyle(style, flg);
-                    ws.Cells["H" + (i + 1)].SetStyle(style, flg);
+                    string[] text = { "A", "B", "C", "D", "E", "F", "G", "H" };
+                    foreach (var item in text)
+                    {
+                        ws.Cells[item + (i + 1)].SetStyle(style, flg);
+                    }
                 }
             }
 
@@ -267,13 +326,13 @@ namespace API.Controllers
             string fileKind = "";
             string fileExtension = "";
 
-            if (changeExport == 1)
+            if (checkExport == 1)
             {
                 designer.Workbook.Save(stream, SaveFormat.Xlsx);
                 fileKind = "application/xlsx";
                 fileExtension = ".xlsx";
             }
-            if (changeExport == 2)
+            if (checkExport == 2)
             {
                 // custom size ( width: in, height: in )
                 ws.PageSetup.FitToPagesTall = 0;
