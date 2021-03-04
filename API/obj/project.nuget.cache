@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "uknOEXZNMw4yDuwLPu3UazHPJQ8s0CN1O8nMLj7yCdXPw4E/JaKRch190dKMXoaJ1Z1yfHRkVw8PQeFavDapSg==",
+  "dgSpecHash": "WWGIDBtqj/4U777LjC6q2dO6yh52kpFAUR3VKaVQ9EM0UD/e9NifZ4k3G2qAdoLOiCtqFyCTIDnSzwbVQ1HHyw==",
   "success": true,
-  "projectFilePath": "D:\\HIEU\\hoc\\Dropzone\\API\\API.csproj",
+  "projectFilePath": "D:\\HIEU\\hoc\\DropzoneUpdate\\API\\API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\hieu.nguyen\\.nuget\\packages\\aspose.cells\\20.1.0\\aspose.cells.20.1.0.nupkg.sha512",
     "C:\\Users\\hieu.nguyen\\.nuget\\packages\\automapper\\10.1.1\\automapper.10.1.1.nupkg.sha512",

@@ -50,6 +50,13 @@ namespace API.Controllers
             return Ok(data);
         }
 
+        [HttpGet("print")]
+        public async Task<IActionResult> Print([FromQuery] PaginationParams param, string text)
+        {
+            var data = await _productCategoryService.GetProductCategoryWithPaginations(param, text, false);
+            return Ok(data);
+        }
+
         [HttpGet("name")]
         public async Task<IActionResult> GetIDAndName()
         {

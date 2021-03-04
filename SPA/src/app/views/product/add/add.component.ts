@@ -224,6 +224,7 @@ export class AddComponent implements OnInit {
   }
 
   onSelectVideos(event) {
+    debugger
     // Kiểm tra rejectedFiles ( file không hợp lệ )
     if (event.rejectedFiles && event.rejectedFiles[0]) {
       this.alertUtility.warning('Error', 'Please select file videos', SnotifyPosition.rightCenter);
@@ -245,7 +246,9 @@ export class AddComponent implements OnInit {
   }
 
   onRemoveVideos(event) {
+    debugger
     this.fileVideos.splice(this.fileVideos.indexOf(event), 1);
+    let a = event;
   }
 
   exportAspose(checkExport: number) {

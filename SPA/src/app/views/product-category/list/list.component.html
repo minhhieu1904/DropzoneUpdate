@@ -7,7 +7,7 @@
         </div>
         <div class="col-md-6 col-lg-3">
           <input type="text" class="form-control" name="search" placeholder="Enter Product Category Data..."
-            [(ngModel)]="text" (keyup)="getDataPaginations()">
+            [(ngModel)]="text" (keyup)="[getDataAll(), getDataPaginations()]">
         </div>
         <div class="col-md-3 col-lg-7">
           <!-- Button Add -->
@@ -32,8 +32,8 @@
           <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="importExcelModel.show()">
             <i class="fa fa-file-excel-o"></i> Import
           </button>
-          <button type="button" class="btn btn-sm btn-success float-right mr-2" printSectionId="dataTable" [useExistingCss]="true"
-            ngxPrint printTitle="Product Category">Print
+          <button type="button" class="btn btn-sm btn-success float-right mr-2" printSectionId="dataTable"
+            ngxPrint printTitle="Product Category" styleSheetFile="../../../../assets/scss/_table.scss">Print
           </button>
           <button type="button" class="btn btn-sm btn-primary float-right mr-2"
             (click)="[addOrEditProductCateModal.show(), cancel(), setFlag(0)]">
@@ -45,8 +45,8 @@
     <div class="card-body">
       <!-- Form Search -->
       <!-- ProductCate Table -->
-      <div class="table-responsive" id="dataTable">
-        <table class="table table-bordered table-hover text-center" matSort>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center">
           <thead>
             <tr>
               <th>#</th>
@@ -78,12 +78,10 @@
                 </div>
               </td>
               <td class="w-1rem">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-primary"
+                <button type="button" class="btn btn-sm btn-primary"
                     (click)="[addOrEditProductCateModal.show(), setFlag(1), edit(productCate)]">
                     <i class="fa fa-edit fa-lg"></i>
                   </button>
-                </div>
               </td>
               <td class="w-1rem">
                 <button type="button" class="btn btn-sm btn-danger" (click)="remove(productCate)">
@@ -165,7 +163,7 @@
             <div class="custom-file b-form-file">
               <label data-browse="Browse" class="custom-file-label">
                 <p *ngIf="fileImportExcel === null">Choose a file...</p>
-                <input
+                <input id="input_uploadFile"
                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                   type="file" (change)="onSelectFile($event, 2)" style="line-height: 1 !important; outline: none;"
                   [ngClass]="(fileImportExcel !== null) ? 'opacity1' : 'opacity0'">
@@ -174,13 +172,59 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="importExcelModel.hide()">Cancel</button>
-          <button type="submit" class="btn btn-success" (click)="[importExcelModel.hide(), import()]"
-            [disabled]="fileImportExcel === null">
+          <button type="button" class="btn btn-secondary" (click)="[importExcelModel.hide(), onRemoveFile(fileImportExcel)]" (ngModelChange)="onRemoveFile(fileImportExcel)">Cancel</button>
+          <button type="submit" class="btn btn-success" (click)="[importExcelModel.hide(), import(), onRemoveFile(fileImportExcel)]"
+            [disabled]="fileImportExcel === null" (ngModelChange)="onRemoveFile(fileImportExcel)">
             Import
           </button>
         </div>
       </form>
     </div>
   </div>
+</div>
+
+<!-- Table print -->
+<div class="table-print" id="dataTable" hidden>
+  <table class="table table-bordered table-hover text-center">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>ProductCate ID</th>
+        <th>ProductCate Name</th>
+        <th>Position</th>
+        <th>Update By</th>
+        <th>Update Time</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let productCate of productCateAll; let i=index">
+        <td>{{ (pagination.currentPage - 1) * pagination.pageSize + i + 1 }}</td>
+        <td>{{ productCate.product_Cate_ID }}</td>
+        <td>{{ productCate.product_Cate_Name}}</td>
+        <td>{{ productCate.position }}</td>
+        <td>{{ productCate.update_By }}</td>
+        <td>{{ productCate.update_Time | date: 'MM/dd/yyyy, HH:mm:ss' }}</td>
+        <td>
+          <div class="pretty p-icon p-round p-jelly" *ngIf="productCate.status === true">
+            <input type="checkbox" class="custom-control-input" [id]="productCate.product_Cate_ID"
+              checked (change)="changeStatus(productCate)">
+            <div class="state p-success">
+              <i class="icon fa fa-check"></i>
+              <label></label>
+            </div>
+          </div>
+          <div class="pretty p-icon p-round p-jelly" *ngIf="productCate.status === false">
+            <input type="checkbox" class="custom-control-input" [id]="productCate.product_Cate_ID">
+            <div class="state p-success">
+              <label class="none"></label>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr *ngIf="productCates.length === 0">
+        <td colspan="100%" class="table-warning text-center font-weight-bold"> NO DATA! </td>
+      </tr>
+    </tbody>
+  </table>
 </div>

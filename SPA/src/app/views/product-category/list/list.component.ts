@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SnotifyPosition } from 'ng-snotify';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -17,6 +17,7 @@ import { Pagination, PaginationResult } from 'src/app/_core/_utility/pagination'
 export class ListComponent implements OnInit {
   @ViewChild('addProductCateModal') addUserModal: ModalDirective;
   productCates: ProductCategory[];
+  productCateAll: ProductCategory[];
   productCate: any = {};
   pagination: Pagination;
   text: string = '';
@@ -24,6 +25,8 @@ export class ListComponent implements OnInit {
   mailContent: MailContent;
 
   fileImportExcel: any = null;
+  files: File[] = [];
+  removed: EventEmitter<any> = new EventEmitter();
   constructor(
     private route: ActivatedRoute,
     private productCateService: ProductCategoryService,
@@ -37,12 +40,12 @@ export class ListComponent implements OnInit {
       this.pagination = data['productCates'].pagination;
     });
     this.getDataPaginations();
+    this.getDataAll();
   }
 
   save() {
     if (this.flag === 0) {
       this.productCateService.create(this.productCate).subscribe(res => {
-        debugger
         if (res.success) {
           this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
           this.getDataPaginations();
@@ -89,6 +92,16 @@ export class ListComponent implements OnInit {
     this.productCateService.getDataPaginations(this.pagination.currentPage, this.pagination.pageSize, this.text)
       .subscribe((res: PaginationResult<ProductCategory>) => {
         this.productCates = res.result;
+        this.pagination = res.pagination;
+      }), error => {
+        this.alertUtility.error('Error!', error, SnotifyPosition.rightTop);
+      };
+  }
+
+  getDataAll() {
+    this.productCateService.getDataAll(this.pagination.currentPage, this.pagination.pageSize, this.text)
+      .subscribe((res: PaginationResult<ProductCategory>) => {
+        this.productCateAll = res.result;
         this.pagination = res.pagination;
       }), error => {
         this.alertUtility.error('Error!', error, SnotifyPosition.rightTop);
@@ -161,7 +174,7 @@ export class ListComponent implements OnInit {
   }
 
   import() {
-    if (this.fileImportExcel == null) {
+    if (this.fileImportExcel === null) {
       this.alertUtility.warning('Warning', 'Please choose file upload!', SnotifyPosition.centerTop);
       return;
     }
@@ -181,11 +194,12 @@ export class ListComponent implements OnInit {
   }
 
   onSelectFile(event, number) {
+    debugger
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
 
       reader.readAsDataURL(event.target.files[0]); // read file as data url
-      const file = event.target.files[0];
+      this.fileImportExcel = event.target.files[0];
       // check file name extension
       const fileNameExtension = event.target.files[0].name.split('.').pop();
       if (fileNameExtension != 'xlsx' && fileNameExtension != 'xlsm') {
@@ -193,8 +207,14 @@ export class ListComponent implements OnInit {
         return;
       }
 
-      this.fileImportExcel = file;
+      this.files.push(this.fileImportExcel);
     }
+  }
+
+  onRemoveFile(event) {
+    debugger
+    this.files.splice(this.files.indexOf(event, 1));
+    this.removed.emit(this.fileImportExcel);
   }
 
   export() {

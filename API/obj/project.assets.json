@@ -7345,11 +7345,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\HIEU\\hoc\\Dropzone\\API\\API.csproj",
+      "projectUniqueName": "D:\\HIEU\\hoc\\DropzoneUpdate\\API\\API.csproj",
       "projectName": "API",
-      "projectPath": "D:\\HIEU\\hoc\\Dropzone\\API\\API.csproj",
+      "projectPath": "D:\\HIEU\\hoc\\DropzoneUpdate\\API\\API.csproj",
       "packagesPath": "C:\\Users\\hieu.nguyen\\.nuget\\packages\\",
-      "outputPath": "D:\\HIEU\\hoc\\Dropzone\\API\\obj\\",
+      "outputPath": "D:\\HIEU\\hoc\\DropzoneUpdate\\API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\hieu.nguyen\\AppData\\Roaming\\NuGet\\NuGet.Config",

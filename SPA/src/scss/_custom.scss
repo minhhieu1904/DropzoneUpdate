@@ -1,4 +1,9 @@
 // Here you can add other styles
+body.modal-open {
+  padding-right: 0 !important;
+  overflow-y: scroll !important;
+}
+
 .mr-30 {
     margin-right: 30px !important;
 }
