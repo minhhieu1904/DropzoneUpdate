@@ -200,9 +200,18 @@ table tbody tr td .pretty label.none::after {
     height: calc(1em + 2px);
     display: block;
     box-sizing: border-box;
-    border: 1px solid #545c63;
+    border: 1px solid #5cb85c;
     z-index: 0;
     position: absolute;
     left: 0;
     top: calc((0% - (100% - 1em)) - 8%);
 }
+
+// @media print 
+// {
+//    @page
+//    {
+//     size: "A4";
+//     size: landscape;
+//   }
+// }

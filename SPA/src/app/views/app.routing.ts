@@ -3,6 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { DefaultLayoutComponent } from '../containers';
 import { AuthGuard } from '../_core/_guard/auth.guard';
 import { LoginComponent } from './login/login.component';
+import { Page_404_1_Component } from './page-404-1/page-404-1.component';
+import { Page_404_2_Component } from './page-404-2/page-404-2.component';
+import { Page404Component } from './page-404/page-404.component';
 
 
 const routes: Routes = [
@@ -11,6 +14,27 @@ const routes: Routes = [
     component: LoginComponent,
     data: {
       title: 'Login Page'
+    }
+  },
+  {
+    path: '404',
+    component: Page404Component,
+    data: {
+      title: '404 Page'
+    }
+  },
+  {
+    path: '404-1',
+    component: Page_404_1_Component,
+    data: {
+      title: '404 Page'
+    }
+  },
+  {
+    path: '404-2',
+    component: Page_404_2_Component,
+    data: {
+      title: '404 Page'
     }
   },
   {
@@ -41,8 +65,13 @@ const routes: Routes = [
       },
       {
         path: 'article',
-        loadChildren: () => import('../views/article/article.module')
-          .then(m => m.ArticleModule)
+        children: [
+          {
+            path: 'list',
+            loadChildren: () => import('../views/article/article.module')
+              .then(m => m.ArticleModule)
+          }
+        ]
       },
       {
         path: 'product-cate',
@@ -56,8 +85,13 @@ const routes: Routes = [
       },
       {
         path: 'product',
-        loadChildren: () => import('../views/product/product.module')
-          .then(m => m.ProductModule)
+        children: [
+          {
+            path: 'list',
+            loadChildren: () => import('../views/product/product.module')
+              .then(m => m.ProductModule)
+          }
+        ]
       }
     ]
   },

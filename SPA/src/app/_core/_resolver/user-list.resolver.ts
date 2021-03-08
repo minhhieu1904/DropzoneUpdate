@@ -21,7 +21,7 @@ export class UserListResolver implements Resolve<User[]> {
     debugger
     return this.userService.getUsers(this.pageNumber, this.pageSize).pipe(
       catchError(error => {
-        this.alertUtility.error('Error', 'Problem retrieving data', SnotifyPosition.rightTop);
+        this.alertUtility.error('Error', 'Problem retrieving data', SnotifyPosition.centerTop);
         this.router.navigate(['/dashboard']);
         return of(null);
       })

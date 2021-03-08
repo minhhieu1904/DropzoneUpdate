@@ -91,7 +91,7 @@ export class ArticleService {
     params = params.append("articleName", articleName);
     params = params.append("checkSearch", checkSearch.toString());
 
-    return this.utilityService.exportExcelAuditWithCheckExport(params, 'Article/exportExcelListAspose', 'Article_List_', checkExport);
+    return this.utilityService.exportExcelWithCheckExport(params, 'Article/exportExcelListAspose', 'Article_List_', checkExport);
   }
 
   exportAspose(articleCateID: string, articleID: number, checkExport?: number) {
@@ -100,6 +100,6 @@ export class ArticleService {
     params = params.append("articleID", articleID.toString());
     params = params.append("checkExport", checkExport.toString());
 
-    return this.utilityService.exportExcelAuditWithCheckExport(params, 'Article/exportExcelDetailAspose', 'Article_Detail_', checkExport);
+    return this.utilityService.exportExcelWithCheckExport(params, 'Article/exportExcelDetailAspose', 'Article_Detail_', checkExport);
   }
 }

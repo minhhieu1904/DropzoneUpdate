@@ -25,8 +25,6 @@ export class ListComponent implements OnInit {
   mailContent: MailContent;
 
   fileImportExcel: any = null;
-  files: File[] = [];
-  removed: EventEmitter<any> = new EventEmitter();
   constructor(
     private route: ActivatedRoute,
     private productCateService: ProductCategoryService,
@@ -49,6 +47,7 @@ export class ListComponent implements OnInit {
         if (res.success) {
           this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
           this.getDataPaginations();
+          this.getDataAll();
         } else {
           this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
         }
@@ -62,6 +61,7 @@ export class ListComponent implements OnInit {
         if (res.success) {
           this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
           this.getDataPaginations();
+          this.getDataAll();
         } else {
           this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
         }
@@ -134,6 +134,7 @@ export class ListComponent implements OnInit {
         if (res.success) {
           this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
           this.getDataPaginations();
+          this.getDataAll();
         }
         else {
           this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
@@ -199,7 +200,7 @@ export class ListComponent implements OnInit {
       const reader = new FileReader();
 
       reader.readAsDataURL(event.target.files[0]); // read file as data url
-      this.fileImportExcel = event.target.files[0];
+      const file = event.target.files[0];
       // check file name extension
       const fileNameExtension = event.target.files[0].name.split('.').pop();
       if (fileNameExtension != 'xlsx' && fileNameExtension != 'xlsm') {
@@ -207,14 +208,8 @@ export class ListComponent implements OnInit {
         return;
       }
 
-      this.files.push(this.fileImportExcel);
+      this.fileImportExcel = file;
     }
-  }
-
-  onRemoveFile(event) {
-    debugger
-    this.files.splice(this.files.indexOf(event, 1));
-    this.removed.emit(this.fileImportExcel);
   }
 
   export() {
@@ -222,10 +217,6 @@ export class ListComponent implements OnInit {
   }
 
   exportAspose(checkExport: number) {
-    return this.productCateService.exportAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport);
-  }
-
-  exportPdfAspose(checkExport: number) {
     return this.productCateService.exportAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport);
   }
 

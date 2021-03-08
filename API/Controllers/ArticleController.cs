@@ -11,6 +11,7 @@ using API.Dtos;
 using API.Helpers.Params;
 using API.Helpers.Utilities;
 using Aspose.Cells;
+using Aspose.Cells.Drawing;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -184,8 +185,36 @@ namespace API.Controllers
 
             for (int i = 1; i <= data.Result.Count; i++)
             {
-                ws.AutoFitRow(i);
                 ws.Cells["F" + (i + 1)].SetStyle(style);
+            }
+
+            int index = 1;
+            foreach (var item in data.Result)
+            {
+                if (item.Content.Length > 75)
+                {
+                    ws.AutoFitRow(index);
+                }
+                else
+                {
+                    ws.Cells.SetRowHeight(index, 22.5);
+                }
+                string file = "";
+                if (item.Status == true)
+                {
+                    file = _webHostEnvironment.WebRootPath + "\\icons\\ok-512.png";
+                }
+                else
+                {
+                    file = _webHostEnvironment.WebRootPath + "\\icons\\circle-outline-512.png";
+                }
+                Aspose.Cells.Drawing.Picture pic = ws.Pictures[ws.Pictures.Add(index, 3, file)];
+                pic.Height = 20;
+                pic.Width = 20;
+                pic.Top = 5;
+                pic.Left = 40;
+
+                index++;
             }
 
             MemoryStream stream = new MemoryStream();
@@ -250,7 +279,6 @@ namespace API.Controllers
             ws.Cells["A" + (index)].PutValue(data.Article_Cate_ID);
             ws.Cells["B" + (index)].PutValue(data.Article_Name);
             ws.Cells["C" + (index)].PutValue(data.Content);
-            ws.Cells["D" + (index)].PutValue(data.Status);
             ws.Cells["E" + (index)].PutValue(data.Update_By);
             ws.Cells["F" + (index)].PutValue(data.Update_Time.ToString());
 
@@ -319,6 +347,21 @@ namespace API.Controllers
                         ws.Cells[item + (i + 1)].SetStyle(style, flg);
                     }
                 }
+
+                string file = "";
+                if (data.Status == true)
+                {
+                    file = _webHostEnvironment.WebRootPath + "\\icons\\ok-512.png";
+                }
+                else
+                {
+                    file = _webHostEnvironment.WebRootPath + "\\icons\\circle-outline-512.png";
+                }
+                Aspose.Cells.Drawing.Picture pic = ws.Pictures[ws.Pictures.Add(1, 3, file)];
+                pic.Height = 20;
+                pic.Width = 20;
+                pic.Top = 20 * (index3 - 2);
+                pic.Left = 40;
             }
 
             MemoryStream stream = new MemoryStream();

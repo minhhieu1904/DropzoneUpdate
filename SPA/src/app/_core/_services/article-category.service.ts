@@ -69,6 +69,6 @@ export class ArticleCategoryService {
     let params = this.utilityService.getParamSearchPagination(page, itemsPerPage, text);
     params = params.append("checkExport", checkExport.toString());
 
-    return this.utilityService.exportExcelAuditWithCheckExport(params, 'ArticleCategory/exportExcelAspose', 'Article_Category_', checkExport);
+    return this.utilityService.exportExcelWithCheckExport(params, 'ArticleCategory/exportExcelAspose', 'Article_Category_', checkExport);
   }
 }

@@ -142,7 +142,7 @@ export class UtilityService {
   // End export excel with Params
 
   // Export excel with checkExport
-  exportExcelAuditWithCheckExport(params: HttpParams, urlController: string, nameString: string, checkExport: number) {
+  exportExcelWithCheckExport(params: HttpParams, urlController: string, nameString: string, checkExport: number) {
     return this.http.get(this.baseUrl + urlController, { responseType: 'blob', params })
       .subscribe((result: Blob) => {
         const blob = new Blob([result]);
@@ -162,10 +162,8 @@ export class UtilityService {
           fileExtension = '.pdf';
         }
 
-        filename = filename + fileExtension;
-
         link.href = url;
-        link.setAttribute('download', filename);
+        link.setAttribute('download', filename + fileExtension);
         document.body.appendChild(link);
         link.click();
       });

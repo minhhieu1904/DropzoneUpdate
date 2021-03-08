@@ -21,19 +21,20 @@
             <i class="fa fa-envelope-o"></i> SendMail
           </button> -->
           <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="export()">
-            <i class="fa fa-file-excel-o"></i> Export
+            <i class="fa fa-file-excel-o"></i> ExcelEPPlus
           </button>
           <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="exportAspose(1)">
-            <i class="fa fa-file-excel-o"></i> ExportAspose
+            <i class="fa fa-file-excel-o"></i> ExcelAspose
           </button>
-          <button type="button" class="btn btn-sm btn-warning float-right mr-2" (click)="exportAspose(2)">
-            <i class="fa fa-file-pdf-o"></i> Pdf
+          <button type="button" class="btn btn-sm btn-warning float-right mr-2" (click)="exportAspose(2)" style="color: white;">
+            <i class="fa fa-file-pdf-o"></i> PdfAspose
           </button>
           <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="importExcelModel.show()">
             <i class="fa fa-file-excel-o"></i> Import
           </button>
-          <button type="button" class="btn btn-sm btn-success float-right mr-2" printSectionId="dataTable"
-            ngxPrint printTitle="Product Category" styleSheetFile="../../../../assets/scss/_table.scss">Print
+          <button type="button" class="btn btn-sm btn-primary float-right mr-2" printSectionId="dataTable"
+            ngxPrint printTitle="Product Category" styleSheetFile="../../../../assets/scss/_table.scss">
+            <i class="fa fa-print"></i> Print
           </button>
           <button type="button" class="btn btn-sm btn-primary float-right mr-2"
             (click)="[addOrEditProductCateModal.show(), cancel(), setFlag(0)]">
@@ -172,9 +173,9 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="[importExcelModel.hide(), onRemoveFile(fileImportExcel)]" (ngModelChange)="onRemoveFile(fileImportExcel)">Cancel</button>
-          <button type="submit" class="btn btn-success" (click)="[importExcelModel.hide(), import(), onRemoveFile(fileImportExcel)]"
-            [disabled]="fileImportExcel === null" (ngModelChange)="onRemoveFile(fileImportExcel)">
+          <button type="button" class="btn btn-secondary" (click)="importExcelModel.hide()">Cancel</button>
+          <button type="submit" class="btn btn-success" (click)="[importExcelModel.hide(), import()]"
+            [disabled]="fileImportExcel === null">
             Import
           </button>
         </div>
@@ -207,8 +208,7 @@
         <td>{{ productCate.update_Time | date: 'MM/dd/yyyy, HH:mm:ss' }}</td>
         <td>
           <div class="pretty p-icon p-round p-jelly" *ngIf="productCate.status === true">
-            <input type="checkbox" class="custom-control-input" [id]="productCate.product_Cate_ID"
-              checked (change)="changeStatus(productCate)">
+            <input type="checkbox" class="custom-control-input" [id]="productCate.product_Cate_ID" checked>
             <div class="state p-success">
               <i class="icon fa fa-check"></i>
               <label></label>

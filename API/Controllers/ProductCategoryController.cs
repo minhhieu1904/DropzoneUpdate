@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
+using OfficeOpenXml.Drawing;
 using OfficeOpenXml.Style;
 namespace API.Controllers
 {
@@ -168,7 +169,6 @@ namespace API.Controllers
                     workSheet.Cells[index, 1].Value = (index - 1);
                     workSheet.Cells[index, 2].Value = item.Product_Cate_ID;
                     workSheet.Cells[index, 3].Value = item.Product_Cate_Name;
-                    workSheet.Cells[index, 4].Value = item.Status;
                     workSheet.Cells[index, 5].Value = item.Position;
                     workSheet.Cells[index, 6].Value = item.Update_By;
                     workSheet.Cells[index, 7].Value = item.Update_Time;
@@ -183,6 +183,22 @@ namespace API.Controllers
                     workSheet.Row(index).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                     workSheet.Row(index).Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                     workSheet.Row(index).Height = 30;
+
+                    string file = "";
+                    if (item.Status == true)
+                    {
+                        file = _webHostEnvironment.WebRootPath + "\\icons\\ok-512.png";
+                    }
+                    else
+                    {
+                        file = _webHostEnvironment.WebRootPath + "\\icons\\circle-outline-512.png";
+                    }
+                    Image img = Image.FromFile(file);
+                    ExcelPicture pic = workSheet.Drawings.AddPicture(index.ToString(), img);
+                    // position image custom (row, top, col, left) : px
+                    pic.SetPosition(index - 1, 10, 3, 45);
+                    pic.SetSize(20, 20);
+
                     index++;
                 }
                 workSheet.Column(1).AutoFit(10);
@@ -221,6 +237,27 @@ namespace API.Controllers
             {
                 ws.Cells["A" + index].PutValue(i + 1);
                 index++;
+            }
+
+            var index2 = 1;
+            foreach (var item in data.Result)
+            {
+                string file = "";
+                if (item.Status == true)
+                {
+                    file = _webHostEnvironment.WebRootPath + "\\icons\\ok-512.png";
+                }
+                else
+                {
+                    file = _webHostEnvironment.WebRootPath + "\\icons\\circle-outline-512.png";
+                }
+                Aspose.Cells.Drawing.Picture pic = ws.Pictures[ws.Pictures.Add(index2, 3, file)];
+                pic.Height = 20;
+                pic.Width = 20;
+                pic.Top = 5;
+                pic.Left = 40;
+
+                index2++;
             }
 
             MemoryStream stream = new MemoryStream();

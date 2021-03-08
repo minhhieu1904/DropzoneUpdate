@@ -102,7 +102,7 @@ export class ProductService {
     params = params.append("productName", productName);
     params = params.append("checkSearch", checkSearch.toString());
 
-    return this.utilityService.exportExcelAuditWithCheckExport(params, 'Product/exportExcelListAspose', 'Product_List_', checkExport);
+    return this.utilityService.exportExcelWithCheckExport(params, 'Product/exportExcelListAspose', 'Product_List_', checkExport);
   }
 
   exportAspose(productCateID : string, productID: number, checkExport?: number) {
@@ -111,6 +111,6 @@ export class ProductService {
     params = params.append("productID", productID.toString());
     params = params.append("checkExport", checkExport.toString());
 
-    return this.utilityService.exportExcelAuditWithCheckExport(params, 'Product/exportExcelDetailAspose', 'Product_Detail_', checkExport);
+    return this.utilityService.exportExcelWithCheckExport(params, 'Product/exportExcelDetailAspose', 'Product_Detail_', checkExport);
   }
 }

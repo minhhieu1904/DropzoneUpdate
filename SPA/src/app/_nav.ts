@@ -9,6 +9,12 @@ export class NavItem {
   navItems: INavData[] = [];
   hasReport: boolean = false;
   hasUser: boolean = false;
+
+  navItemUser: any;
+  navItemArticleCategory: any;
+  navItemArticle: any;
+  navItemProductCategory: any;
+  navItemProduct: any;
   constructor() { }
 
   getNav() {
@@ -22,98 +28,130 @@ export class NavItem {
       url: '/dashboard',
       icon: 'icon-speedometer'
     };
-    
-    // User
-    const navItemUser = {
-      name: '1. Settings',
-      url: 'settings',
-      icon: 'icon-user-following',
-      children: []
-    };
 
+    // User
     if (roles.includes(Roles.sets_UserList)) {
-      const navItem = {
-        name: '1.1 User List',
+      this.navItemUser = {
+        name: '1. Settings',
+        icon: 'icon-user-following',
         url: '/settings/user-list',
-        class: 'menu-margin'
+        //children: []
       };
-      navItemUser.children.push(navItem);
     }
+
+
+    // if (roles.includes(Roles.sets_UserList)) {
+    //   const navItem = {
+    //     name: '1.1 User List',
+    //     url: '/settings/user-list',
+    //     class: 'menu-margin'
+    //   };
+    //   navItemUser.children.push(navItem);
+    // }
 
     // Article Category
-    const navItemArticleCategory = {
-      name: '2. Article Category',
-      url: 'article-cate',
-      icon: 'icon-docs',
-      children: []
+    if (roles.includes(Roles.sets_ArticleCategory)) {
+      this.navItemArticleCategory = {
+        name: '2. Article Category',
+        url: 'article-cate/list',
+        icon: 'icon-docs',
+        //children: []
+      }
     }
 
-    if (roles.includes(Roles.sets_ArticleCategory)) {
-      const navItem = {
-        name: '2.1 Article Category List',
-        url: '/article-cate/list',
-        class: 'menu-margin'
-      };
-      navItemArticleCategory.children.push(navItem);
-    }
+    // if (roles.includes(Roles.sets_ArticleCategory)) {
+    //   const navItem = {
+    //     name: '2.1 Article Category List',
+    //     url: '/article-cate/list',
+    //     class: 'menu-margin'
+    //   };
+    //   navItemArticleCategory.children.push(navItem);
+    // }
 
     // Article
-    const navItemArticle = {
-      name: '3. Article',
-      url: 'article',
-      icon: 'icon-doc',
-      children: []
+    if (roles.includes(Roles.sets_Article)) {
+      this.navItemArticle = {
+        name: '3. Article',
+        url: 'article/list',
+        icon: 'icon-doc',
+        //children: []
+      }
     }
 
-    if (roles.includes(Roles.sets_Article)) {
-      const navItem = {
-        name: '3.1 Article List',
-        url: '/article',
-        class: 'menu-margin'
-      };
-      navItemArticle.children.push(navItem);
-    }
+    // if (roles.includes(Roles.sets_Article)) {
+    //   const navItem = {
+    //     name: '3.1 Article List',
+    //     url: '/article',
+    //     class: 'menu-margin'
+    //   };
+    //   navItemArticle.children.push(navItem);
+    // }
 
     // Product Category
-    const navItemProductCategory = {
-      name: '4. Product Category',
-      url: 'product-cate',
-      icon: 'icon-basket',
-      children: []
+    if (roles.includes(Roles.sets_ProductCategory)) {
+      this.navItemProductCategory = {
+        name: '4. Product Category',
+        url: 'product-cate/list',
+        icon: 'icon-basket',
+        //children: []
+      }
     }
 
-    if (roles.includes(Roles.sets_ProductCategory)) {
-      const navItem = {
-        name: '4.1 Product Category List',
-        url: '/product-cate/list',
-        class: 'menu-margin'
-      };
-      navItemProductCategory.children.push(navItem);
-    }
+    // if (roles.includes(Roles.sets_ProductCategory)) {
+    //   const navItem = {
+    //     name: '4.1 Product Category List',
+    //     url: '/product-cate/list',
+    //     class: 'menu-margin'
+    //   };
+    //   navItemProductCategory.children.push(navItem);
+    // }
 
     // Product
-    const navItemProduct = {
-      name: '5. Product',
-      url: 'product',
-      icon: 'icon-basket-loaded',
-      children: []
+    if (roles.includes(Roles.sets_Product)) {
+      this.navItemProduct = {
+        name: '5. Product',
+        url: 'product/list',
+        icon: 'icon-basket-loaded',
+        //children: []
+      }
     }
 
-    if (roles.includes(Roles.sets_Product)) {
-      const navItem = {
-        name: '5.1 Product List',
-        url: '/product',
-        class: 'menu-margin'
-      };
-      navItemProduct.children.push(navItem);
+    // if (roles.includes(Roles.sets_Product)) {
+    //   const navItem = {
+    //     name: '5.1 Product List',
+    //     url: '/product',
+    //     class: 'menu-margin'
+    //   };
+    //   navItemProduct.children.push(navItem);
+    // }
+
+    const navItemPage404 = {
+      name: '6. Page 404',
+      url: '404',
+      icon: 'icon-basket-loaded'
+    }
+
+    const navItemPage404_1 = {
+      name: '7. Page 404 1',
+      url: '404-1',
+      icon: 'icon-basket-loaded'
+    }
+
+    const navItemPage404_2 = {
+      name: '8. Page 404 2',
+      url: '404-2',
+      icon: 'icon-basket-loaded'
     }
 
     this.navItems.push(navItemDashboard);
-    this.navItems.push(navItemUser);
-    this.navItems.push(navItemArticleCategory);
-    this.navItems.push(navItemArticle);
-    this.navItems.push(navItemProductCategory);
-    this.navItems.push(navItemProduct);
+    this.navItems.push(this.navItemUser);
+    this.navItems.push(this.navItemArticleCategory);
+    this.navItems.push(this.navItemArticle);
+    this.navItems.push(this.navItemProductCategory);
+    this.navItems.push(this.navItemProduct);
+    this.navItems.push(navItemPage404);
+    this.navItems.push(navItemPage404_1);
+    this.navItems.push(navItemPage404_2);
 
     return this.navItems;
   }

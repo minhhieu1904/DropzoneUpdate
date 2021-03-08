@@ -22,7 +22,7 @@ export class ArticleListResolver implements Resolve<Article[]> {
     this.text = this.text === '' ? '' : this.text;
     return this.articleService.getDataPaginations(this.pageNumber, this.pageSize, this.text).pipe(
       catchError(error => {
-        this.alertUtility.error('Error', 'Problem retrieving data', SnotifyPosition.rightTop);
+        this.alertUtility.error('Error', 'Problem retrieving data', SnotifyPosition.centerTop);
         this.router.navigate(['/dashboard']);
         return of(null);
       })
