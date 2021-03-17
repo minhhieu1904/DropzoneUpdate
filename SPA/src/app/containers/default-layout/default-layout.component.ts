@@ -33,7 +33,7 @@ export class DefaultLayoutComponent {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     this.authService.decodedToken = null;
-    this.alertUtility.message('Logged out', SnotifyPosition.rightTop);
+    this.alertUtility.success('Success', 'Logged out');
     this.router.navigate(['/login']);
   }
 }

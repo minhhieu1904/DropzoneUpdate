@@ -199,15 +199,7 @@ namespace API.Controllers
                 {
                     ws.Cells.SetRowHeight(index, 22.5);
                 }
-                string file = "";
-                if (item.Status == true)
-                {
-                    file = _webHostEnvironment.WebRootPath + "\\icons\\ok-512.png";
-                }
-                else
-                {
-                    file = _webHostEnvironment.WebRootPath + "\\icons\\circle-outline-512.png";
-                }
+                string file = _dropzoneService.CheckTrueFalse(item.Status);
                 Aspose.Cells.Drawing.Picture pic = ws.Pictures[ws.Pictures.Add(index, 3, file)];
                 pic.Height = 20;
                 pic.Width = 20;
@@ -348,15 +340,7 @@ namespace API.Controllers
                     }
                 }
 
-                string file = "";
-                if (data.Status == true)
-                {
-                    file = _webHostEnvironment.WebRootPath + "\\icons\\ok-512.png";
-                }
-                else
-                {
-                    file = _webHostEnvironment.WebRootPath + "\\icons\\circle-outline-512.png";
-                }
+                string file = _dropzoneService.CheckTrueFalse(data.Status);
                 Aspose.Cells.Drawing.Picture pic = ws.Pictures[ws.Pictures.Add(1, 3, file)];
                 pic.Height = 20;
                 pic.Width = 20;
@@ -391,7 +375,7 @@ namespace API.Controllers
 
             byte[] result = stream.ToArray();
 
-            return File(result, fileKind, "Article_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + fileExtension);
+            return File(result, fileKind, "Article_Detail_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + fileExtension);
         }
     }
 }

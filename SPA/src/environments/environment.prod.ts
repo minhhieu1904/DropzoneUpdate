@@ -1,14 +1,17 @@
+const ip = window.location.hostname;
+const apiUrl = 'http://' + ip + ':8029';
+
 export const environment = {
   production: true,
-  apiUrl:  'http://localhost:5000/api/',
+  apiUrl: apiUrl + '/api/',
 };
 
 export const commonPerFactory = {
   // Product
-  imageProductUrl: 'http://localhost:5000/uploaded/images/product/',
-  videoProductUrl: 'http://localhost:5000/uploaded/video/product/',
+  imageProductUrl: apiUrl + '/uploaded/images/product/',
+  videoProductUrl: apiUrl + '/uploaded/video/product/',
 
   // Article
-  imageArticleUrl: 'http://localhost:5000/uploaded/images/article/',
-  videoArticleUrl: 'http://localhost:5000/uploaded/video/article/',
+  imageArticleUrl: apiUrl + '/uploaded/images/article/',
+  videoArticleUrl: apiUrl + '/uploaded/video/article/',
 }

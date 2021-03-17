@@ -60,7 +60,7 @@ export class ListComponent implements OnInit {
         this.articles = res.result;
         this.pagination = res.pagination;
       }), error => {
-        this.alertUtility.error('Error!', error, SnotifyPosition.rightTop);
+        this.alertUtility.error('Error!', error);
       };
   }
 
@@ -70,17 +70,17 @@ export class ListComponent implements OnInit {
         this.articles = res.result;
         this.pagination = res.pagination;
       }), error => {
-        this.alertUtility.error('Error!', error, SnotifyPosition.rightTop);
+        this.alertUtility.error('Error!', error);
       };
   }
 
   changeStatus(article: Article) {
     this.articleService.changeStatus(article).subscribe(res => {
       if (res.success) {
-        this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
+        this.alertUtility.success('Success!', res.message);
         this.getDataPaginations();
       } else {
-        this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
+        this.alertUtility.error('Error!', res.message);
       }
     },
       error => {
@@ -121,11 +121,11 @@ export class ListComponent implements OnInit {
     this.alertUtility.confirmDelete('Are you sure delete item?', SnotifyPosition.rightCenter, () => {
       this.articleService.remove(article).subscribe(res => {
         if (res.success) {
-          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.success('Success!', res.message);
           this.getDataPaginations();
         }
         else {
-          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.error('Error!', res.message);
         }
       },
         error => {

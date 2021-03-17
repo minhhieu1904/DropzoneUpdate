@@ -131,3 +131,45 @@ table.table thead {
   animation-name: bounceInLeft2;
 }
 /*#animation*/
+
+/*#Custom style tooltip*/
+.tooltip-inner {
+  background-color: #009688;
+  color: #fff;
+  white-space: nowrap;
+}
+.tooltip.top .tooltip-arrow:before,
+.tooltip.top .tooltip-arrow {
+  border-top-color: #009688;
+}
+.tooltip.bottom .tooltip-arrow:before,
+.tooltip.bottom .tooltip-arrow {
+  border-bottom-color: #009688;
+}
+.tooltip.left .tooltip-arrow:before,
+.tooltip.left .tooltip-arrow {
+  border-left-color: #009688;
+}
+.tooltip.right .tooltip-arrow:before,
+.tooltip.right .tooltip-arrow {
+  border-right-color: #009688;
+}
+/*#Custom style tooltip*/
+
+#pagination pagination {
+  float: left;
+}
+
+#pagination #itemRight {
+  float: right;
+  line-height: 2.5;
+  font-weight: bold;
+  display: flex;
+}
+
+#pagination #itemRight input {
+  width: 35px;
+  height: 35px;
+  margin-right: 15px;
+  text-align: center;
+}

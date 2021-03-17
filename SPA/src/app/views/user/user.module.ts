@@ -8,6 +8,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { UserListGuard } from '../../_core/_guard/user-list.guard';
 import { UserListResolver } from 'src/app/_core/_resolver/user-list.resolver';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     FormsModule,
     BsDatepickerModule.forRoot(),
     PaginationModule.forRoot(),
+    TooltipModule.forRoot(),
     ModalModule.forRoot()
   ],
   providers: [

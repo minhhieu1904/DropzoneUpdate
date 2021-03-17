@@ -8,5 +8,6 @@ namespace API._Services.Interfaces
     {
         Task<string> UploadFile(List<IFormFile> files, string name, string fileFolder);
         void DeleteFileUpload(string files, string fileFolder);
+        string CheckTrueFalse(bool param);
     }
 }

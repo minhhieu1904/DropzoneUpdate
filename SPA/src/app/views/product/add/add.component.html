@@ -5,13 +5,13 @@
         <div class="card-header">
           <strong *ngIf="!product.product_ID;else elseBlock">Add new product</strong>
           <ng-template #elseBlock><strong>Update product</strong></ng-template>
-          <button type="button" class="btn btn-sm btn-primary float-right" (click)="backList()">
+          <button type="button" class="btn btn-sm btn-primary float-right" (click)="backList()" tooltip="Trở về trang danh sách sản phẩm">
             <i class="fa fa-chevron-left"></i> Back
           </button>
-          <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="exportAspose(1)">
+          <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="exportAspose(1)" tooltip="Xuất file Excel">
             <i class="fa fa-file-excel-o"></i> Excel
           </button>
-          <button type="button" class="btn btn-sm btn-warning float-right mr-2" (click)="exportAspose(2)">
+          <button type="button" class="btn btn-sm btn-warning float-right mr-2" (click)="exportAspose(2)" tooltip="Xuất file PDF">
             <i class="fa fa-file-excel-o"></i> PDF
           </button>
         </div>
@@ -141,15 +141,15 @@
             </div>
           </div>
           <div class="card-footer">
-            <button type="button" *ngIf="flag==='0'" class="btn btn-sm btn-danger mr-1" (click)="cancel()">
+            <button type="button" *ngIf="flag==='0'" class="btn btn-sm btn-danger mr-1" (click)="cancel()" tooltip="Làm mới trang">
               <i class="fa fa-ban"></i> Cancel
             </button>
-            <button type="submit" *ngIf="flag==='0'" class="btn btn-sm btn-primary mr-1"
+            <button type="submit" *ngIf="flag==='0'" class="btn btn-sm btn-primary mr-1" tooltip="Lưu và tiếp tục"
               [disabled]="!addProductForm.valid || product.price == 0 || product.amount == 0">
               <i class="fa fa-check"></i> Save & Next
             </button>
             <button type="button" class="btn btn-sm btn-success mr-1"
-              [disabled]="!addProductForm.valid || product.price == 0 || product.amount == 0" (click)="save()"><i
+              [disabled]="!addProductForm.valid || product.price == 0 || product.amount == 0" (click)="save()" tooltip="Lưu"><i
                 class="fa fa-check"></i> Save
             </button>
           </div>

@@ -29,10 +29,12 @@
         </div>
         <div class="col-md-3 col-lg-2">
           <!-- Button Add -->
-          <button type="button" class="btn btn-sm btn-primary float-right height34px" (click)="addNew()" style="float: right;">
+          <button type="button" class="btn btn-sm btn-primary float-right height34px" 
+            (click)="addNew()" style="float: right;" tooltip="Thêm mới bài viết">
             <i class="fa fa-plus"></i> Add new
           </button>
-          <button type="button" class="btn btn-sm btn-success float-right height34px mr-2" (click)="exportExcel(1)">
+          <button type="button" class="btn btn-sm btn-success float-right height34px mr-2" 
+            (click)="exportExcel(1)" tooltip="Xuất file Excel">
             <i class="fa fa-file-excel-o"></i> ExportAspose
           </button>
           <!-- <button type="button" class="btn btn-sm btn-warning float-right mr-2" (click)="exportExcel(2)">
@@ -81,13 +83,13 @@
               </td>
               <td class="w-1rem">
                 <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-primary" (click)="edit(article)">
+                  <button type="button" class="btn btn-sm btn-primary" (click)="edit(article)" tooltip="Chỉnh sửa bài viết">
                     <i class="fa fa-edit fa-lg"></i>
                   </button>
                 </div>
               </td>
               <td class="w-1rem">
-                <button type="button" class="btn btn-sm btn-danger" (click)="remove(article)">
+                <button type="button" class="btn btn-sm btn-danger" (click)="remove(article)" tooltip="Xóa bài viết">
                   <i class="fa fa-trash fa-lg"></i>
                 </button>
               </td>
@@ -99,10 +101,19 @@
         </table>
       </div>
       <!-- Pagination -->
-      <div class="d-flex" *ngIf="pagination.totalPage > 1">
+      <div id="pagination" *ngIf="pagination.totalPage > 1">
         <pagination [boundaryLinks]="true" [totalItems]="pagination.totalCount" [(ngModel)]="pagination.currentPage"
           [itemsPerPage]="pagination.pageSize" (pageChanged)="pageChanged($event)" previousText="&lsaquo;"
-          nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" [maxSize]=5></pagination>
+          nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" [maxSize]=5>
+        </pagination>
+        <div id="itemRight">
+          <p *ngIf="pagination.totalCount >= (pagination.pageSize * pagination.currentPage)">
+            Showing {{pagination.pageSize * pagination.currentPage}} in {{pagination.totalCount}} items
+          </p>
+          <p *ngIf="pagination.totalCount < (pagination.pageSize * pagination.currentPage)">
+            Showing {{pagination.totalCount}} in {{pagination.totalCount}} items
+          </p>
+        </div>
       </div>
     </div>
   </div>

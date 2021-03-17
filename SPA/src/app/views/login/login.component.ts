@@ -30,11 +30,11 @@ export class LoginComponent implements OnInit {
     this.spinnerService.show();
     this.authService.login(this.user.userName, this.user.password).subscribe(
       (next) => {
-        this.alertUtility.success('Success', 'Login Success!!', SnotifyPosition.rightTop);
+        this.alertUtility.success('Success', 'Login Success!!');
         this.spinnerService.hide();
       },
       (error) => {
-        this.alertUtility.error('Error', 'Username or Password incorrect!!', SnotifyPosition.rightTop);
+        this.alertUtility.error('Error', 'Username or Password incorrect!!');
         this.spinnerService.hide();
       },
       () => {

@@ -7,7 +7,7 @@ import { ListComponent } from './list/list.component';
 
 const routes: Routes = [
     {
-        path: '',
+        path: 'list',
         canActivate: [ProductListGuard],
         data: { title: 'Product List' },
         resolve: { products: ProductListResolver },

@@ -11,6 +11,9 @@ export class AlertUtilityService {
   ) { }
 
   getConfig(position: SnotifyPosition): SnotifyToastConfig {
+    if(position === undefined) {
+      position = null;
+    }
     this.snotifyService.setDefaults({
       global: {
         newOnTop: true,
@@ -23,7 +26,7 @@ export class AlertUtilityService {
       bodyMaxLength: 50,
       titleMaxLength: 50,
       backdrop: -1,
-      position: position,
+      position: position === null ? SnotifyPosition.rightTop : position,
       timeout: 3000,
       showProgressBar: true,
       closeOnClick: true,
@@ -31,23 +34,23 @@ export class AlertUtilityService {
     };
   }
 
-  success(body: string, title: string, position: SnotifyPosition) {
+  success(body: string, title: string, position?: SnotifyPosition) {
     this.snotifyService.success(body, title, this.getConfig(position));
   }
 
-  info(body: string, title: string, position: SnotifyPosition) {
+  info(body: string, title: string, position?: SnotifyPosition) {
     this.snotifyService.info(body, title, this.getConfig(position));
   }
 
-  error(body: string, title: string, position: SnotifyPosition) {
+  error(body: string, title: string, position?: SnotifyPosition) {
     this.snotifyService.error(body, title, this.getConfig(position));
   }
 
-  warning(body: string, title: string, position: SnotifyPosition) {
+  warning(body: string, title: string, position?: SnotifyPosition) {
     this.snotifyService.warning(body, title, this.getConfig(position));
   }
 
-  simple(body: string, title: string, position: SnotifyPosition) {
+  simple(body: string, title: string, position?: SnotifyPosition) {
     // Custom icon
     const icon = `https://placehold.it/48x100`;
 
@@ -57,7 +60,7 @@ export class AlertUtilityService {
     });
   }
 
-  message(body: string, position: SnotifyPosition) {
+  message(body: string, position?: SnotifyPosition) {
     this.snotifyService.success(body, this.getConfig(position));
   }
 
@@ -84,7 +87,7 @@ export class AlertUtilityService {
     });
   }
 
-  html(body: string, title: string, position: SnotifyPosition, icon?: string) {
+  html(body: string, title: string, position?: SnotifyPosition, icon?: string) {
     const html = `<div class="snotifyToast__title"><b>${title}</b></div>
                   <div class="snotifyToast__body"><b>${body}</b></div>
                   <div class="snotify-icon ng-star-inserted">
@@ -109,7 +112,7 @@ export class AlertUtilityService {
     this.snotifyService.clear();
   }
 
-  asyncLoadingSuccess(body: string, success: string, position: SnotifyPosition) {
+  asyncLoadingSuccess(body: string, success: string, position?: SnotifyPosition) {
     const successAction = new Observable(observer => {
       setTimeout(() => {
         observer.next({
@@ -135,7 +138,7 @@ export class AlertUtilityService {
     this.snotifyService.async('Still loading.....', successAction, config);
   }
 
-  asyncLoadingError(body: string, error: string, position: SnotifyPosition) {
+  asyncLoadingError(body: string, error: string, position?: SnotifyPosition) {
     const errorAction = new Observable(observer => {
       setTimeout(() => {
         observer.next({

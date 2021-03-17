@@ -9,6 +9,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { FormsModule } from '@angular/forms';
 import { NgSelect2Module } from 'ng-select2';
 import { NgxDropzoneModule } from 'ngx-dropzone';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     FormsModule,
     NgSelect2Module,
     NgxDropzoneModule,
+    TooltipModule.forRoot(),
     PaginationModule.forRoot(),
   ],
   declarations: [

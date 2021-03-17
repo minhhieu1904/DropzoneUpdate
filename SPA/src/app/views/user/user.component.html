@@ -4,7 +4,7 @@
         <strong>User List</strong>
         <!-- Button Add -->
         <button type="button" class="btn btn-sm btn-primary float-right"
-          (click)="[resetUser(), setFlag(0), addUserModal.show()]">
+          (click)="[resetUser(), setFlag(0), addUserModal.show()]" tooltip="Thêm mới tài khoản">
           <i class="fa fa-plus"></i> Add new
         </button>
       </div>
@@ -58,20 +58,20 @@
                 <td>{{ user.update_Time | date: 'MM/dd/yyyy, HH:mm:ss' }}</td>
                 <td class="w-1rem">
                   <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-primary"
+                    <button type="button" class="btn btn-sm btn-primary" tooltip="Chỉnh sửa tài khoản"
                       (click)="[addUserModal.show(), setUser(user), setFlag(1)]">
                       <i class="fa fa-edit fa-lg"></i>
                     </button>
                   </div>
                 </td>
                 <td class="w-1rem">
-                  <button type="button" class="btn btn-sm btn-warning"
+                  <button type="button" class="btn btn-sm btn-warning" tooltip="Phân quyền"
                     (click)="[authorizeModal.show(), setUser(user), setAuthorizeList()]">
                     <i class=" fa fa-cog fa-lg"></i>
                   </button>
                 </td>
                 <td class="w-1rem">
-                  <button type="button" class="btn btn-sm btn-danger"
+                  <button type="button" class="btn btn-sm btn-danger" tooltip="Xóa tài khoản"
                     (click)="deleteUser(user.factory_ID, user.user_Account)">
                     <i class="fa fa-trash fa-lg"></i>
                   </button>
@@ -84,10 +84,22 @@
           </table>
         </div>
         <!-- Pagination -->
-        <div class="d-flex" *ngIf="pagination.totalPage > 1">
+        <div id="pagination" *ngIf="pagination.totalPage > 1">
           <pagination [boundaryLinks]="true" [totalItems]="pagination.totalCount" [(ngModel)]="pagination.currentPage"
             [itemsPerPage]="pagination.pageSize" (pageChanged)="pageChanged($event)" previousText="&lsaquo;"
-            nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" [maxSize]=5></pagination>
+            nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" [maxSize]=5>
+          </pagination>
+          <div id="itemRight">
+            <div>
+              Change Page: <input />
+            </div>
+            <p *ngIf="pagination.totalCount >= (pagination.pageSize * pagination.currentPage)">
+              Showing {{pagination.pageSize * pagination.currentPage}} in {{pagination.totalCount}} items
+            </p>
+            <p *ngIf="pagination.totalCount < (pagination.pageSize * pagination.currentPage)">
+              Showing {{pagination.totalCount}} in {{pagination.totalCount}} items
+            </p>
+          </div>
         </div>
       </div>
     </div>

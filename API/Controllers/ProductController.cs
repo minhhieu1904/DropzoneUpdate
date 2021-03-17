@@ -291,10 +291,6 @@ namespace API.Controllers
             int index = 2;
             ws.Cells["A" + (index)].PutValue(data.Product_Cate_ID);
             ws.Cells["B" + (index)].PutValue(data.Product_Name);
-            ws.Cells["C" + (index)].PutValue(data.New);
-            ws.Cells["D" + (index)].PutValue(data.IsSale);
-            ws.Cells["E" + (index)].PutValue(data.Hot_Sale);
-            ws.Cells["F" + (index)].PutValue(data.Status);
             ws.Cells["G" + (index)].PutValue(data.Price);
             ws.Cells["H" + (index)].PutValue(data.Amount);
             ws.Cells["I" + (index)].PutValue(data.Update_By);
@@ -365,6 +361,20 @@ namespace API.Controllers
                         ws.Cells[item + (i + 1)].SetStyle(style, flg);
                     }
                 }
+                string fileNew = _dropzoneService.CheckTrueFalse(data.New);
+                string fileIsSale = _dropzoneService.CheckTrueFalse(data.IsSale);
+                string fileHotSale = _dropzoneService.CheckTrueFalse(data.Hot_Sale);
+                string fileStatus = _dropzoneService.CheckTrueFalse(data.Status);
+                
+                Aspose.Cells.Drawing.Picture iconNew = ws.Pictures[ws.Pictures.Add(1, 2, fileNew)];
+                Aspose.Cells.Drawing.Picture iconIsSale = ws.Pictures[ws.Pictures.Add(1, 3, fileIsSale)];
+                Aspose.Cells.Drawing.Picture iconHotSale = ws.Pictures[ws.Pictures.Add(1, 4, fileHotSale)];
+                Aspose.Cells.Drawing.Picture iconStatus = ws.Pictures[ws.Pictures.Add(1, 5, fileStatus)];
+                
+                iconNew.Height = iconIsSale.Height = iconHotSale.Height = iconStatus.Height = 20;
+                iconNew.Width = iconIsSale.Width = iconHotSale.Width = iconStatus.Width = 20;
+                iconNew.Top = iconIsSale.Top = iconHotSale.Top = iconStatus.Top = 20 * (index3 - 2);
+                iconNew.Left = iconIsSale.Left = iconHotSale.Left = iconStatus.Left = 40;
             }
 
             MemoryStream stream = new MemoryStream();
@@ -383,10 +393,10 @@ namespace API.Controllers
                 // custom size ( width: in, height: in )
                 ws.PageSetup.FitToPagesTall = 0;
                 ws.PageSetup.SetHeader(0, "&D &T");
-                ws.PageSetup.SetHeader(1, "&B Article");
+                ws.PageSetup.SetHeader(1, "&B Product");
                 ws.PageSetup.SetFooter(0, "&B SYSTEM BY MINH HIEU");
                 ws.PageSetup.SetFooter(2, "&P/&N");
-                ws.PageSetup.PrintQuality = 1200;
+                ws.PageSetup.PrintQuality = 2400;
                 designer.Workbook.Save(stream, SaveFormat.Pdf);
                 fileKind = "application/pdf";
                 fileExtension = ".pdf";

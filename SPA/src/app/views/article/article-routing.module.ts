@@ -7,7 +7,7 @@ import { ListComponent } from './list/list.component';
 
 const routes: Routes = [
     {
-        path: '',
+        path: 'list',
         canActivate: [ArticleListGuard],
         data: { title: 'Article List' },
         resolve: { articles: ArticleListResolver },

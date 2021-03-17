@@ -8,6 +8,7 @@ import { AddComponent } from './add/add.component';
 import { FormsModule } from '@angular/forms';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     ArticleCategoryRoutingModule,
     FormsModule,
     PaginationModule.forRoot(),
+    TooltipModule.forRoot(),
     ModalModule.forRoot()
   ],
   declarations: [

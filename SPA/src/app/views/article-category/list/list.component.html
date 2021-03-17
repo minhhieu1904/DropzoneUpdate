@@ -10,20 +10,20 @@
             [(ngModel)]="text" (keyup)="getDataPaginations()">
         </div>
         <div class="col-md-3 col-lg-7">
-          <button type="button" class="btn btn-sm btn-success float-right" (click)="export()">
+          <button type="button" class="btn btn-sm btn-success float-right" (click)="export()" tooltip="Xuất file Excel Epplus">
             <i class="fa fa-file-excel-o"></i> Export
           </button>
-          <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="exportAspose(1)">
+          <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="exportAspose(1)" tooltip="Xuất file Excel Aspose">
             <i class="fa fa-file-excel-o"></i> ExportAspose
           </button>
-          <button type="button" class="btn btn-sm btn-warning float-right mr-2" (click)="exportAspose(2)">
+          <button type="button" class="btn btn-sm btn-warning float-right mr-2" (click)="exportAspose(2)" tooltip="Xuất file PDF Epplus">
             <i class="fa fa-file-pdf-o"></i> Pdf
           </button>
-          <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="importExcelModel.show()">
+          <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="importExcelModel.show()"  tooltip="Thêm dữ liệu từ file Excel">
             <i class="fa fa-file-excel-o"></i> Import
           </button>
           <!-- Button Add -->
-          <button type="button" class="btn btn-sm btn-primary float-right mr-2"
+          <button type="button" class="btn btn-sm btn-primary float-right mr-2" tooltip="Thêm mới danh mục bài viết"
             (click)="[cancel(), setFlag(0), addOrEditArticleCateModal.show()]" style="float: right;">
             <i class="fa fa-plus"></i> Add new
           </button>
@@ -68,14 +68,14 @@
               </td>
               <td class="w-1rem">
                 <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-primary"
+                  <button type="button" class="btn btn-sm btn-primary" tooltip="Chỉnh sửa danh mục bài viết"
                     (click)="[addOrEditArticleCateModal.show(), setFlag(1), edit(articleCate)]">
                     <i class="fa fa-edit fa-lg"></i>
                   </button>
                 </div>
               </td>
               <td class="w-1rem">
-                <button type="button" class="btn btn-sm btn-danger" (click)="remove(articleCate)">
+                <button type="button" class="btn btn-sm btn-danger" (click)="remove(articleCate)" tooltip="Xóa danh mục bài viết">
                   <i class="fa fa-trash fa-lg"></i>
                 </button>
               </td>
@@ -87,10 +87,19 @@
         </table>
       </div>
       <!-- Pagination -->
-      <div class="d-flex" *ngIf="pagination.totalPage > 1">
+      <div id="pagination" *ngIf="pagination.totalPage > 1">
         <pagination [boundaryLinks]="true" [totalItems]="pagination.totalCount" [(ngModel)]="pagination.currentPage"
           [itemsPerPage]="pagination.pageSize" (pageChanged)="pageChanged($event)" previousText="&lsaquo;"
-          nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" [maxSize]=5></pagination>
+          nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" [maxSize]=5>
+        </pagination>
+        <div id="itemRight">
+          <p *ngIf="pagination.totalCount >= (pagination.pageSize * pagination.currentPage)">
+            Showing {{pagination.pageSize * pagination.currentPage}} in {{pagination.totalCount}} items
+          </p>
+          <p *ngIf="pagination.totalCount < (pagination.pageSize * pagination.currentPage)">
+            Showing {{pagination.totalCount}} in {{pagination.totalCount}} items
+          </p>
+        </div>
       </div>
     </div>
   </div>

@@ -20,23 +20,23 @@
           <button type="button" class="btn btn-sm btn-warning float-right mr-2" (click)="sendMail()">
             <i class="fa fa-envelope-o"></i> SendMail
           </button> -->
-          <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="export()">
+          <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="export()" tooltip="Xuất file Excel Epplus">
             <i class="fa fa-file-excel-o"></i> ExcelEPPlus
           </button>
-          <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="exportAspose(1)">
+          <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="exportAspose(1)" tooltip="Xuất file Excel Aspose">
             <i class="fa fa-file-excel-o"></i> ExcelAspose
           </button>
-          <button type="button" class="btn btn-sm btn-warning float-right mr-2" (click)="exportAspose(2)" style="color: white;">
+          <button type="button" class="btn btn-sm btn-warning float-right mr-2" (click)="exportAspose(2)" tooltip="Xuất file PDF Aspose" style="color: white;">
             <i class="fa fa-file-pdf-o"></i> PdfAspose
           </button>
-          <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="importExcelModel.show()">
+          <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="importExcelModel.show()" tooltip="Thêm dữ liệu từ file Excel">
             <i class="fa fa-file-excel-o"></i> Import
           </button>
-          <button type="button" class="btn btn-sm btn-primary float-right mr-2" printSectionId="dataTable"
+          <button type="button" class="btn btn-sm btn-primary float-right mr-2" printSectionId="dataTable" tooltip="In dữ liệu"
             ngxPrint printTitle="Product Category" styleSheetFile="../../../../assets/scss/_table.scss">
             <i class="fa fa-print"></i> Print
           </button>
-          <button type="button" class="btn btn-sm btn-primary float-right mr-2"
+          <button type="button" class="btn btn-sm btn-primary float-right mr-2" tooltip="Thêm mới danh mục sản phẩm"
             (click)="[addOrEditProductCateModal.show(), cancel(), setFlag(0)]">
             <i class="fa fa-plus"></i> Add new
           </button>
@@ -80,12 +80,12 @@
               </td>
               <td class="w-1rem">
                 <button type="button" class="btn btn-sm btn-primary"
-                    (click)="[addOrEditProductCateModal.show(), setFlag(1), edit(productCate)]">
+                    (click)="[addOrEditProductCateModal.show(), setFlag(1), edit(productCate)]" tooltip="Chỉnh sửa danh mục sản phẩm">
                     <i class="fa fa-edit fa-lg"></i>
                   </button>
               </td>
               <td class="w-1rem">
-                <button type="button" class="btn btn-sm btn-danger" (click)="remove(productCate)">
+                <button type="button" class="btn btn-sm btn-danger" (click)="remove(productCate)" tooltip="Xóa danh mục sản phẩm">
                   <i class="fa fa-trash fa-lg"></i>
                 </button>
               </td>
@@ -97,10 +97,22 @@
         </table>
       </div>
       <!-- Pagination -->
-      <div class="d-flex" *ngIf="pagination.totalPage > 1">
+      <div id="pagination" *ngIf="pagination.totalPage > 1">
         <pagination [boundaryLinks]="true" [totalItems]="pagination.totalCount" [(ngModel)]="pagination.currentPage"
           [itemsPerPage]="pagination.pageSize" (pageChanged)="pageChanged($event)" previousText="&lsaquo;"
-          nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" [maxSize]=5></pagination>
+          nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" [maxSize]=5>
+        </pagination>
+        <div id="itemRight">
+          <div>
+            Change Page: <input [(ngModel)]="curentPage" (keypress)="setPageCurrent()"/>
+          </div>
+          <p *ngIf="pagination.totalCount >= (pagination.pageSize * pagination.currentPage)">
+            Showing {{pagination.pageSize * pagination.currentPage}} in {{pagination.totalCount}} items
+          </p>
+          <p *ngIf="pagination.totalCount < (pagination.pageSize * pagination.currentPage)">
+            Showing {{pagination.totalCount}} in {{pagination.totalCount}} items
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -158,7 +170,7 @@
         </div>
         <div class="modal-body">
           <p style="color: red;">* Please select a file '.xlsx' or '.xlsm'
-            <a href="javascript:;" (click)="downloadExcelTemplate()">follow this form here</a>
+            <a href="javascript:;" (click)="downloadExcelTemplate()" tooltip="Tải file mẫu">follow this form here</a>
           </p>
           <div class="form-group">
             <div class="custom-file b-form-file">

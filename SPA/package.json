@@ -43,7 +43,7 @@
     "@datorama/akita": "^4.22.0",
     "@mdi/font": "^5.8.55",
     "animate.css": "^4.1.1",
-    "bootstrap": "4.1.1",
+    "bootstrap": "^4.1.1",
     "flag-icon-css": "^3.5.0",
     "font-awesome": "^4.7.0",
     "jquery": "^3.5.1",

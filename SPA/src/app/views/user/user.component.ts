@@ -106,11 +106,11 @@ export class UserComponent implements OnInit {
       this.userService.addUser(this.user).subscribe(res => {
         this.spinnerService.hide();
         if (res.success) {
-          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.success('Success!', res.message);
           this.loadUsers();
           this.addUserModal.hide();
         } else {
-          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.error('Error!', res.message);
         }
       }, error => {
         console.log(error);
@@ -122,10 +122,10 @@ export class UserComponent implements OnInit {
         this.spinnerService.hide();
         if (res.success) {
           this.loadUsers();
-          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.success('Success!', res.message);
           this.addUserModal.hide();
         } else {
-          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.error('Error!', res.message);
         }
       }, error => {
         console.log(error);
@@ -135,11 +135,11 @@ export class UserComponent implements OnInit {
   }
 
   deleteUser(factoryID: string, userAccount: string) {
-    this.alertUtility.confirmDelete('Are you sure you want to delete this record?', SnotifyPosition.centerCenter, () => {
+    this.alertUtility.confirmDelete("Are you sure you want to delete account '" + userAccount.toUpperCase() + "' ?", SnotifyPosition.rightCenter, () => {
       // Prevent from deleting current user
       const currentUser: User = JSON.parse(localStorage.getItem('user'));
       if (factoryID === currentUser.factory_ID && userAccount === currentUser.user_Account) {
-        this.alertUtility.error('Error!', 'The current user cannot be deleted.', SnotifyPosition.rightTop);
+        this.alertUtility.error('Error!', 'The current user cannot be deleted.');
       } else {
         // Execute delete user
         this.spinnerService.show();
@@ -147,9 +147,9 @@ export class UserComponent implements OnInit {
           this.spinnerService.hide();
           if (res.success) {
             this.loadUsers();
-            this.alertUtility.success('Deleted!', res.message, SnotifyPosition.rightTop);
+            this.alertUtility.success('Deleted!', res.message);
           } else {
-            this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
+            this.alertUtility.error('Error!', res.message);
           }
         }, error => {
           console.log(error);
@@ -225,11 +225,11 @@ export class UserComponent implements OnInit {
     this.userService.saveUserRole(this.roles).subscribe(res => {
       this.spinnerService.hide();
       if (res.success) {
-        this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
+        this.alertUtility.success('Success!', res.message);
         this.authorizeModal.hide();
         this.loadUsers();
       } else {
-        this.alertUtility.error('Oops!', res.message, SnotifyPosition.rightTop);
+        this.alertUtility.error('Oops!', res.message);
       }
     }, error => {
       console.log(error);
@@ -239,16 +239,16 @@ export class UserComponent implements OnInit {
 
   validate() {
     if (this.user.factory_ID === null || this.user.factory_ID.trim() === '') {
-      this.alertUtility.error('Error!', 'Invalid Factory', SnotifyPosition.rightTop); return false;
+      this.alertUtility.error('Error!', 'Invalid Factory'); return false;
     }
     if (this.user.user_Account === null || this.user.user_Account.trim() === '') {
-      this.alertUtility.error('Error!', 'Invalid User Account', SnotifyPosition.rightTop); return false;
+      this.alertUtility.error('Error!', 'Invalid User Account'); return false;
     }
     if (this.user.user_Name === null || this.user.user_Name.trim() === '') {
-      this.alertUtility.error('Error!', 'Invalid User Name', SnotifyPosition.rightTop); return false;
+      this.alertUtility.error('Error!', 'Invalid User Name'); return false;
     }
     if (this.user.email === null || this.user.email.trim() === '') {
-      this.alertUtility.error('Error!', 'Invalid Email', SnotifyPosition.rightTop); return false;
+      this.alertUtility.error('Error!', 'Invalid Email'); return false;
     }
 
     this.user.factory_ID = this.user.factory_ID.trim();

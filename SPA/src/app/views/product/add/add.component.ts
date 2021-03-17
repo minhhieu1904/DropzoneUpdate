@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Select2OptionData } from 'ng-select2';
 import { SnotifyPosition } from 'ng-snotify';
+import { Product } from 'src/app/_core/_models/product';
+import { ProductCategory } from 'src/app/_core/_models/product-category';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { ProductCategoryService } from 'src/app/_core/_services/product-category.service';
 import { ProductService } from 'src/app/_core/_services/product.service';
@@ -82,7 +84,7 @@ export class AddComponent implements OnInit {
   }
 
   backList() {
-    this.router.navigate(['/product']);
+    this.router.navigate(['/product/list']);
   }
 
   saveAndNext() {
@@ -92,11 +94,11 @@ export class AddComponent implements OnInit {
     this.checkStatus();
     this.productService.create(this.product, this.fileImages, this.fileVideos).subscribe(res => {
       if (res.success) {
-        this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
+        this.alertUtility.success('Success!', res.message);
         this.cancel();
       }
       else {
-        this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
+        this.alertUtility.error('Error!', res.message);
       }
     },
       error => {
@@ -112,11 +114,11 @@ export class AddComponent implements OnInit {
     if (this.flag === '0') {
       this.productService.create(this.product, this.fileImages, this.fileVideos).subscribe(res => {
         if (res.success) {
-          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.success('Success!', res.message);
           this.backList();
         }
         else {
-          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.error('Error!', res.message);
         }
       },
         error => {
@@ -126,11 +128,11 @@ export class AddComponent implements OnInit {
     else {
       this.productService.update(this.product, this.fileImages, this.fileVideos).subscribe(res => {
         if (res.success) {
-          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.success('Success!', res.message);
           this.backList();
         }
         else {
-          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.error('Error!', res.message);
         }
       },
         error => {

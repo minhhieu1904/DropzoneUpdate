@@ -23,6 +23,7 @@ export class ListComponent implements OnInit {
   text: string = '';
   flag: number = 0;
   mailContent: MailContent;
+  curentPage: number;
 
   fileImportExcel: any = null;
   constructor(
@@ -45,11 +46,11 @@ export class ListComponent implements OnInit {
     if (this.flag === 0) {
       this.productCateService.create(this.productCate).subscribe(res => {
         if (res.success) {
-          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.success('Success!', res.message);
           this.getDataPaginations();
           this.getDataAll();
         } else {
-          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.error('Error!', res.message);
         }
       },
         error => {
@@ -59,11 +60,11 @@ export class ListComponent implements OnInit {
     } else {
       this.productCateService.update(this.productCate).subscribe(res => {
         if (res.success) {
-          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.success('Success!', res.message);
           this.getDataPaginations();
           this.getDataAll();
         } else {
-          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.error('Error!', res.message);
         }
       },
         error => {
@@ -76,10 +77,10 @@ export class ListComponent implements OnInit {
   changeStatus(productCate: ProductCategory) {
     this.productCateService.changeStatus(productCate).subscribe(res => {
       if (res.success) {
-        this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
+        this.alertUtility.success('Success!', res.message);
         this.getDataPaginations();
       } else {
-        this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
+        this.alertUtility.error('Error!', res.message);
       }
     },
       error => {
@@ -94,7 +95,7 @@ export class ListComponent implements OnInit {
         this.productCates = res.result;
         this.pagination = res.pagination;
       }), error => {
-        this.alertUtility.error('Error!', error, SnotifyPosition.rightTop);
+        this.alertUtility.error('Error!', error);
       };
   }
 
@@ -104,7 +105,7 @@ export class ListComponent implements OnInit {
         this.productCateAll = res.result;
         this.pagination = res.pagination;
       }), error => {
-        this.alertUtility.error('Error!', error, SnotifyPosition.rightTop);
+        this.alertUtility.error('Error!', error);
       };
   }
 
@@ -128,16 +129,20 @@ export class ListComponent implements OnInit {
     this.getDataPaginations();
   }
 
+  setPageCurrent() {
+    this.pagination.currentPage = this.curentPage;
+  }
+
   remove(productCategory: ProductCategory) {
     this.alertUtility.confirmDelete("Are you sure delete item '" + productCategory.product_Cate_ID + "' ?", SnotifyPosition.rightCenter, () => {
       this.productCateService.remove(productCategory).subscribe(res => {
         if (res.success) {
-          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.success('Success!', res.message);
           this.getDataPaginations();
           this.getDataAll();
         }
         else {
-          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.error('Error!', res.message);
         }
       },
         error => {
@@ -147,11 +152,11 @@ export class ListComponent implements OnInit {
   }
 
   success() {
-    this.alertUtility.asyncLoadingSuccess('Success!', 'Success', SnotifyPosition.rightTop);
+    this.alertUtility.asyncLoadingSuccess('Success!', 'Success');
   }
 
   error() {
-    this.alertUtility.asyncLoadingError('Error!', 'Error', SnotifyPosition.rightTop);
+    this.alertUtility.asyncLoadingError('Error!', 'Error');
   }
 
   html() {
@@ -183,13 +188,13 @@ export class ListComponent implements OnInit {
     this.alertUtility.confirmDelete('Are you sure import file?', SnotifyPosition.centerCenter, () => {
       this.productCateService.importExcel(this.fileImportExcel).subscribe((res) => {
         if (res.success) {
-          this.alertUtility.success('Success!', 'Import file successfuly', SnotifyPosition.rightTop);
+          this.alertUtility.success('Success!', 'Import file successfuly');
         } else {
-          this.alertUtility.error('Error!', 'Import file failse', SnotifyPosition.rightTop);
+          this.alertUtility.error('Error!', 'Import file failse');
         }
         this.getDataPaginations();
       }, error => {
-        this.alertUtility.error('Error', 'Upload Data Fail!', SnotifyPosition.rightTop);
+        this.alertUtility.error('Error', 'Upload Data Fail!');
       });
     });
   }

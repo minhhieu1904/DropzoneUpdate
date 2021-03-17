@@ -19,6 +19,19 @@ namespace API._Services.Services
             _webHostEnvironment = webHostEnvironment;
         }
 
+        public string CheckTrueFalse(bool param)
+        {
+            string file = "";
+            if (param == true)
+            {
+                return file = _webHostEnvironment.WebRootPath + "\\icons\\ok-512.png";
+            }
+            else
+            {
+                return file = _webHostEnvironment.WebRootPath + "\\icons\\circle-outline-512.png";
+            }
+        }
+
         public void DeleteFileUpload(string files, string fileFolder)
         {
             string[] listResult = files.Split(";");

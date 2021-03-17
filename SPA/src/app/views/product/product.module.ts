@@ -10,6 +10,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { NgSelect2Module } from 'ng-select2';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
     NgSelect2Module,
     NgxDropzoneModule,
     BsDatepickerModule,
+    TooltipModule.forRoot(),
     PaginationModule.forRoot(),
   ],
   declarations: [

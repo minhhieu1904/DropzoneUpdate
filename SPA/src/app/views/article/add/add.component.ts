@@ -65,18 +65,18 @@ export class AddComponent implements OnInit {
   }
 
   backList() {
-    this.router.navigate(['/article']);
+    this.router.navigate(['/article/list']);
   }
 
   saveAndNext() {
     this.checkStatus();
     this.articleService.create(this.article, this.fileImages, this.fileVideos).subscribe(res => {
       if (res.success) {
-        this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
+        this.alertUtility.success('Success!', res.message);
         this.cancel();
       }
       else {
-        this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
+        this.alertUtility.error('Error!', res.message);
       }
     },
       error => {
@@ -89,11 +89,11 @@ export class AddComponent implements OnInit {
     if (this.flag === '0') {
       this.articleService.create(this.article, this.fileImages, this.fileVideos).subscribe(res => {
         if (res.success) {
-          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.success('Success!', res.message);
           this.backList();
         }
         else {
-          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.error('Error!', res.message);
         }
       },
         error => {
@@ -104,11 +104,11 @@ export class AddComponent implements OnInit {
       this.checkStatus();
       this.articleService.update(this.article, this.fileImages, this.fileVideos).subscribe(res => {
         if (res.success) {
-          this.alertUtility.success('Success!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.success('Success!', res.message);
           this.backList();
         }
         else {
-          this.alertUtility.error('Error!', res.message, SnotifyPosition.rightTop);
+          this.alertUtility.error('Error!', res.message);
         }
       },
         error => {

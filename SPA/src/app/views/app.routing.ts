@@ -67,7 +67,7 @@ const routes: Routes = [
         path: 'article',
         children: [
           {
-            path: 'list',
+            path: '',
             loadChildren: () => import('../views/article/article.module')
               .then(m => m.ArticleModule)
           }
@@ -87,7 +87,7 @@ const routes: Routes = [
         path: 'product',
         children: [
           {
-            path: 'list',
+            path: '',
             loadChildren: () => import('../views/product/product.module')
               .then(m => m.ProductModule)
           }
