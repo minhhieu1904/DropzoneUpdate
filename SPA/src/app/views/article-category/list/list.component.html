@@ -10,18 +10,6 @@
             [(ngModel)]="text" (keyup)="getDataPaginations()">
         </div>
         <div class="col-md-3 col-lg-7">
-          <button type="button" class="btn btn-sm btn-success float-right" (click)="export()" tooltip="Xuất file Excel Epplus">
-            <i class="fa fa-file-excel-o"></i> Export
-          </button>
-          <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="exportAspose(1)" tooltip="Xuất file Excel Aspose">
-            <i class="fa fa-file-excel-o"></i> ExportAspose
-          </button>
-          <button type="button" class="btn btn-sm btn-warning float-right mr-2" (click)="exportAspose(2)" tooltip="Xuất file PDF Epplus">
-            <i class="fa fa-file-pdf-o"></i> Pdf
-          </button>
-          <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="importExcelModel.show()"  tooltip="Thêm dữ liệu từ file Excel">
-            <i class="fa fa-file-excel-o"></i> Import
-          </button>
           <!-- Button Add -->
           <button type="button" class="btn btn-sm btn-primary float-right mr-2" tooltip="Thêm mới danh mục bài viết"
             (click)="[cancel(), setFlag(0), addOrEditArticleCateModal.show()]" style="float: right;">
@@ -31,7 +19,23 @@
       </div>
     </div>
     <div class="card-body">
-      <!-- Form Search -->
+      <div class="col-12" style="margin-bottom: 15px; padding: 0;">
+        <button type="button" class="btn btn-sm btn-success mr-2" (click)="export()" tooltip="Xuất file Excel Epplus">
+          <i class="fa fa-file-excel-o"></i> Export
+        </button>
+        <button type="button" class="btn btn-sm btn-success mr-2" (click)="exportAspose(1)" tooltip="Xuất file Excel Aspose">
+          <i class="fa fa-file-excel-o"></i> ExportAspose
+        </button>
+        <button type="button" class="btn btn-sm btn-warning mr-2" (click)="exportAspose(2)" tooltip="Xuất file PDF Epplus">
+          <i class="fa fa-file-pdf-o"></i> Pdf
+        </button>
+        <button type="button" class="btn btn-sm btn-success mr-2" (click)="importExcelModel.show()"  tooltip="Thêm dữ liệu từ file Excel">
+          <i class="fa fa-file-excel-o"></i> Import
+        </button>
+        <button type="button" class="btn btn-sm btn-danger float-right" (click)="removeMulti()" tooltip="Xóa nhiều danh mục bài viết">
+          <i class="fa fa-trash fa-lg"></i> Delete
+        </button>
+      </div>
       <!-- ArticleCate Table -->
       <div class="table-responsive">
         <table class="table table-bordered table-hover text-center">
@@ -44,7 +48,17 @@
               <th>Update By</th>
               <th>Update Time</th>
               <th>Status</th>
-              <th colspan="3">Action</th>
+              <th colspan="2">Action</th>
+              <th>
+                <div class="pretty p-icon p-round p-jelly">
+                  <input type="checkbox" class="custom-control-input" id="checkAll"
+                    [(ngModel)]="checkboxAll" (change)="checkAll($event)">
+                  <div class="state p-warning" id="custom">
+                    <i class="icon fa fa-check"></i>
+                    <label class="custom-control-label" for="checkAll"></label>
+                  </div>
+                </div>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -79,8 +93,18 @@
                   <i class="fa fa-trash fa-lg"></i>
                 </button>
               </td>
+              <td>
+                <div class="pretty p-icon p-round p-jelly">
+                  <input type="checkbox" class="custom-control-input" [id]="articleCate.article_Cate_ID"
+                    [(ngModel)]="articleCate.checked" (change)="checkElement()">
+                  <div class="state p-warning">
+                    <i class="icon fa fa-check"></i>
+                    <label class="custom-control-label" for="{{articleCate.article_Cate_ID}}"></label>
+                  </div>
+                </div>
+              </td>
             </tr>
-            <tr *ngIf="articleCates.length === 0">
+            <tr *ngIf="articleCateAll.length === 0">
               <td colspan="100%" class="table-warning text-center font-weight-bold"> NO DATA! </td>
             </tr>
           </tbody>

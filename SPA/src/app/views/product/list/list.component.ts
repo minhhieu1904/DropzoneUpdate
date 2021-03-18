@@ -14,6 +14,7 @@ import { Pagination, PaginationResult } from 'src/app/_core/_utility/pagination'
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
+  productAll: Product[];
   products: Product[];
   product: any = {};
   text: string = '';
@@ -23,6 +24,8 @@ export class ListComponent implements OnInit {
   productCateID: string = 'all';
   productList: Array<Select2OptionData>;
   product_Name: string = 'all';
+  listProduct: Product[] = [];
+  checkboxAll: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -33,7 +36,7 @@ export class ListComponent implements OnInit {
 
   ngOnInit() {
     this.route.data.subscribe(data => {
-      this.products = data['products'].result;
+      this.productAll = data['products'].result;
       this.pagination = data['products'].pagination;
     });
     this.getDataPaginations();
@@ -53,10 +56,27 @@ export class ListComponent implements OnInit {
   }
 
   remove(product: Product) {
-    this.alertUtility.confirmDelete('Are you sure delete item?', SnotifyPosition.rightCenter, () => {
-      this.productService.remove(product).subscribe(res => {
+    this.listProduct.push(product);
+    this.checkDelete(this.listProduct, 'Are you sure delete product?');
+  }
+
+  removeMulti() {
+    const productList = this.productAll.filter(item => {
+      return item.checked === true;
+    });
+    if (productList.length === 0) {
+      return this.alertUtility.error('Error', 'Please choose item to delete');
+    }
+    this.checkDelete(productList, "Are you sure delete " + productList.length + " items?");
+  }
+
+  checkDelete(products: Product[], alert: string) {
+    this.alertUtility.confirmDelete(alert, SnotifyPosition.rightCenter, () => {
+      this.productService.remove(products).subscribe(res => {
         if (res.success) {
           this.alertUtility.success('Success!', res.message);
+          this.listProduct = [];
+          this.text = '';
           this.getDataPaginations();
         }
         else {
@@ -72,8 +92,10 @@ export class ListComponent implements OnInit {
   getDataPaginations() {
     this.productService.getDataPaginations(this.pagination.currentPage, this.pagination.pageSize, this.text)
       .subscribe((res: PaginationResult<Product>) => {
-        this.products = res.result;
+        this.productAll = res.result;
         this.pagination = res.pagination;
+        this.products = this.productAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
+        this.checkboxAll = false;
       }), error => {
         this.alertUtility.error('Error!', error);
       };
@@ -82,8 +104,10 @@ export class ListComponent implements OnInit {
   searchDataPaginations() {
     this.productService.searchDataPaginations(this.pagination.currentPage, this.pagination.pageSize, this.productCateID, this.product_Name)
       .subscribe((res: PaginationResult<Product>) => {
-        this.products = res.result;
+        this.productAll = res.result;
         this.pagination = res.pagination;
+        this.products = this.productAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
+        this.checkboxAll = false;
       }), error => {
         this.alertUtility.error('Error!', error);
       };
@@ -151,7 +175,7 @@ export class ListComponent implements OnInit {
 
   pageChanged(event: any): void {
     this.pagination.currentPage = event.page;
-    this.getDataPaginations();
+    this.products = this.productAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
   }
 
   getProductCateList() {
@@ -184,5 +208,27 @@ export class ListComponent implements OnInit {
     else
       checkSearch = 2;
     return this.productService.exportListAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport, this.productCateID, this.product_Name, checkSearch);
+  }
+
+  checkAll(e) {
+    if (e.target.checked) {
+      this.productAll.forEach(element => {
+        element.checked = true;
+      });
+    }
+    else {
+      this.productAll.forEach(element => {
+        element.checked = false;
+      });
+    }
+  }
+
+  checkElement() {
+    let countProductCateCheckBox = this.productAll.filter(x => x.checked !== true).length;
+    if (countProductCateCheckBox === 0) {
+      this.checkboxAll = true;
+    } else {
+      this.checkboxAll = false;
+    }
   }
 }

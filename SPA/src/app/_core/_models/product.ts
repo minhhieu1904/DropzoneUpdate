@@ -16,4 +16,5 @@ export interface Product {
     update_By: string;
     update_Time: Date;
     product_Cate_ID: string;
+    checked: boolean;
 }

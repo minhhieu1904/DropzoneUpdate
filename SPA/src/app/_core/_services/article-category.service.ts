@@ -36,6 +36,7 @@ export class ArticleCategoryService {
   }
 
   getDataPaginations(page?, itemsPerPage?, text?): Observable<PaginationResult<ArticleCategory>> {
+    debugger
     let params = this.utilityService.getParamSearchPagination(page, itemsPerPage, text);
 
     return this.http.get<PaginationResult<ArticleCategory>>(this.baseUrl + 'ArticleCategory/pagination', { params });
@@ -49,7 +50,7 @@ export class ArticleCategoryService {
     return this.http.put<OperationResult>(this.baseUrl + 'ArticleCategory/changeStatus', articleCategory);
   }
 
-  remove(articleCategory: ArticleCategory) {
+  remove(articleCategory: ArticleCategory[]) {
     return this.http.post<OperationResult>(this.baseUrl + 'ArticleCategory/delete', articleCategory);
   }
 

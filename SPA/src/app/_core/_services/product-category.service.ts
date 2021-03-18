@@ -42,11 +42,6 @@ export class ProductCategoryService {
     return this.http.get<PaginationResult<ProductCategory>>(this.baseUrl + 'ProductCategory/pagination', { params });
   }
 
-  getDataAll(page?, itemsPerPage?, text?): Observable<PaginationResult<ProductCategory>> {
-    let params = this.utilityService.getParamSearchPagination(page, itemsPerPage, text);
-    return this.http.get<PaginationResult<ProductCategory>>(this.baseUrl + 'ProductCategory/print', { params });
-  }
-
   update(productCategory: ProductCategory) {
     return this.http.put<OperationResult>(this.baseUrl + 'ProductCategory', productCategory);
   }
@@ -55,7 +50,7 @@ export class ProductCategoryService {
     return this.http.put<OperationResult>(this.baseUrl + 'ProductCategory/changeStatus', productCategory);
   }
 
-  remove(productCategory: ProductCategory) {
+  remove(productCategory: ProductCategory[]) {
     return this.http.post<OperationResult>(this.baseUrl + 'ProductCategory/delete', productCategory);
   }
 

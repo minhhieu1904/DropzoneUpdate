@@ -20,6 +20,7 @@ namespace API._Services.Services
     {
         private readonly IProductCategoryRepository _productCategoryRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IDropzoneService _dropzoneService;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configuration;
         private OperationResult operationResult;
@@ -27,13 +28,15 @@ namespace API._Services.Services
         public ProductCategoryService(
             IProductCategoryRepository productCategoryRepository,
             IMapper mapper,
-            MapperConfiguration configuration, 
-            IProductRepository productRepository)
+            MapperConfiguration configuration,
+            IProductRepository productRepository, 
+            IDropzoneService dropzoneService)
         {
             _productCategoryRepository = productCategoryRepository;
             _mapper = mapper;
             _configuration = configuration;
             _productRepository = productRepository;
+            _dropzoneService = dropzoneService;
         }
 
         public async Task<OperationResult> Create(ProductCategory_Dto model)
@@ -46,7 +49,7 @@ namespace API._Services.Services
                 await _productCategoryRepository.Save();
                 operationResult = new OperationResult { Success = true, Message = "Product Category was successfully added." };
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 operationResult = new OperationResult { Success = false, Message = "Product Category was exists." };
             }
@@ -67,7 +70,7 @@ namespace API._Services.Services
         public async Task<PageListUtility<ProductCategory_Dto>> GetProductCategoryWithPaginations(PaginationParams param, string text, bool isPaging = true)
         {
             var data = _productCategoryRepository.FindAll().ProjectTo<ProductCategory_Dto>(_configuration).OrderByDescending(x => x.Update_Time);
-            if (text != null)
+            if (!string.IsNullOrEmpty(text))
             {
                 data = data.Where(x => x.Product_Cate_Name.ToLower().Contains(text.ToLower())
                 || x.Update_By.ToLower().Contains(text.ToLower())
@@ -85,7 +88,7 @@ namespace API._Services.Services
                 await _productCategoryRepository.Save();
                 operationResult = new OperationResult { Success = true, Message = "Product Category was successfully updated." };
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 operationResult = new OperationResult { Success = false, Message = "Product Category was failes updated." };
             }
@@ -93,29 +96,55 @@ namespace API._Services.Services
             return operationResult;
         }
 
-        public async Task<OperationResult> Remove(ProductCategory_Dto model)
+        public async Task<OperationResult> Remove(List<ProductCategory_Dto> model)
         {
-            var item = await _productCategoryRepository.FindAll(x => x.Product_Cate_ID == model.Product_Cate_ID).FirstOrDefaultAsync();
-            var products = await _productRepository.FindAll(x => x.Product_Cate_ID == model.Product_Cate_ID).ToListAsync();
-            if (item != null && products.Count == 0)
+            List<ProductCategory> productCates = new List<ProductCategory>();
+            List<Product> products = new List<Product>();
+            foreach (var item in model)
+            {
+                productCates.Add(await _productCategoryRepository.FindAll(x => x.Product_Cate_ID == item.Product_Cate_ID).FirstOrDefaultAsync());
+                products.AddRange(await _productRepository.FindAll(x => x.Product_Cate_ID == item.Product_Cate_ID).ToListAsync());
+            }
+
+            if (productCates != null && productCates.Count > 0)
             {
                 try
                 {
-                    _productCategoryRepository.Remove(item);
+                    if (products != null && products.Count > 0)
+                    {
+                        foreach (var product in products)
+                        {
+                            var images = await _productRepository.FindAll(x => x.Product_Cate_ID == product.Product_Cate_ID &&
+                                                    x.Product_ID == product.Product_ID &&
+                                                    x.Product_Name == product.Product_Name).Select(x => x.FileImages).Distinct().FirstOrDefaultAsync();
+
+                            var videos = await _productRepository.FindAll(x => x.Product_Cate_ID == product.Product_Cate_ID &&
+                                                                    x.Product_ID == product.Product_ID &&
+                                                                    x.Product_Name == product.Product_Name).Select(x => x.FileVideos).Distinct().FirstOrDefaultAsync();
+                            if (!string.IsNullOrEmpty(images))
+                            {
+                                _dropzoneService.DeleteFileUpload(images, "\\uploaded\\images\\product");
+                            }
+                            if (!string.IsNullOrEmpty(videos))
+                            {
+                                _dropzoneService.DeleteFileUpload(videos, "\\uploaded\\video\\product");
+                            }
+                        }
+                        _productRepository.RemoveMultiple(products);
+                    }
+                    _productCategoryRepository.RemoveMultiple(productCates);
                     await _productCategoryRepository.Save();
-                    operationResult = new OperationResult { Success = true, Message = "Product Category was delete successfully." };
+                    return operationResult = new OperationResult { Success = true, Message = "Product Category was delete successfully." };
                 }
-                catch (System.Exception)
+                catch (Exception)
                 {
-                    operationResult = new OperationResult { Success = false, Message = "Product Category was delete failes." };
+                    return operationResult = new OperationResult { Success = false, Message = "Product Category was delete failes." };
                 }
             }
             else
             {
-                operationResult = new OperationResult { Success = false, Message = "Product Category was delete failes." };
+                return operationResult = new OperationResult { Success = false, Message = "Product Category was delete failes." };
             }
-
-            return operationResult;
         }
 
         public async Task<string> GetProductCategoryID()

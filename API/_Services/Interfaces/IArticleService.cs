@@ -10,7 +10,7 @@ namespace API._Services.Interfaces
     {
         Task<OperationResult> Create(Article_Dto model);
         Task<OperationResult> Update(Article_Dto model);
-        Task<OperationResult> Remove(Article_Dto model);
+        Task<OperationResult> Remove(List<Article_Dto> model);
         Task<Article_Dto> GetArticleByID(string articleCateID, int articleID);
         Task<List<Article_Dto>> GetAllAsync();
         Task<object> GetListArticleByArticleCateID(string articleCateID);

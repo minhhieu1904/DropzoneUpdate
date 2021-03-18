@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Security.Claims;
@@ -33,36 +34,31 @@ namespace API.Controllers
         {
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
-            var data = await _articleCategoryService.Create(model);
-            return Ok(data);
+            return Ok(await _articleCategoryService.Create(model));
         }
 
         [HttpGet]
         public async Task<IActionResult> GetArticleCategoryByID(string articleCateID)
         {
-            var data = await _articleCategoryService.GetArticleCategoryByID(articleCateID);
-            return Ok(data);
+            return Ok(await _articleCategoryService.GetArticleCategoryByID(articleCateID));
         }
 
         [HttpGet("all")]
         public async Task<IActionResult> GetAllAsync()
         {
-            var data = await _articleCategoryService.GetAllAsync();
-            return Ok(data);
+            return Ok(await _articleCategoryService.GetAllAsync());
         }
 
         [HttpGet("name")]
         public async Task<IActionResult> GetIDAndName()
         {
-            var data = await _articleCategoryService.GetIDAndName();
-            return Ok(data);
+            return Ok(await _articleCategoryService.GetIDAndName());
         }
 
         [HttpGet("pagination")]
         public async Task<IActionResult> GetArticleCategoryWithPaginations([FromQuery] PaginationParams param, string text)
         {
-            var data = await _articleCategoryService.GetArticleCategoryWithPaginations(param, text);
-            return Ok(data);
+            return Ok(await _articleCategoryService.GetArticleCategoryWithPaginations(param, text, false));
         }
 
         [HttpPut]
@@ -70,8 +66,7 @@ namespace API.Controllers
         {
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
-            var data = await _articleCategoryService.Update(model);
-            return Ok(data);
+            return Ok(await _articleCategoryService.Update(model));
         }
 
         [HttpPut("changeStatus")]
@@ -80,15 +75,13 @@ namespace API.Controllers
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             model.Status = !model.Status;
-            var data = await _articleCategoryService.Update(model);
-            return Ok(data);
+            return Ok(await _articleCategoryService.Update(model));
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> Remove(ArticleCategory_Dto model)
+        public async Task<IActionResult> Remove(List<ArticleCategory_Dto> model)
         {
-            var data = await _articleCategoryService.Remove(model);
-            return Ok(data);
+            return Ok(await _articleCategoryService.Remove(model));
         }
 
         // Import Data Excel

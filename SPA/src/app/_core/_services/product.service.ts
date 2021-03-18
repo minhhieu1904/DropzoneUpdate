@@ -81,7 +81,7 @@ export class ProductService {
     return this.http.put<OperationResult>(this.baseUrl + 'Product/changeStatus', product);
   }
 
-  remove(product: Product) {
+  remove(product: Product[]) {
     return this.http.post<OperationResult>(this.baseUrl + 'Product/delete', product);
   }
 

@@ -15,12 +15,15 @@ import { Pagination, PaginationResult } from 'src/app/_core/_utility/pagination'
 })
 export class ListComponent implements OnInit {
   @ViewChild('addArticleCateModal') addUserModal: ModalDirective;
+  articleCateAll: ArticleCategory[];
   articleCates: ArticleCategory[];
   articleCate: any = {};
   pagination: Pagination;
   text: string = '';
   flag: number = 0;
   fileImportExcel: any = null;
+  listArticleCate: ArticleCategory[] = [];
+  checkboxAll: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private articleCateService: ArticleCategoryService,
@@ -30,7 +33,7 @@ export class ListComponent implements OnInit {
 
   ngOnInit() {
     this.route.data.subscribe(data => {
-      this.articleCates = data['articleCates'].result;
+      this.articleCateAll = data['articleCates'].result;
       this.pagination = data['articleCates'].pagination;
     });
     this.getDataPaginations();
@@ -84,8 +87,10 @@ export class ListComponent implements OnInit {
   getDataPaginations() {
     this.articleCateService.getDataPaginations(this.pagination.currentPage, this.pagination.pageSize, this.text)
       .subscribe((res: PaginationResult<ArticleCategory>) => {
-        this.articleCates = res.result;
+        this.articleCateAll = res.result;
         this.pagination = res.pagination;
+        this.articleCates = this.articleCateAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
+        this.checkboxAll = false;
       }), error => {
         this.alertUtility.error('Error!', error);
       };
@@ -108,14 +113,31 @@ export class ListComponent implements OnInit {
 
   pageChanged(event: any): void {
     this.pagination.currentPage = event.page;
-    this.getDataPaginations();
+    this.articleCates = this.articleCateAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
   }
 
   remove(articleCategory: ArticleCategory) {
-    this.alertUtility.confirmDelete('Are you sure delete item?', SnotifyPosition.rightCenter, () => {
-      this.articleCateService.remove(articleCategory).subscribe(res => {
+    this.listArticleCate.push(articleCategory);
+    this.checkDelete(this.listArticleCate, 'Are you sure delete article ' + "'" + articleCategory.article_Cate_ID + "'" + " ?");
+  }
+
+  removeMulti() {
+    const articleCateList = this.articleCateAll.filter(item => {
+      return item.checked === true;
+    });
+    if (articleCateList.length === 0) {
+      return this.alertUtility.error('Error', 'Please choose item to delete');
+    }
+    this.checkDelete(articleCateList, "Are you sure delete " + articleCateList.length + " items?");
+  }
+
+  checkDelete(articleCategorys: ArticleCategory[], alert: string) {
+    this.alertUtility.confirmDelete(alert, SnotifyPosition.rightCenter, () => {
+      this.articleCateService.remove(articleCategorys).subscribe(res => {
         if (res.success) {
           this.alertUtility.success('Success!', res.message);
+          this.listArticleCate = [];
+          this.text = '';
           this.getDataPaginations();
         }
         else {
@@ -179,5 +201,27 @@ export class ListComponent implements OnInit {
 
   downloadExcelTemplate() {
     window.location.href = '../../../../assets/fileExcelTemplate/article_category.xlsx';
+  }
+
+  checkAll(e) {
+    if (e.target.checked) {
+      this.articleCateAll.forEach(element => {
+        element.checked = true;
+      });
+    }
+    else {
+      this.articleCateAll.forEach(element => {
+        element.checked = false;
+      });
+    }
+  }
+
+  checkElement() {
+    let countProductCateCheckBox = this.articleCateAll.filter(x => x.checked !== true).length;
+    if (countProductCateCheckBox === 0) {
+      this.checkboxAll = true;
+    } else {
+      this.checkboxAll = false;
+    }
   }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
@@ -41,43 +42,37 @@ namespace API.Controllers
             model.FileVideos = await _dropzoneService.UploadFile(model.Videos, model.Product_Cate_ID + "_" + model.Product_ID + "_", "\\uploaded\\video\\product");
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
-            var data = await _productService.Create(model);
-            return Ok(data);
+            return Ok(await _productService.Create(model));
         }
 
         [HttpGet]
         public async Task<IActionResult> GetProductByID(string productCateID, int productID)
         {
-            var data = await _productService.GetProductByID(productCateID, productID);
-            return Ok(data);
+            return Ok(await _productService.GetProductByID(productCateID, productID));
         }
 
         [HttpGet("all")]
         public async Task<IActionResult> GetAllAsync()
         {
-            var data = await _productService.GetAllAsync();
-            return Ok(data);
+            return Ok(await _productService.GetAllAsync());
         }
 
         [HttpGet("productID")]
         public async Task<IActionResult> GetListProductByProductCateID(string productCateID)
         {
-            var data = await _productService.GetListProductByProductCateID(productCateID);
-            return Ok(data);
+            return Ok(await _productService.GetListProductByProductCateID(productCateID));
         }
 
         [HttpGet("pagination")]
         public async Task<IActionResult> GetProductWithPaginations([FromQuery] PaginationParams param, string text)
         {
-            var data = await _productService.GetProductWithPaginations(param, text);
-            return Ok(data);
+            return Ok(await _productService.GetProductWithPaginations(param, text, false));
         }
 
         [HttpGet("search")]
         public async Task<IActionResult> SearchProductWithPaginations([FromQuery] PaginationParams param, string productCateID, string productName)
         {
-            var data = await _productService.SearchProductWithPaginations(param, productCateID, productName);
-            return Ok(data);
+            return Ok(await _productService.SearchProductWithPaginations(param, productCateID, productName, false));
         }
 
         [HttpPut]
@@ -122,8 +117,7 @@ namespace API.Controllers
 
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
-            var data = await _productService.Update(model);
-            return Ok(data);
+            return Ok(await _productService.Update(model));
         }
 
         [HttpPut("changeNew")]
@@ -132,8 +126,7 @@ namespace API.Controllers
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             model.New = !model.New;
-            var data = await _productService.Update(model);
-            return Ok(data);
+            return Ok(await _productService.Update(model));
         }
 
         [HttpPut("changeHotSale")]
@@ -142,8 +135,7 @@ namespace API.Controllers
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             model.Hot_Sale = !model.Hot_Sale;
-            var data = await _productService.Update(model);
-            return Ok(data);
+            return Ok(await _productService.Update(model));
         }
 
         [HttpPut("changeIsSale")]
@@ -158,8 +150,7 @@ namespace API.Controllers
                 model.From_Date_Sale = null;
                 model.To_Date_Sale = null;
             }
-            var data = await _productService.Update(model);
-            return Ok(data);
+            return Ok(await _productService.Update(model));
         }
 
         [HttpPut("changeStatus")]
@@ -168,30 +159,32 @@ namespace API.Controllers
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             model.Status = !model.Status;
-            var data = await _productService.Update(model);
-            return Ok(data);
+            return Ok(await _productService.Update(model));
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> Remove(Product_Dto model)
+        public async Task<IActionResult> Remove(List<Product_Dto> model)
         {
-            var images = await _productRepository.FindAll(x => x.Product_Cate_ID == model.Product_Cate_ID &&
-                                                    x.Product_ID == model.Product_ID &&
-                                                    x.Product_Name == model.Product_Name).Select(x => x.FileImages).Distinct().FirstOrDefaultAsync();
+            foreach (var item in model)
+            {
+                var images = await _productRepository.FindAll(x => x.Product_Cate_ID == item.Product_Cate_ID &&
+                                                        x.Product_ID == item.Product_ID &&
+                                                        x.Product_Name == item.Product_Name).Select(x => x.FileImages).Distinct().FirstOrDefaultAsync();
 
-            var videos = await _productRepository.FindAll(x => x.Product_Cate_ID == model.Product_Cate_ID &&
-                                                    x.Product_ID == model.Product_ID &&
-                                                    x.Product_Name == model.Product_Name).Select(x => x.FileVideos).Distinct().FirstOrDefaultAsync();
-            if (!string.IsNullOrEmpty(images))
-            {
-                _dropzoneService.DeleteFileUpload(images, "\\uploaded\\images\\product");
+                var videos = await _productRepository.FindAll(x => x.Product_Cate_ID == item.Product_Cate_ID &&
+                                                        x.Product_ID == item.Product_ID &&
+                                                        x.Product_Name == item.Product_Name).Select(x => x.FileVideos).Distinct().FirstOrDefaultAsync();
+                if (!string.IsNullOrEmpty(images))
+                {
+                    _dropzoneService.DeleteFileUpload(images, "\\uploaded\\images\\product");
+                }
+                if (!string.IsNullOrEmpty(videos))
+                {
+                    _dropzoneService.DeleteFileUpload(videos, "\\uploaded\\video\\product");
+                }
             }
-            if (!string.IsNullOrEmpty(videos))
-            {
-                _dropzoneService.DeleteFileUpload(videos, "\\uploaded\\video\\product");
-            }
-            var data = await _productService.Remove(model);
-            return Ok(data);
+
+            return Ok(await _productService.Remove(model));
         }
 
         // Export Excel and PDF Product List with Aspose.Cell
@@ -365,12 +358,12 @@ namespace API.Controllers
                 string fileIsSale = _dropzoneService.CheckTrueFalse(data.IsSale);
                 string fileHotSale = _dropzoneService.CheckTrueFalse(data.Hot_Sale);
                 string fileStatus = _dropzoneService.CheckTrueFalse(data.Status);
-                
+
                 Aspose.Cells.Drawing.Picture iconNew = ws.Pictures[ws.Pictures.Add(1, 2, fileNew)];
                 Aspose.Cells.Drawing.Picture iconIsSale = ws.Pictures[ws.Pictures.Add(1, 3, fileIsSale)];
                 Aspose.Cells.Drawing.Picture iconHotSale = ws.Pictures[ws.Pictures.Add(1, 4, fileHotSale)];
                 Aspose.Cells.Drawing.Picture iconStatus = ws.Pictures[ws.Pictures.Add(1, 5, fileStatus)];
-                
+
                 iconNew.Height = iconIsSale.Height = iconHotSale.Height = iconStatus.Height = 20;
                 iconNew.Width = iconIsSale.Width = iconHotSale.Width = iconStatus.Width = 20;
                 iconNew.Top = iconIsSale.Top = iconHotSale.Top = iconStatus.Top = 20 * (index3 - 2);

@@ -44,43 +44,37 @@ namespace API.Controllers
             model.FileVideos = await _dropzoneService.UploadFile(model.Videos, model.Article_Cate_ID + "_" + model.Article_ID + "_", "\\uploaded\\video\\article");
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
-            var data = await _articleService.Create(model);
-            return Ok(data);
+            return Ok(await _articleService.Create(model));
         }
 
         [HttpGet]
         public async Task<IActionResult> GetArticleByID(string articleCateID, int articleID)
         {
-            var data = await _articleService.GetArticleByID(articleCateID, articleID);
-            return Ok(data);
+            return Ok(await _articleService.GetArticleByID(articleCateID, articleID));
         }
 
         [HttpGet("all")]
         public async Task<IActionResult> GetAllAsync()
         {
-            var data = await _articleService.GetAllAsync();
-            return Ok(data);
+            return Ok(await _articleService.GetAllAsync());
         }
 
         [HttpGet("articleID")]
         public async Task<IActionResult> GetListArticleByArticleCateID(string articleCateID)
         {
-            var data = await _articleService.GetListArticleByArticleCateID(articleCateID);
-            return Ok(data);
+            return Ok(await _articleService.GetListArticleByArticleCateID(articleCateID));
         }
 
         [HttpGet("pagination")]
         public async Task<IActionResult> GetArticleWithPaginations([FromQuery] PaginationParams param, string text)
         {
-            var data = await _articleService.GetArticleWithPaginations(param, text);
-            return Ok(data);
+            return Ok(await _articleService.GetArticleWithPaginations(param, text, false));
         }
 
         [HttpGet("search")]
         public async Task<IActionResult> SearchArticleWithPaginations([FromQuery] PaginationParams param, string articleCateID, string articleName)
         {
-            var data = await _articleService.SearchArticleWithPaginations(param, articleCateID, articleName);
-            return Ok(data);
+            return Ok(await _articleService.SearchArticleWithPaginations(param, articleCateID, articleName, false));
         }
 
         [HttpPut]
@@ -121,8 +115,7 @@ namespace API.Controllers
 
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
-            var data = await _articleService.Update(model);
-            return Ok(data);
+            return Ok(await _articleService.Update(model));
         }
 
         [HttpPut("changeStatus")]
@@ -131,30 +124,31 @@ namespace API.Controllers
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             model.Status = !model.Status;
-            var data = await _articleService.Update(model);
-            return Ok(data);
+            return Ok(await _articleService.Update(model));
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> Remove(Article_Dto model)
+        public async Task<IActionResult> Remove(List<Article_Dto> model)
         {
-            var images = await _articleRepository.FindAll(x => x.Article_Cate_ID == model.Article_Cate_ID &&
-                                                    x.Article_ID == model.Article_ID &&
-                                                    x.Article_Name == model.Article_Name).Select(x => x.FileImages).Distinct().FirstOrDefaultAsync();
+            foreach (var item in model)
+            {
+                var images = await _articleRepository.FindAll(x => x.Article_Cate_ID == item.Article_Cate_ID &&
+                                                        x.Article_ID == item.Article_ID &&
+                                                        x.Article_Name == item.Article_Name).Select(x => x.FileImages).Distinct().FirstOrDefaultAsync();
 
-            var videos = await _articleRepository.FindAll(x => x.Article_Cate_ID == model.Article_Cate_ID &&
-                                                    x.Article_ID == model.Article_ID &&
-                                                    x.Article_Name == model.Article_Name).Select(x => x.FileVideos).Distinct().FirstOrDefaultAsync();
-            if (!string.IsNullOrEmpty(images))
-            {
-                _dropzoneService.DeleteFileUpload(images, "\\uploaded\\images\\article");
+                var videos = await _articleRepository.FindAll(x => x.Article_Cate_ID == item.Article_Cate_ID &&
+                                                        x.Article_ID == item.Article_ID &&
+                                                        x.Article_Name == item.Article_Name).Select(x => x.FileVideos).Distinct().FirstOrDefaultAsync();
+                if (!string.IsNullOrEmpty(images))
+                {
+                    _dropzoneService.DeleteFileUpload(images, "\\uploaded\\images\\article");
+                }
+                if (!string.IsNullOrEmpty(videos))
+                {
+                    _dropzoneService.DeleteFileUpload(videos, "\\uploaded\\video\\article");
+                }
             }
-            if (!string.IsNullOrEmpty(videos))
-            {
-                _dropzoneService.DeleteFileUpload(videos, "\\uploaded\\video\\article");
-            }
-            var data = await _articleService.Remove(model);
-            return Ok(data);
+            return Ok(await _articleService.Remove(model));
         }
 
         // Export Excel and PDF Article List with Aspose.Cell

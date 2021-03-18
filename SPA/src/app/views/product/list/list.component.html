@@ -43,15 +43,18 @@
             (click)="addNew()" style="float: right;" tooltip="Thêm mới sản phẩm">
             <i class="fa fa-plus"></i> Add new
           </button>
-          <button type="button" class="btn btn-sm btn-success float-right height34px mr-2" 
-            (click)="exportExcel(1)" tooltip="Xuất file Excel">
-            <i class="fa fa-file-excel-o"></i> ExportAspose
-          </button>
         </div>
       </div>
     </div>
     <div class="card-body">
-      <!-- Form Search -->
+      <div class="col-12" style="margin-bottom: 15px; padding: 0;">
+        <button type="button" class="btn btn-sm btn-success mr-2" (click)="exportExcel(1)" tooltip="Xuất file Excel">
+          <i class="fa fa-file-excel-o"></i> ExportAspose
+        </button>
+        <button type="button" class="btn btn-sm btn-danger float-right" (click)="removeMulti()" tooltip="Xóa nhiều sản phẩm">
+          <i class="fa fa-trash fa-lg"></i> Delete
+        </button>
+      </div>
       <!-- Product Table -->
       <div class="table-responsive">
         <table class="table table-bordered table-hover text-center">
@@ -68,7 +71,17 @@
               <th>Update By</th>
               <th>Update Time</th>
               <th>Status</th>
-              <th colspan="3">Action</th>
+              <th colspan="2">Action</th>
+              <th>
+                <div class="pretty p-icon p-round p-jelly">
+                  <input type="checkbox" class="custom-control-input" id="checkAll"
+                    [(ngModel)]="checkboxAll" (change)="checkAll($event)">
+                  <div class="state p-warning" id="custom">
+                    <i class="icon fa fa-check"></i>
+                    <label class="custom-control-label" for="checkAll"></label>
+                  </div>
+                </div>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -132,8 +145,18 @@
                   <i class="fa fa-trash fa-lg"></i>
                 </button>
               </td>
+              <td>
+                <div class="pretty p-icon p-round p-jelly">
+                  <input type="checkbox" class="custom-control-input" [id]="product.product_ID"
+                    [(ngModel)]="product.checked" (change)="checkElement()">
+                  <div class="state p-warning">
+                    <i class="icon fa fa-check"></i>
+                    <label class="custom-control-label" for="{{product.product_ID}}"></label>
+                  </div>
+                </div>
+              </td>
             </tr>
-            <tr *ngIf="products.length === 0">
+            <tr *ngIf="productAll.length === 0">
               <td colspan="100%" class="table-warning text-center font-weight-bold"> NO DATA! </td>
             </tr>
           </tbody>

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Security.Claims;
@@ -33,43 +34,31 @@ namespace API.Controllers
         {
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
-            var data = await _productCategoryService.Create(model);
-            return Ok(data);
+            return Ok(await _productCategoryService.Create(model));
         }
 
         [HttpGet]
         public async Task<IActionResult> GetProductCategoryByID(string productCateID)
         {
-            var data = await _productCategoryService.GetProductCategoryByID(productCateID);
-            return Ok(data);
+            return Ok(await _productCategoryService.GetProductCategoryByID(productCateID));
         }
 
         [HttpGet("all")]
         public async Task<IActionResult> GetAllAsync()
         {
-            var data = await _productCategoryService.GetAllAsync();
-            return Ok(data);
-        }
-
-        [HttpGet("print")]
-        public async Task<IActionResult> Print([FromQuery] PaginationParams param, string text)
-        {
-            var data = await _productCategoryService.GetProductCategoryWithPaginations(param, text, false);
-            return Ok(data);
+            return Ok(await _productCategoryService.GetAllAsync());
         }
 
         [HttpGet("name")]
         public async Task<IActionResult> GetIDAndName()
         {
-            var data = await _productCategoryService.GetIDAndName();
-            return Ok(data);
+            return Ok(await _productCategoryService.GetIDAndName());
         }
 
         [HttpGet("pagination")]
         public async Task<IActionResult> GetProductCategoryWithPaginations([FromQuery] PaginationParams param, string text)
         {
-            var data = await _productCategoryService.GetProductCategoryWithPaginations(param, text);
-            return Ok(data);
+            return Ok(await _productCategoryService.GetProductCategoryWithPaginations(param, text, false));
         }
 
         [HttpPut]
@@ -77,8 +66,7 @@ namespace API.Controllers
         {
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
-            var data = await _productCategoryService.Update(model);
-            return Ok(data);
+            return Ok(await _productCategoryService.Update(model));
         }
 
         [HttpPut("changeStatus")]
@@ -87,15 +75,13 @@ namespace API.Controllers
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             model.Status = !model.Status;
-            var data = await _productCategoryService.Update(model);
-            return Ok(data);
+            return Ok(await _productCategoryService.Update(model));
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> Remove(ProductCategory_Dto model)
+        public async Task<IActionResult> Remove(List<ProductCategory_Dto> model)
         {
-            var data = await _productCategoryService.Remove(model);
-            return Ok(data);
+            return Ok(await _productCategoryService.Remove(model));
         }
 
         // Import Data Excel

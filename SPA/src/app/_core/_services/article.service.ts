@@ -70,7 +70,7 @@ export class ArticleService {
     return this.http.put<OperationResult>(this.baseUrl + 'Article/changeStatus', article);
   }
 
-  remove(article: Article) {
+  remove(article: Article[]) {
     return this.http.post<OperationResult>(this.baseUrl + 'Article/delete', article);
   }
 

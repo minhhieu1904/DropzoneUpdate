@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,7 +51,7 @@ namespace API._Services.Services
                     operationResult = new OperationResult { Success = false, Message = "Product was exists." };
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 operationResult = new OperationResult { Success = false, Message = ex.ToString() };
             }
@@ -79,7 +80,7 @@ namespace API._Services.Services
                 || x.Product_Cate_ID.ToLower().Contains(text.ToLower())
                 ).OrderByDescending(x => x.Update_Time);
             }
-            return await PageListUtility<Product_Dto>.PageListAsync(data, param.PageNumber, param.PageSize);
+            return await PageListUtility<Product_Dto>.PageListAsync(data, param.PageNumber, param.PageSize, isPaging);
         }
 
         public async Task<OperationResult> Update(Product_Dto model)
@@ -91,34 +92,38 @@ namespace API._Services.Services
                 await _productRepository.Save();
                 operationResult = new OperationResult { Success = true, Message = "Product was successfully updated." };
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 operationResult = new OperationResult { Success = false, Message = ex.ToString() };
             }
             return operationResult;
         }
 
-        public async Task<OperationResult> Remove(Product_Dto model)
+        public async Task<OperationResult> Remove(List<Product_Dto> model)
         {
-            var item = await _productRepository.FindAll(x => x.Product_Cate_ID == model.Product_Cate_ID && x.Product_ID == model.Product_ID).FirstOrDefaultAsync();
+            List<Product> data = new List<Product>();
+            foreach (var item in model)
+            {
+                data.Add(await _productRepository.FindAll(x => x.Product_Cate_ID == item.Product_Cate_ID && x.Product_ID == item.Product_ID).FirstOrDefaultAsync());
+            }
+            
             try
             {
-                if (item != null)
+                if (data != null && data.Count > 0)
                 {
-                    _productRepository.Remove(item);
+                    _productRepository.RemoveMultiple(data);
                     await _productRepository.Save();
-                    operationResult = new OperationResult { Success = true, Message = "Product was delete successfully." };
+                    return operationResult = new OperationResult { Success = true, Message = "Product was delete successfully." };
                 }
                 else
                 {
-                    operationResult = new OperationResult { Success = false, Message = "Product was delete failse." };
+                    return operationResult = new OperationResult { Success = false, Message = "Product was delete failse." };
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                operationResult = new OperationResult { Success = false, Message = ex.ToString() };
+                return operationResult = new OperationResult { Success = false, Message = ex.ToString() };
             }
-            return operationResult;
         }
 
         public async Task<PageListUtility<Product_Dto>> SearchProductWithPaginations(PaginationParams param, string productCateID, string productName, bool isPaging = true)
@@ -157,7 +162,7 @@ namespace API._Services.Services
                             FileImages = y.FileImages,
                             FileVideos = y.FileVideos
                         }).OrderByDescending(x => x.Update_Time);
-            return await PageListUtility<Product_Dto>.PageListAsync(query, param.PageNumber, param.PageSize);
+            return await PageListUtility<Product_Dto>.PageListAsync(query, param.PageNumber, param.PageSize, isPaging);
         }
 
         public async Task<object> GetListProductByProductCateID(string productCateID)

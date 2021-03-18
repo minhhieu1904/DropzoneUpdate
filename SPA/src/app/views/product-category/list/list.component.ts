@@ -24,6 +24,8 @@ export class ListComponent implements OnInit {
   flag: number = 0;
   mailContent: MailContent;
   curentPage: number;
+  checkboxAll: boolean = false;
+  listProductCate: ProductCategory[] = [];
 
   fileImportExcel: any = null;
   constructor(
@@ -35,11 +37,10 @@ export class ListComponent implements OnInit {
 
   ngOnInit() {
     this.route.data.subscribe(data => {
-      this.productCates = data['productCates'].result;
+      this.productCateAll = data['productCates'].result;
       this.pagination = data['productCates'].pagination;
     });
     this.getDataPaginations();
-    this.getDataAll();
   }
 
   save() {
@@ -48,7 +49,6 @@ export class ListComponent implements OnInit {
         if (res.success) {
           this.alertUtility.success('Success!', res.message);
           this.getDataPaginations();
-          this.getDataAll();
         } else {
           this.alertUtility.error('Error!', res.message);
         }
@@ -62,7 +62,6 @@ export class ListComponent implements OnInit {
         if (res.success) {
           this.alertUtility.success('Success!', res.message);
           this.getDataPaginations();
-          this.getDataAll();
         } else {
           this.alertUtility.error('Error!', res.message);
         }
@@ -92,18 +91,10 @@ export class ListComponent implements OnInit {
   getDataPaginations() {
     this.productCateService.getDataPaginations(this.pagination.currentPage, this.pagination.pageSize, this.text)
       .subscribe((res: PaginationResult<ProductCategory>) => {
-        this.productCates = res.result;
-        this.pagination = res.pagination;
-      }), error => {
-        this.alertUtility.error('Error!', error);
-      };
-  }
-
-  getDataAll() {
-    this.productCateService.getDataAll(this.pagination.currentPage, this.pagination.pageSize, this.text)
-      .subscribe((res: PaginationResult<ProductCategory>) => {
         this.productCateAll = res.result;
         this.pagination = res.pagination;
+        this.productCates = this.productCateAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
+        this.checkboxAll = false;
       }), error => {
         this.alertUtility.error('Error!', error);
       };
@@ -126,7 +117,7 @@ export class ListComponent implements OnInit {
 
   pageChanged(event: any): void {
     this.pagination.currentPage = event.page;
-    this.getDataPaginations();
+    this.productCates = this.productCateAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
   }
 
   setPageCurrent() {
@@ -134,12 +125,28 @@ export class ListComponent implements OnInit {
   }
 
   remove(productCategory: ProductCategory) {
-    this.alertUtility.confirmDelete("Are you sure delete item '" + productCategory.product_Cate_ID + "' ?", SnotifyPosition.rightCenter, () => {
-      this.productCateService.remove(productCategory).subscribe(res => {
+    this.listProductCate.push(productCategory);
+    this.checkDelete(this.listProductCate, "Are you sure delete item " + "'" + productCategory.product_Cate_ID + "'" + " ?");
+  }
+
+  removeMulti() {
+    const productCates = this.productCateAll.filter(item => {
+      return item.checked === true;
+    });
+    if (productCates.length === 0) {
+      return this.alertUtility.error('Error', 'Please choose item to delete');
+    }
+    this.checkDelete(productCates, "Are you sure delete " + productCates.length + " items?");
+  }
+
+  checkDelete(listProductCate: ProductCategory[], alert: string) {
+    this.alertUtility.confirmDelete(alert, SnotifyPosition.rightCenter, () => {
+      this.productCateService.remove(listProductCate).subscribe(res => {
         if (res.success) {
           this.alertUtility.success('Success!', res.message);
+          this.listProductCate = [];
+          this.text = '';
           this.getDataPaginations();
-          this.getDataAll();
         }
         else {
           this.alertUtility.error('Error!', res.message);
@@ -200,7 +207,6 @@ export class ListComponent implements OnInit {
   }
 
   onSelectFile(event, number) {
-    debugger
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
 
@@ -227,5 +233,27 @@ export class ListComponent implements OnInit {
 
   downloadExcelTemplate() {
     window.location.href = '../../../../assets/fileExcelTemplate/product_category.xlsx';
+  }
+
+  checkAll(e) {
+    if (e.target.checked) {
+      this.productCateAll.forEach(element => {
+        element.checked = true;
+      });
+    }
+    else {
+      this.productCateAll.forEach(element => {
+        element.checked = false;
+      });
+    }
+  }
+
+  checkElement() {
+    let countProductCateCheckBox = this.productCateAll.filter(x => x.checked !== true).length;
+    if (countProductCateCheckBox === 0) {
+      this.checkboxAll = true;
+    } else {
+      this.checkboxAll = false;
+    }
   }
 }

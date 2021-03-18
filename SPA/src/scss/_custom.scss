@@ -63,75 +63,6 @@ table.table thead {
 }
 /*#snotify*/
 
-/*#animation*/
-@-webkit-keyframes bounceInLeft2 {
-  from,
-  60%,
-  75%,
-  90%,
-  to {
-    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-  }
-
-  0% {
-    opacity: 0;
-    -webkit-transform: translate3d(-3000px, 0, 0) scaleX(3);
-  }
-
-  60% {
-    opacity: 1;
-    -webkit-transform: translate3d(25px, 0, 0) scaleX(1);
-  }
-
-  75% {
-    -webkit-transform: translate3d(-10px, 0, 0) scaleX(0.98);
-  }
-
-  90% {
-    -webkit-transform: translate3d(3000px, 0, 0) scaleX(0.995);
-  }
-
-  to {
-    -webkit-transform: translate3d(0, 0, 0);
-  }
-}
-@keyframes bounceInLeft2 {
-  from,
-  60%,
-  75%,
-  90%,
-  to {
-    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-  }
-
-  0% {
-    opacity: 0;
-    transform: translate3d(-3000px, 0, 0) scaleX(3);
-  }
-
-  60% {
-    opacity: 1;
-    transform: translate3d(25px, 0, 0) scaleX(1);
-  }
-
-  75% {
-    transform: translate3d(-10px, 0, 0) scaleX(0.98);
-  }
-
-  90% {
-    transform: translate3d(3000px, 0, 0) scaleX(0.995);
-  }
-
-  to {
-    transform: translate3d(0, 0, 0);
-  }
-}
-.animate__bounceInLeft2 {
-  -webkit-animation-name: bounceInLeft2;
-  animation-name: bounceInLeft2;
-}
-/*#animation*/
-
 /*#Custom style tooltip*/
 .tooltip-inner {
   background-color: #009688;
@@ -156,6 +87,7 @@ table.table thead {
 }
 /*#Custom style tooltip*/
 
+/*#Custom style pagination*/
 #pagination pagination {
   float: left;
 }
@@ -172,4 +104,9 @@ table.table thead {
   height: 35px;
   margin-right: 15px;
   text-align: center;
+}
+/*#Custom style pagination*/
+
+table thead th .pretty #custom label::before {
+  background-color: #fff;
 }

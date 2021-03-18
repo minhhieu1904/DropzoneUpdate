@@ -20,6 +20,7 @@ namespace API._Services.Services
     {
         private readonly IArticleCategoryRepository _articleCategoryRepository;
         private readonly IArticleRepository _articleRepository;
+        private readonly IDropzoneService _dropzoneService;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configuration;
         private OperationResult operationResult;
@@ -28,12 +29,14 @@ namespace API._Services.Services
             IArticleCategoryRepository articleCategoryRepository,
             IMapper mapper,
             MapperConfiguration configuration,
-            IArticleRepository articleRepository)
+            IArticleRepository articleRepository, 
+            IDropzoneService dropzoneService)
         {
             _articleCategoryRepository = articleCategoryRepository;
             _mapper = mapper;
             _configuration = configuration;
             _articleRepository = articleRepository;
+            _dropzoneService = dropzoneService;
         }
 
         public async Task<OperationResult> Create(ArticleCategory_Dto model)
@@ -67,13 +70,13 @@ namespace API._Services.Services
         public async Task<PageListUtility<ArticleCategory_Dto>> GetArticleCategoryWithPaginations(PaginationParams param, string text, bool isPaging = true)
         {
             var data = _articleCategoryRepository.FindAll().ProjectTo<ArticleCategory_Dto>(_configuration).OrderByDescending(x => x.Update_Time);
-            if (text != null)
+            if (!string.IsNullOrEmpty(text))
             {
                 data = data.Where(x => x.Article_Cate_Name.ToLower().Contains(text.ToLower())
                 || x.Update_By.ToLower().Contains(text.ToLower())
                 || x.Article_Cate_ID.ToLower().Contains(text.ToLower())).OrderByDescending(x => x.Update_Time);
             }
-            return await PageListUtility<ArticleCategory_Dto>.PageListAsync(data, param.PageNumber, param.PageSize);
+            return await PageListUtility<ArticleCategory_Dto>.PageListAsync(data, param.PageNumber, param.PageSize, isPaging);
         }
 
         public async Task<OperationResult> Update(ArticleCategory_Dto model)
@@ -93,15 +96,43 @@ namespace API._Services.Services
             return operationResult;
         }
 
-        public async Task<OperationResult> Remove(ArticleCategory_Dto model)
+        public async Task<OperationResult> Remove(List<ArticleCategory_Dto> model)
         {
-            var item = await _articleCategoryRepository.FindAll(x => x.Article_Cate_ID == model.Article_Cate_ID).FirstOrDefaultAsync();
-            var articles = await _articleRepository.FindAll(x => x.Article_Cate_ID == model.Article_Cate_ID).ToListAsync();
-            if (item != null && articles.Count == 0)
+            List<ArticleCategory> articleCategorys = new List<ArticleCategory>();
+            List<Article> articles = new List<Article>();
+            foreach (var item in model)
+            {
+                articleCategorys.Add(await _articleCategoryRepository.FindAll(x => x.Article_Cate_ID == item.Article_Cate_ID).FirstOrDefaultAsync());
+                articles.AddRange(await _articleRepository.FindAll(x => x.Article_Cate_ID == item.Article_Cate_ID).ToListAsync());
+            }
+
+            if (articleCategorys != null && articleCategorys.Count > 0)
             {
                 try
                 {
-                    _articleCategoryRepository.Remove(item);
+                    if (articles != null && articles.Count > 0)
+                    {
+                        foreach (var article in articles)
+                        {
+                            var images = await _articleRepository.FindAll(x => x.Article_Cate_ID == article.Article_Cate_ID &&
+                                                    x.Article_ID == article.Article_ID &&
+                                                    x.Article_Name == article.Article_Name).Select(x => x.FileImages).Distinct().FirstOrDefaultAsync();
+
+                            var videos = await _articleRepository.FindAll(x => x.Article_Cate_ID == article.Article_Cate_ID &&
+                                                                    x.Article_ID == article.Article_ID &&
+                                                                    x.Article_Name == article.Article_Name).Select(x => x.FileVideos).Distinct().FirstOrDefaultAsync();
+                            if (!string.IsNullOrEmpty(images))
+                            {
+                                _dropzoneService.DeleteFileUpload(images, "\\uploaded\\images\\article");
+                            }
+                            if (!string.IsNullOrEmpty(videos))
+                            {
+                                _dropzoneService.DeleteFileUpload(videos, "\\uploaded\\video\\article");
+                            }
+                        }
+                        _articleRepository.RemoveMultiple(articles);
+                    }
+                    _articleCategoryRepository.RemoveMultiple(articleCategorys);
                     await _articleCategoryRepository.Save();
                     operationResult = new OperationResult { Success = true, Message = "Article Category was delete successfully." };
 

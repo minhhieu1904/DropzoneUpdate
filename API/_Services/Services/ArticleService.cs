@@ -82,7 +82,7 @@ namespace API._Services.Services
                 || x.Article_Cate_ID.ToLower().Contains(text.ToLower())
                 ).OrderByDescending(x => x.Update_Time);
             }
-            return await PageListUtility<Article_Dto>.PageListAsync(data, param.PageNumber, param.PageSize);
+            return await PageListUtility<Article_Dto>.PageListAsync(data, param.PageNumber, param.PageSize, isPaging);
         }
 
         public async Task<OperationResult> Update(Article_Dto model)
@@ -102,14 +102,18 @@ namespace API._Services.Services
             return operationResult;
         }
 
-        public async Task<OperationResult> Remove(Article_Dto model)
+        public async Task<OperationResult> Remove(List<Article_Dto> model)
         {
-            var item = await _articleRepository.FindAll(x => x.Article_Cate_ID == model.Article_Cate_ID && x.Article_ID == model.Article_ID).FirstOrDefaultAsync();
+            List<Article> articles = new List<Article>();
+            foreach (var item in model)
+            {
+                articles.Add(await _articleRepository.FindAll(x => x.Article_Cate_ID == item.Article_Cate_ID && x.Article_ID == item.Article_ID).FirstOrDefaultAsync());
+            }
             try
             {
-                if (item != null)
+                if (articles != null && articles.Count > 0)
                 {
-                    _articleRepository.Remove(item);
+                    _articleRepository.RemoveMultiple(articles);
                     await _articleRepository.Save();
                     operationResult = new OperationResult { Success = true, Message = "Article was delete successfully." };
                 }
@@ -154,7 +158,7 @@ namespace API._Services.Services
                             FileImages = y.FileImages,
                             FileVideos = y.FileVideos
                         }).OrderByDescending(x => x.Update_Time);
-            return await PageListUtility<Article_Dto>.PageListAsync(query, param.PageNumber, param.PageSize);
+            return await PageListUtility<Article_Dto>.PageListAsync(query, param.PageNumber, param.PageSize, isPaging);
         }
 
         public async Task<object> GetListArticleByArticleCateID(string articleCateID)

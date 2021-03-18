@@ -8,4 +8,5 @@ export interface Article {
     update_By: string;
     update_Time: Date;
     article_Cate_ID: string;
+    checked: boolean;
 }
