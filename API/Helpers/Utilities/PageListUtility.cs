@@ -28,7 +28,7 @@ namespace API.Helpers.Utilities
         {
             var count = await source.CountAsync();
             int skip = (pageNumber - 1) * pageSize;
-            var items = isPaging == true ? await source.Skip(skip).Take(pageSize).ToListAsync() : await source.ToListAsync(); ;
+            var items = isPaging == true ? await source.Skip(skip).Take(pageSize).ToListAsync() : await source.ToListAsync();
             return new PageListUtility<T>(items, count, pageNumber, pageSize, skip);
         }
 
