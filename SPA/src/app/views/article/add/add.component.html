@@ -8,10 +8,12 @@
           <button type="button" class="btn btn-sm btn-primary float-right" (click)="backList()" tooltip="Trở về trang danh mục bài viết">
             <i class="fa fa-chevron-left"></i> Back
           </button>
-          <button type="button" class="btn btn-sm btn-success float-right mr-2" (click)="exportAspose(1)" tooltip="Xuất file Excel">
+          <button type="button" class="btn btn-sm btn-success float-right mr-2" 
+            (click)="exportAspose(1)" tooltip="Xuất file Excel" *ngIf="flag === '1'">
             <i class="fa fa-file-excel-o"></i> Excel
           </button>
-          <button type="button" class="btn btn-sm btn-warning float-right mr-2" (click)="exportAspose(2)" tooltip="Xuất file PDF">
+          <button type="button" class="btn btn-sm btn-warning float-right mr-2" 
+            (click)="exportAspose(2)" tooltip="Xuất file PDF" *ngIf="flag === '1'">
             <i class="fa fa-file-excel-o"></i> PDF
           </button>
         </div>

@@ -7,7 +7,7 @@ import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.servi
 import { ArticleCategoryService } from 'src/app/_core/_services/article-category.service';
 import { ArticleService } from 'src/app/_core/_services/article.service';
 import { UtilityService } from 'src/app/_core/_services/utility.service';
-import { commonPerFactory } from 'src/environments/environment';
+import { commonPerFactory } from 'src/app/_core/_utility/common-fer-factory';
 
 @Component({
   selector: 'app-add',

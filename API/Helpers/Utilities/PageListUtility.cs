@@ -26,38 +26,18 @@ namespace API.Helpers.Utilities
         /// <returns> Một đối tượng PageListUtility theo kiểu data truyền vào </returns>
         public static async Task<PageListUtility<T>> PageListAsync(IQueryable<T> source, int pageNumber, int pageSize = 10, bool isPaging = true)
         {
-            if (isPaging)
-            {
-                var count = await source.CountAsync();
-                int skip = (pageNumber - 1) * pageSize;
-                var items = await source.Skip(skip).Take(pageSize).ToListAsync();
-                return new PageListUtility<T>(items, count, pageNumber, pageSize, skip);
-            }
-            else
-            {
-                var count = await source.CountAsync();
-                int skip = (pageNumber - 1) * pageSize;
-                var items = await source.ToListAsync();
-                return new PageListUtility<T>(items, count, pageNumber, pageSize, skip);
-            }
+            var count = await source.CountAsync();
+            int skip = (pageNumber - 1) * pageSize;
+            var items = isPaging == true ? await source.Skip(skip).Take(pageSize).ToListAsync() : await source.ToListAsync(); ;
+            return new PageListUtility<T>(items, count, pageNumber, pageSize, skip);
         }
 
         public static PageListUtility<T> PageList(List<T> source, int pageNumber, int pageSize = 10, bool isPaging = true)
         {
-            if (isPaging)
-            {
-                var count = source.Count();
-                int skip = (pageNumber - 1) * pageSize;
-                var items = source.Skip(skip).Take(pageSize).ToList();
-                return new PageListUtility<T>(items, count, pageNumber, pageSize, skip);
-            }
-            else
-            {
-                var count = source.Count();
-                int skip = (pageNumber - 1) * pageSize;
-                var items = source.ToList();
-                return new PageListUtility<T>(items, count, pageNumber, pageSize, skip);
-            }
+            var count = source.Count();
+            int skip = (pageNumber - 1) * pageSize;
+            var items = isPaging == true ? source.Skip(skip).Take(pageSize).ToList() : source.ToList();
+            return new PageListUtility<T>(items, count, pageNumber, pageSize, skip);
         }
         public class PagedResultBase
         {

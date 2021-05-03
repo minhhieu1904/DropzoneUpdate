@@ -1,8 +1,26 @@
+const ip = window.location.hostname;
+const apiUrl = 'http://' + ip + ':8029';
+
 export const commonPerFactory = {
+  //Local
   apiUrl: 'http://localhost:5000/api/',
+  imageProductUrl: 'http://localhost:5000/uploaded/images/product/',
+  videoProductUrl: 'http://localhost:5000/uploaded/video/product/',
+  imageArticleUrl: 'http://localhost:5000/uploaded/images/article/',
+  videoArticleUrl: 'http://localhost:5000//uploaded/video/article/',
   serverSentTokenInAppModule: 'localhost:5000',
   linkSentTokenInAppModule: 'localhost:5000/api/auth',
   factoryId: 'SHC',
+
+  // //IIS
+  // apiUrl: apiUrl,
+  // imageProductUrl: apiUrl + '/uploaded/images/product/',
+  // videoProductUrl: apiUrl + '/uploaded/video/product/',
+  // imageArticleUrl: apiUrl + '/uploaded/images/article/',
+  // videoArticleUrl: apiUrl + '/uploaded/video/article/',
+  // serverSentTokenInAppModule: ip + ':8029',
+  // linkSentTokenInAppModule: ip + ':8029/api/auth',
+  // factoryId: 'SHC',
 };
 
 export const nameIcon = {

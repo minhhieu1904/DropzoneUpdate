@@ -113,4 +113,8 @@ export class ProductService {
 
     return this.utilityService.exportExcelWithCheckExport(params, 'Product/exportExcelDetailAspose', 'Product_Detail_', checkExport);
   }
+
+  print(file: string) {
+    return this.http.post(this.baseUrl + 'Product/print', file);
+  }
 }

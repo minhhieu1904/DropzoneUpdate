@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SnotifyPosition } from 'ng-snotify';
 import { ModalDirective } from 'ngx-bootstrap/modal';

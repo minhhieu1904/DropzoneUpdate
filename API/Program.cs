@@ -34,19 +34,9 @@ namespace API
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureServices((context, services) =>
-                {
-                    services.Configure<KestrelServerOptions>(
-                        context.Configuration.GetSection("Kestrel"));
-                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.ConfigureKestrel(serverOptions =>
-                    {
-                        // Config Server Kestrel
-                        // Không giới hạn dung lượng nội dung
-                        serverOptions.Limits.MaxRequestBodySize = null;
-                    }).UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>();
                 });
     }
 }

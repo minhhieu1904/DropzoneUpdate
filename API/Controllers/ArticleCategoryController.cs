@@ -123,9 +123,6 @@ namespace API.Controllers
                 var workSheet = package.Workbook.Worksheets.Add("Sheet1");
 
                 // Add header
-                workSheet.Row(1).Style.WrapText = true;
-                workSheet.Row(1).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                workSheet.Row(1).Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                 workSheet.Row(1).Style.Font.Bold = true;
                 workSheet.Row(1).Height = 40;
                 workSheet.Column(7).Style.Numberformat.Format = "yyyy/MM/dd";
@@ -140,53 +137,40 @@ namespace API.Controllers
                 workSheet.Cells[1, 5].Value = "Position";
                 workSheet.Cells[1, 6].Value = "Update By";
                 workSheet.Cells[1, 7].Value = "Update Time";
-                for (int i = 1; i < 8; i++)
-                {
-                    workSheet.Cells[1, i].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                    workSheet.Cells[1, i].Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                    workSheet.Cells[1, i].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                    workSheet.Cells[1, i].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                }
 
                 // Add body
-                int index = 2;
+                int index = 1;
                 foreach (var item in data.Result)
                 {
-                    workSheet.Cells[index, 1].Value = (index - 1);
-                    workSheet.Cells[index, 2].Value = item.Article_Cate_ID;
-                    workSheet.Cells[index, 3].Value = item.Article_Cate_Name;
-                    workSheet.Cells[index, 5].Value = item.Position;
-                    workSheet.Cells[index, 6].Value = item.Update_By;
-                    workSheet.Cells[index, 7].Value = item.Update_Time;
-                    workSheet.Cells[index, 7].Style.Numberformat.Format = "yyyy/MM/dd hh:mm:ss";
-
-                    workSheet.Cells[index, 1, index, 7].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                    workSheet.Cells[index, 1, index, 7].Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                    workSheet.Cells[index, 1, index, 7].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                    workSheet.Cells[index, 1, index, 7].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-
-                    workSheet.Row(index).Style.WrapText = true;
-                    workSheet.Row(index).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    workSheet.Row(index).Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                    workSheet.Row(index).Height = 30;
+                    workSheet.Cells[index + 1, 1].Value = (index);
+                    workSheet.Cells[index + 1, 2].Value = item.Article_Cate_ID;
+                    workSheet.Cells[index + 1, 3].Value = item.Article_Cate_Name;
+                    workSheet.Cells[index + 1, 5].Value = item.Position;
+                    workSheet.Cells[index + 1, 6].Value = item.Update_By;
+                    workSheet.Cells[index + 1, 7].Value = item.Update_Time;
+                    workSheet.Cells[index + 1, 7].Style.Numberformat.Format = "yyyy/MM/dd hh:mm:ss";
+                    workSheet.Row(index + 1).Height = 30;
 
                     string file = "";
                     if (item.Status == true)
-                    {
                         file = _webHostEnvironment.WebRootPath + "\\icons\\ok-512.png";
-                    }
                     else
-                    {
                         file = _webHostEnvironment.WebRootPath + "\\icons\\circle-outline-512.png";
-                    }
                     Image img = Image.FromFile(file);
                     ExcelPicture pic = workSheet.Drawings.AddPicture(index.ToString(), img);
                     // position image custom (row, top, col, left) : px
-                    pic.SetPosition(index - 1, 10, 3, 45);
+                    pic.SetPosition(index, 10, 3, 45);
                     pic.SetSize(20, 20);
 
                     index++;
                 }
+                workSheet.Cells[1, 1, index, 7].Style.WrapText = true;
+                workSheet.Cells[1, 1, index, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                workSheet.Cells[1, 1, index, 7].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                workSheet.Cells[1, 1, index, 7].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[1, 1, index, 7].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[1, 1, index, 7].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[1, 1, index, 7].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                 workSheet.Column(1).AutoFit(10);
                 workSheet.Column(2).AutoFit(20);
                 workSheet.Column(3).AutoFit(40);
@@ -230,13 +214,9 @@ namespace API.Controllers
             {
                 string file = "";
                 if (item.Status == true)
-                {
                     file = _webHostEnvironment.WebRootPath + "\\icons\\ok-512.png";
-                }
                 else
-                {
                     file = _webHostEnvironment.WebRootPath + "\\icons\\circle-outline-512.png";
-                }
                 Aspose.Cells.Drawing.Picture pic = ws.Pictures[ws.Pictures.Add(index2, 3, file)];
                 pic.Height = 20;
                 pic.Width = 20;

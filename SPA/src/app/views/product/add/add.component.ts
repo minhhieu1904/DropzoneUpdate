@@ -2,13 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Select2OptionData } from 'ng-select2';
 import { SnotifyPosition } from 'ng-snotify';
-import { Product } from 'src/app/_core/_models/product';
-import { ProductCategory } from 'src/app/_core/_models/product-category';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { ProductCategoryService } from 'src/app/_core/_services/product-category.service';
 import { ProductService } from 'src/app/_core/_services/product.service';
 import { UtilityService } from 'src/app/_core/_services/utility.service';
-import { commonPerFactory } from 'src/environments/environment';
+import { commonPerFactory } from 'src/app/_core/_utility/common-fer-factory';
 
 @Component({
   selector: 'app-add',
@@ -226,7 +224,6 @@ export class AddComponent implements OnInit {
   }
 
   onSelectVideos(event) {
-    debugger
     // Kiểm tra rejectedFiles ( file không hợp lệ )
     if (event.rejectedFiles && event.rejectedFiles[0]) {
       this.alertUtility.warning('Error', 'Please select file videos', SnotifyPosition.rightCenter);
@@ -248,9 +245,7 @@ export class AddComponent implements OnInit {
   }
 
   onRemoveVideos(event) {
-    debugger
     this.fileVideos.splice(this.fileVideos.indexOf(event), 1);
-    let a = event;
   }
 
   exportAspose(checkExport: number) {

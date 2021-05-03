@@ -38,8 +38,10 @@ namespace API.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromForm] Product_Dto model)
         {
-            model.FileImages = await _dropzoneService.UploadFile(model.Images, model.Product_Cate_ID + "_" + model.Product_ID + "_", "\\uploaded\\images\\product");
-            model.FileVideos = await _dropzoneService.UploadFile(model.Videos, model.Product_Cate_ID + "_" + model.Product_ID + "_", "\\uploaded\\video\\product");
+            if (model.Images != null)
+                model.FileImages = await _dropzoneService.UploadFile(model.Images, model.Product_Cate_ID + "_" + model.Product_ID + "_", "\\uploaded\\images\\product");
+            if (model.Videos != null)
+                model.FileVideos = await _dropzoneService.UploadFile(model.Videos, model.Product_Cate_ID + "_" + model.Product_ID + "_", "\\uploaded\\video\\product");
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             return Ok(await _productService.Create(model));
@@ -78,18 +80,7 @@ namespace API.Controllers
         [HttpPut]
         public async Task<IActionResult> Update([FromForm] Product_Dto model)
         {
-            if (model.Content == "null")
-            {
-                model.Content = null;
-            }
-            if (model.FileImages == "null")
-            {
-                model.FileImages = "";
-            }
-            if (model.FileVideos == "null")
-            {
-                model.FileVideos = "";
-            }
+            model.Content = model.Content == "null" ? null : model.Content;
 
             // Delete images, videos old
             var images = await _productRepository.FindAll(x => x.Product_Cate_ID == model.Product_Cate_ID &&
@@ -100,20 +91,18 @@ namespace API.Controllers
                                                     x.Product_ID == model.Product_ID &&
                                                     x.Product_Name == model.Product_Name).Select(x => x.FileVideos).Distinct().FirstOrDefaultAsync();
             if (!string.IsNullOrEmpty(images))
-            {
                 _dropzoneService.DeleteFileUpload(images, "\\uploaded\\images\\product");
-            }
             if (!string.IsNullOrEmpty(videos))
-            {
                 _dropzoneService.DeleteFileUpload(videos, "\\uploaded\\video\\product");
-            }
 
             // Add images, videos
             model.FileImages = null;
             model.FileVideos = null;
 
-            model.FileImages = await _dropzoneService.UploadFile(model.Images, model.Product_Cate_ID + "_" + model.Product_ID + "_", "\\uploaded\\images\\product");
-            model.FileVideos = await _dropzoneService.UploadFile(model.Videos, model.Product_Cate_ID + "_" + model.Product_ID + "_", "\\uploaded\\video\\product");
+            if (model.Images != null)
+                model.FileImages = await _dropzoneService.UploadFile(model.Images, model.Product_Cate_ID + "_" + model.Product_ID + "_", "\\uploaded\\images\\product");
+            if (model.Videos != null)
+                model.FileVideos = await _dropzoneService.UploadFile(model.Videos, model.Product_Cate_ID + "_" + model.Product_ID + "_", "\\uploaded\\video\\product");
 
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
@@ -175,13 +164,9 @@ namespace API.Controllers
                                                         x.Product_ID == item.Product_ID &&
                                                         x.Product_Name == item.Product_Name).Select(x => x.FileVideos).Distinct().FirstOrDefaultAsync();
                 if (!string.IsNullOrEmpty(images))
-                {
                     _dropzoneService.DeleteFileUpload(images, "\\uploaded\\images\\product");
-                }
                 if (!string.IsNullOrEmpty(videos))
-                {
                     _dropzoneService.DeleteFileUpload(videos, "\\uploaded\\video\\product");
-                }
             }
 
             return Ok(await _productService.Remove(model));
@@ -193,13 +178,9 @@ namespace API.Controllers
         {
             PageListUtility<Product_Dto> data;
             if (checkSearch == 1)
-            {
                 data = await _productService.GetProductWithPaginations(param, text, false);
-            }
             else
-            {
                 data = await _productService.SearchProductWithPaginations(param, productCateID, productName, false);
-            }
             var path = Path.Combine(_webHostEnvironment.ContentRootPath, "Resources\\Template\\Product\\ProductListTemplate.xlsx");
             WorkbookDesigner designer = new WorkbookDesigner();
             designer.Workbook = new Workbook(path);
@@ -299,11 +280,7 @@ namespace API.Controllers
                     if (image != "")
                     {
                         Aspose.Cells.Drawing.Picture pic = ws.Pictures[ws.Pictures.Add(index - 1, 10, folderImage + image)];
-                        pic.Height = 40;
-                        pic.Width = 80;
-                        pic.Top = 10;
-                        pic.Left = 20;
-
+                        pic = await StyleImageExcel(pic);
                         ws.Cells.SetRowHeight(index - 1, 45);
 
                         index++;
@@ -319,11 +296,7 @@ namespace API.Controllers
                     if (video != "")
                     {
                         Aspose.Cells.Drawing.Picture pic = ws.Pictures[ws.Pictures.Add(index1 - 1, 11, folderVideo + "video.jpg")];
-                        pic.Height = 40;
-                        pic.Width = 80;
-                        pic.Top = 10;
-                        pic.Left = 20;
-
+                        pic = await StyleImageExcel(pic);
                         ws.Cells.SetRowHeight(index1 - 1, 45);
 
                         index1++;
@@ -333,11 +306,7 @@ namespace API.Controllers
 
             if (data.FileVideos != null || data.FileImages != null)
             {
-                int index3 = 0;
-                if (index > index1 || index == index1)
-                    index3 = index;
-                else
-                    index3 = index1;
+                int index3 = index >= index1 ? index : index1;
 
                 // Merge column not image, video
                 int[] number = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -394,10 +363,18 @@ namespace API.Controllers
                 fileKind = "application/pdf";
                 fileExtension = ".pdf";
             }
-
             byte[] result = stream.ToArray();
 
             return File(result, fileKind, "Product_Detail_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + fileExtension);
+        }
+
+        private async Task<Aspose.Cells.Drawing.Picture> StyleImageExcel(Aspose.Cells.Drawing.Picture pic)
+        {
+            pic.Height = 40;
+            pic.Width = 80;
+            pic.Top = 10;
+            pic.Left = 20;
+            return await Task.FromResult(pic);
         }
     }
 }
