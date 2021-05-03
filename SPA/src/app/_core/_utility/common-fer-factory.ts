@@ -13,7 +13,7 @@ export const commonPerFactory = {
   factoryId: 'SHC',
 
   // //IIS
-  // apiUrl: apiUrl,
+  // apiUrl: apiUrl + '/api/',
   // imageProductUrl: apiUrl + '/uploaded/images/product/',
   // videoProductUrl: apiUrl + '/uploaded/video/product/',
   // imageArticleUrl: apiUrl + '/uploaded/images/article/',

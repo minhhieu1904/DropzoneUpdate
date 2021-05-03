@@ -1,7 +1,6 @@
-const ip = window.location.hostname;
-const apiUrl = 'http://' + ip + ':8029/api/';
+import { commonPerFactory } from 'src/app/_core/_utility/common-fer-factory';
 
 export const environment = {
   production: true,
-  apiUrl: apiUrl,
+  apiUrl: commonPerFactory.apiUrl,
 };
