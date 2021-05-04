@@ -86,9 +86,9 @@ export class ListComponent implements OnInit {
       if (res.success) {
         this.alertUtility.success('Success!', res.message);
         this.getDataPaginations();
-      } else {
+      } 
+      else
         this.alertUtility.error('Error!', res.message);
-      }
     },
       error => {
         console.log(error);
@@ -133,9 +133,8 @@ export class ListComponent implements OnInit {
     const articleList = this.articleAll.filter(item => {
       return item.checked === true;
     });
-    if (articleList.length === 0) {
+    if (articleList.length === 0)
       return this.alertUtility.error('Error', 'Please choose item to delete');
-    }
     this.checkDelete(articleList, "Are you sure delete " + articleList.length + " items?");
   }
 
@@ -146,9 +145,8 @@ export class ListComponent implements OnInit {
           this.alertUtility.success('Success!', res.message);
           this.getDataPaginations();
         }
-        else {
+        else
           this.alertUtility.error('Error!', res.message);
-        }
       },
         error => {
           console.log(error);
@@ -157,12 +155,11 @@ export class ListComponent implements OnInit {
   }
 
   exportExcel(checkExport: number) {
-    let checkSearch;
-    if (this.articleCateID === 'all')
-      checkSearch = 1;
+    let checkSearch = this.articleCateID === 'all' ? 1 : 2;
+    if (this.articleAll.length > 0 && this.articles.length > 0)
+      return this.articleService.exportListAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport, this.articleCateID, this.article_Name, checkSearch);
     else
-      checkSearch = 2;
-    return this.articleService.exportListAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport, this.articleCateID, this.article_Name, checkSearch);
+      return this.alertUtility.warning('Warning', 'No data');
   }
 
   checkAll(e) {
@@ -180,10 +177,9 @@ export class ListComponent implements OnInit {
 
   checkElement() {
     let countProductCateCheckBox = this.articleAll.filter(x => x.checked !== true).length;
-    if (countProductCateCheckBox === 0) {
+    if (countProductCateCheckBox === 0)
       this.checkboxAll = true;
-    } else {
+    else
       this.checkboxAll = false;
-    }
   }
 }

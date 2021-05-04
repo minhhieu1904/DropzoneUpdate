@@ -21,7 +21,7 @@ export class ListComponent implements OnInit {
   pagination: Pagination;
   text: string = '';
   flag: number = 0;
-  fileImportExcel: any = null;
+  fileImportExcel: File = null;
   listArticleCate: ArticleCategory[] = [];
   checkboxAll: boolean = false;
   constructor(
@@ -163,6 +163,7 @@ export class ListComponent implements OnInit {
         } else {
           this.alertUtility.error('Error!', 'Import file failse');
         }
+        this.onRemoveFile();
         this.getDataPaginations();
       }, error => {
         this.alertUtility.error('Error', 'Upload Data Fail!');
@@ -170,7 +171,7 @@ export class ListComponent implements OnInit {
     });
   }
 
-  onSelectFile(event, number) {
+  onSelectFile(event) {
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
 
@@ -187,16 +188,23 @@ export class ListComponent implements OnInit {
     }
   }
 
+  onRemoveFile() {
+    (<HTMLInputElement>document.getElementById("input_uploadFile")).value = null;
+    this.fileImportExcel = null;
+  }
+
   export() {
-    return this.articleCateService.export(this.pagination.currentPage, this.pagination.pageSize, this.text);
+    if (this.articleCateAll.length > 0 && this.articleCates.length > 0)
+      return this.articleCateService.export(this.pagination.currentPage, this.pagination.pageSize, this.text);
+    else
+      return this.alertUtility.warning('Warning', 'No data');
   }
 
   exportAspose(checkExport: number) {
-    return this.articleCateService.exportAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport);
-  }
-
-  exportPdfAspose(checkExport: number) {
-    return this.articleCateService.exportAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport);
+    if (this.articleCateAll.length > 0 && this.articleCates.length > 0)
+      return this.articleCateService.exportAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport);
+    else
+      return this.alertUtility.warning('Warning', 'No data');
   }
 
   downloadExcelTemplate() {

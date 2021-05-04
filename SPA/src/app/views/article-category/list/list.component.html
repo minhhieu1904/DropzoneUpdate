@@ -187,9 +187,9 @@
             <div class="custom-file b-form-file">
               <label data-browse="Browse" class="custom-file-label">
                 <p *ngIf="fileImportExcel === null">Choose a file...</p>
-                <input
+                <input id="input_uploadFile"
                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                  type="file" (change)="onSelectFile($event, 2)" style="line-height: 1 !important; outline: none;"
+                  type="file" (change)="onSelectFile($event)" style="line-height: 1 !important; outline: none;"
                   [ngClass]="(fileImportExcel !== null) ? 'opacity1' : 'opacity0'">
               </label>
             </div>

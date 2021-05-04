@@ -44,32 +44,31 @@
       </div>
     </main>
   </div> -->
-  <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-clip-rotate" [fullScreen]="true">
-  </ngx-spinner>
-  
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-clip-rotate" [fullScreen]="true">
+</ngx-spinner>
 
-  <form id="form1" (ngSubmit)="login()" #form="ngForm">
-    <div class="page-wrapper bg-gra-01 p-t-180 p-b-100 font-poppins">
-        <div class="wrapper wrapper--w780">
-            <div class="card card-3">
-                <div class="card-heading"></div>
-                <div class="card-body">
-                    <h2 class="title">Sign in to start your session</h2>
-                    <div>
-                        <div class="input-group">
-                          <input type="text" class="input--style-3" placeholder="Username" [(ngModel)]="user.userName" name="username" 
-                            autocomplete="username" required>
-                        </div>
-                        <div class="input-group">
-                          <input type="password" class="input--style-3" placeholder="Password" [(ngModel)]="user.password" name="password"
-                            autocomplete="current-password" required>
-                        </div>
-                        <div class="p-t-10">
-                          <button class="btn btn--pill btn--green" >Sign in</button>
-                        </div>
-                    </div>
-                </div>
+<form id="form1" (ngSubmit)="login()" #form="ngForm">
+  <div class="page-wrapper bg-gra-01 p-t-180 p-b-100 font-poppins">
+    <div class="wrapper wrapper--w780">
+      <div class="card card-3">
+        <div class="card-heading"></div>
+        <div class="card-body">
+          <h2 class="title">Sign in to start your session</h2>
+          <div>
+            <div class="input-group">
+              <input type="text" class="input--style-3" placeholder="Username" [(ngModel)]="user.userName"
+                name="username" autocomplete="username" required>
             </div>
+            <div class="input-group">
+              <input type="password" class="input--style-3" placeholder="Password" [(ngModel)]="user.password"
+                name="password" autocomplete="current-password" required>
+            </div>
+            <div class="p-t-10">
+              <button class="btn btn--pill btn--green">Sign in</button>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </form>

@@ -44,6 +44,7 @@ namespace API.Controllers
                 model.FileVideos = await _dropzoneService.UploadFile(model.Videos, model.Product_Cate_ID + "_" + model.Product_ID + "_", "\\uploaded\\video\\product");
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
+            model.Content = model.Content == "null" ? null : model.Content;
             return Ok(await _productService.Create(model));
         }
 
@@ -202,6 +203,28 @@ namespace API.Controllers
                 ws.AutoFitRow(i);
                 ws.Cells["G" + (i + 1)].SetStyle(styleDecimal);
                 ws.Cells["J" + (i + 1)].SetStyle(styleDateTime);
+            }
+
+            int index = 2;
+            foreach (var item in data.Result)
+            {
+                string fileNew = _dropzoneService.CheckTrueFalse(item.New);
+                string fileIsSale = _dropzoneService.CheckTrueFalse(item.IsSale);
+                string fileHotSale = _dropzoneService.CheckTrueFalse(item.Hot_Sale);
+                string fileStatus = _dropzoneService.CheckTrueFalse(item.Status);
+
+                Aspose.Cells.Drawing.Picture iconNew = ws.Pictures[ws.Pictures.Add(1, 2, fileNew)];
+                Aspose.Cells.Drawing.Picture iconIsSale = ws.Pictures[ws.Pictures.Add(1, 3, fileIsSale)];
+                Aspose.Cells.Drawing.Picture iconHotSale = ws.Pictures[ws.Pictures.Add(1, 4, fileHotSale)];
+                Aspose.Cells.Drawing.Picture iconStatus = ws.Pictures[ws.Pictures.Add(1, 5, fileStatus)];
+
+                iconNew.Height = iconIsSale.Height = iconHotSale.Height = iconStatus.Height = 20;
+                iconNew.Width = iconIsSale.Width = iconHotSale.Width = iconStatus.Width = 20;
+                iconNew.Top = iconIsSale.Top = iconHotSale.Top = iconStatus.Top = 5;
+                iconNew.Left = iconIsSale.Left = iconHotSale.Left = iconStatus.Left = 40;
+
+                ws.Cells.SetRowHeight(index - 1, 22.5);
+                index++;
             }
 
             MemoryStream stream = new MemoryStream();

@@ -21,15 +21,9 @@ namespace API._Services.Services
 
         public string CheckTrueFalse(bool param)
         {
-            string file = "";
-            if (param == true)
-            {
-                return file = _webHostEnvironment.WebRootPath + "\\icons\\ok-512.png";
-            }
-            else
-            {
-                return file = _webHostEnvironment.WebRootPath + "\\icons\\circle-outline-512.png";
-            }
+            string file = param == true ? _webHostEnvironment.WebRootPath + "\\icons\\ok-512.png"
+                                        : _webHostEnvironment.WebRootPath + "\\icons\\circle-outline-512.png";
+            return file;
         }
 
         public void DeleteFileUpload(string files, string fileFolder)
@@ -41,12 +35,9 @@ namespace API._Services.Services
                 if (item != "")
                 {
                     string filePath = Path.Combine(folder, item);
-
                     // kiểm tra file cũ có không, nếu có thì xóa đi
                     if (System.IO.File.Exists(filePath))
-                    {
                         System.IO.File.Delete(filePath);
-                    }
                 }
             }
         }

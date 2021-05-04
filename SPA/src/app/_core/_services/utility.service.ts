@@ -150,17 +150,10 @@ export class UtilityService {
         const link = document.createElement('a');
         const currentTime = new Date();
 
-        let fileExtension = '';
+        let fileExtension = checkExport === 1 ? '.xlsx' : '.pdf';
         let filename = nameString + currentTime.getFullYear().toString() +
           (currentTime.getMonth() + 1) + currentTime.getDate() +
           currentTime.toLocaleTimeString().replace(/[ ]|[,]|[:]/g, '').trim();
-
-        if (checkExport === 1) {
-          fileExtension = '.xlsx';
-        }
-        if (checkExport === 2) {
-          fileExtension = '.pdf';
-        }
 
         link.href = url;
         link.setAttribute('download', filename + fileExtension);

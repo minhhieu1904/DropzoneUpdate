@@ -202,12 +202,11 @@ export class ListComponent implements OnInit {
   }
 
   exportExcel(checkExport: number) {
-    let checkSearch;
-    if (this.productCateID === 'all')
-      checkSearch = 1;
+    let checkSearch = this.productCateID === 'all' ? 1 : 2;
+    if (this.productAll.length > 0 && this.products.length > 0)
+      return this.productService.exportListAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport, this.productCateID, this.product_Name, checkSearch);
     else
-      checkSearch = 2;
-    return this.productService.exportListAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport, this.productCateID, this.product_Name, checkSearch);
+      return this.alertUtility.warning('Warning', 'No data');
   }
 
   checkAll(e) {

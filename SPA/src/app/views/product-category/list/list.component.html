@@ -35,7 +35,7 @@
           <i class="fa fa-file-excel-o"></i> Import
         </button>
         <button type="button" class="btn btn-sm btn-primary mr-2" printSectionId="dataTable" tooltip="In dữ liệu"
-          ngxPrint printTitle="Product Category" styleSheetFile="../../../../assets/scss/_table.scss">
+          ngxPrint printTitle="Product Category" styleSheetFile="../../../../assets/scss/_table.scss" *ngIf="productCateAll.length > 0">
           <i class="fa fa-print"></i> Print
         </button>
         <button type="button" class="btn btn-sm btn-danger float-right" (click)="removeMulti()" tooltip="Xóa nhiều danh mục sản phẩm">
@@ -195,7 +195,7 @@
                 <p *ngIf="fileImportExcel === null">Choose a file...</p>
                 <input id="input_uploadFile"
                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                  type="file" (change)="onSelectFile($event, 2)" style="line-height: 1 !important; outline: none;"
+                  type="file" (change)="onSelectFile($event)" style="line-height: 1 !important; outline: none;"
                   [ngClass]="(fileImportExcel !== null) ? 'opacity1' : 'opacity0'">
               </label>
             </div>
