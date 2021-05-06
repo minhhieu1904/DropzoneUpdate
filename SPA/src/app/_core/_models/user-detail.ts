@@ -8,4 +8,5 @@ export interface UserDetail {
     last_Login: Date;
     update_By: string;
     update_Time: Date;
+    image: string;
 }

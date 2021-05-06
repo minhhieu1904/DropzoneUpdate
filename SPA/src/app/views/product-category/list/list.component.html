@@ -141,7 +141,7 @@
       <form #addProductCateForm="ngForm">
         <div class="modal-header">
           <strong>{{flag === 0 ? 'New' : 'Edit'}} Product Category</strong>
-          <button type="button" style="outline: none;" class="close pull-right" aria-label="Close"
+          <button type="button" class="close pull-right" aria-label="Close"
             (click)="addOrEditProductCateModal.hide()">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -180,7 +180,7 @@
       <form #importExcel="ngForm">
         <div class="modal-header">
           <strong>Import Excel Product Category</strong>
-          <button type="button" style="outline: none;" class="close pull-right" aria-label="Close"
+          <button type="button" class="close pull-right" aria-label="Close"
             (click)="importExcelModel.hide()">
             <span aria-hidden="true">&times;</span>
           </button>

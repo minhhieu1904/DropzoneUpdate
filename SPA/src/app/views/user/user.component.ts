@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { RoleUserAuthorize } from 'src/app/_core/_models/role-user-authorize';
@@ -8,6 +8,8 @@ import { Pagination, PaginationResult } from 'src/app/_core/_utility/pagination'
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { SnotifyPosition } from 'ng-snotify';
+import { FormBuilder } from '@angular/forms';
+import { commonPerFactory } from 'src/app/_core/_utility/common-fer-factory';
 
 @Component({
   selector: 'app-user',
@@ -17,6 +19,7 @@ import { SnotifyPosition } from 'ng-snotify';
 export class UserComponent implements OnInit {
   @ViewChild('addUserModal') addUserModal: ModalDirective;
   @ViewChild('authorizeModal') authorizeModal: ModalDirective;
+  @ViewChild('fileInput') el: ElementRef;
   users: User[];
   user: any = {};
   pagination: Pagination;
@@ -26,12 +29,22 @@ export class UserComponent implements OnInit {
   roles: RoleUserAuthorize[] = [];
   flag: number = 0; // 0: Add; 1: Edit
   isAllRolesChecked: boolean = false;
+  imageUserUrl = commonPerFactory.imageUserUrl;
+  imageUser: any = '';
+  registrationForm = this.fb.group({
+    file: [null]
+  });
+  editFile: boolean = true;
+  removeUpload: boolean = false;
+  file: File;
 
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
     private spinnerService: NgxSpinnerService,
-    private alertUtility: AlertUtilityService
+    private alertUtility: AlertUtilityService,
+    public fb: FormBuilder,
+    private cd: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -103,7 +116,7 @@ export class UserComponent implements OnInit {
     if (!this.validate()) { return; }
     if (this.flag === 0) { // Case Add User
       this.spinnerService.show();
-      this.userService.addUser(this.user).subscribe(res => {
+      this.userService.addUser(this.user, this.file).subscribe(res => {
         this.spinnerService.hide();
         if (res.success) {
           this.alertUtility.success('Success!', res.message);
@@ -118,7 +131,11 @@ export class UserComponent implements OnInit {
       });
     } else { // Case Edit User
       this.spinnerService.show();
-      this.userService.updateUser(this.user).subscribe(res => {
+      if (this.user.password === undefined)
+        this.user.password = null;
+      if (this.file === undefined)
+        this.file = null;
+      this.userService.updateUser(this.user, this.file).subscribe(res => {
         this.spinnerService.hide();
         if (res.success) {
           this.loadUsers();
@@ -161,6 +178,8 @@ export class UserComponent implements OnInit {
 
   setUser(user: User) {
     this.user = { ...user };
+    this.imageUser = user.image !== null ? this.imageUserUrl + user.image
+                                         : commonPerFactory.imageUserDefault;
   }
 
   setFlag(flag: number) { // 0: Add; 1: Edit
@@ -173,6 +192,7 @@ export class UserComponent implements OnInit {
     this.user.user_Name = '';
     this.user.email = '';
     this.user.password = '';
+    this.imageUser = commonPerFactory.imageUserDefault;
   }
 
   setAuthorizeList() {
@@ -257,5 +277,37 @@ export class UserComponent implements OnInit {
     this.user.email = this.user.email.trim();
 
     return true;
+  }
+
+  uploadFile(event) {
+    this.file = event.target.files[0];
+    let reader = new FileReader(); // HTML5 FileReader API
+    if (event.target.files && event.target.files[0]) {
+      reader.readAsDataURL(this.file);
+
+      //When file uploads set it to file formcontrol
+      reader.onload = () => {
+        this.imageUser = reader.result;
+        this.registrationForm.patchValue({
+          file: reader.result
+        });
+        this.editFile = false;
+        this.removeUpload = true;
+      }
+      // ChangeDetectorRef since file is loading outside the zone
+      this.cd.markForCheck();
+    }
+  }
+
+  // Function to remove uploaded file
+  removeUploadedFile() {
+    let newFileList = Array.from(this.el.nativeElement.files);
+    this.imageUser = this.user.image !== null ? this.imageUserUrl + this.user.image
+      : commonPerFactory.imageUserDefault;
+    this.editFile = true;
+    this.removeUpload = false;
+    this.registrationForm.patchValue({
+      file: [null]
+    });
   }
 }

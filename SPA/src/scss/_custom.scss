@@ -110,3 +110,14 @@ table.table thead {
 table thead th .pretty #custom label::before {
   background-color: #fff;
 }
+
+// Outline Model
+.modal .close.pull-right {
+  outline: none;
+}
+
+// Image Avatar
+.navbar-nav img.img-avatar {
+  width: 45px !important;
+  height: 45px !important;
+}

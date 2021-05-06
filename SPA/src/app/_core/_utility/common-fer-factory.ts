@@ -8,6 +8,8 @@ export const commonPerFactory = {
   videoProductUrl: 'http://localhost:5000/uploaded/video/product/',
   imageArticleUrl: 'http://localhost:5000/uploaded/images/article/',
   videoArticleUrl: 'http://localhost:5000//uploaded/video/article/',
+  imageUserUrl: 'http://localhost:5000/uploaded/images/user/',
+  imageUserDefault: '../../../assets/img/avatars/user.png',
   serverSentTokenInAppModule: 'localhost:5000',
   linkSentTokenInAppModule: 'localhost:5000/api/auth',
   factoryId: 'SHC',

@@ -41,9 +41,9 @@ namespace API.Controllers
         public async Task<IActionResult> Create([FromForm] Article_Dto model)
         {
             if (model.Images != null)
-                model.FileImages = await _dropzoneService.UploadFile(model.Images, model.Article_Cate_ID + "_" + model.Article_ID + "_", "\\uploaded\\images\\article");
+                model.FileImages = await _dropzoneService.UploadFiles(model.Images, model.Article_Cate_ID + "_" + model.Article_ID + "_", "\\uploaded\\images\\article");
             if (model.Videos != null)
-                model.FileVideos = await _dropzoneService.UploadFile(model.Videos, model.Article_Cate_ID + "_" + model.Article_ID + "_", "\\uploaded\\video\\article");
+                model.FileVideos = await _dropzoneService.UploadFiles(model.Videos, model.Article_Cate_ID + "_" + model.Article_ID + "_", "\\uploaded\\video\\article");
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             model.Content = model.Content == "null" ? null : model.Content;
@@ -103,9 +103,9 @@ namespace API.Controllers
             model.FileVideos = null;
 
             if (model.Images != null)
-                model.FileImages = await _dropzoneService.UploadFile(model.Images, model.Article_Cate_ID + "_" + model.Article_ID + "_", "\\uploaded\\images\\article");
+                model.FileImages = await _dropzoneService.UploadFiles(model.Images, model.Article_Cate_ID + "_" + model.Article_ID + "_", "\\uploaded\\images\\article");
             if (model.Videos != null)
-                model.FileVideos = await _dropzoneService.UploadFile(model.Videos, model.Article_Cate_ID + "_" + model.Article_ID + "_", "\\uploaded\\video\\article");
+                model.FileVideos = await _dropzoneService.UploadFiles(model.Videos, model.Article_Cate_ID + "_" + model.Article_ID + "_", "\\uploaded\\video\\article");
 
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;

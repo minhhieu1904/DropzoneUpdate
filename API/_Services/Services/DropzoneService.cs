@@ -42,33 +42,39 @@ namespace API._Services.Services
             }
         }
 
-        public async Task<string> UploadFile(List<IFormFile> files, string name, string fileFolder)
+        public async Task<string> UploadFile(IFormFile file, string name, string fileFolder)
         {
             string fileUploads = "";
             string folder = _webHostEnvironment.WebRootPath + fileFolder;
+            var filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+            var randomGiud = Guid.NewGuid().ToString();
 
+            var check = Path.GetExtension(filename);
+            var uploadPicture = name + randomGiud + check;
+
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+            string filePath = Path.Combine(folder, uploadPicture);
+
+            using (FileStream fs = System.IO.File.Create(filePath))
+            {
+                file.CopyTo(fs);
+                fs.Flush();
+            }
+            fileUploads = uploadPicture;
+            return await Task.FromResult(fileUploads);
+        }
+
+        public async Task<string> UploadFiles(List<IFormFile> files, string name, string fileFolder)
+        {
+            string fileUploads = "";
             if (files != null)
             {
                 foreach (var item in files)
                 {
-                    var filename = ContentDispositionHeaderValue.Parse(item.ContentDisposition).FileName.Trim('"');
-                    var randomGiud = Guid.NewGuid().ToString();
-
-                    var check = Path.GetExtension(filename);
-                    var uploadPicture = name + randomGiud + check;
-
-                    if (!Directory.Exists(folder))
-                    {
-                        Directory.CreateDirectory(folder);
-                    }
-                    string filePath = Path.Combine(folder, uploadPicture);
-
-                    using (FileStream fs = System.IO.File.Create(filePath))
-                    {
-                        item.CopyTo(fs);
-                        fs.Flush();
-                    }
-                    fileUploads += uploadPicture + ";";
+                    fileUploads += await UploadFile(item, name, fileFolder) + ";";
                 }
             }
             return await Task.FromResult(fileUploads);

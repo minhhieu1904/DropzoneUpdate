@@ -50,7 +50,8 @@ namespace API._Services.Services
                 Factory_ID = user.Factory_ID,
                 User_Account = user.User_Account,
                 User_Name = user.User_Name,
-                Role = userRoles
+                Role = userRoles,
+                Image = user.Image
             };
 
             return userToReturn;

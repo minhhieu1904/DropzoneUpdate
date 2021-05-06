@@ -12,6 +12,8 @@ using API.Dtos;
 using API.Helpers.Params;
 using API.Helpers.Utilities;
 using API.Models;
+using API._Services.Interfaces;
+using Microsoft.AspNetCore.Hosting;
 
 namespace API._Services.Services
 {
@@ -24,14 +26,17 @@ namespace API._Services.Services
         private readonly MapperConfiguration _mapperConfiguration;
         private readonly IConfiguration _configuration;
         private OperationResult operationResult;
+        private readonly IDropzoneService _dropzoneService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         public UserService(
             IUserRepository userRepository,
             IRolesRepository rolesRepository,
             IRoleUserRepository roleUserRepository,
             IMapper mapper,
             MapperConfiguration mapperConfiguration,
-            IConfiguration configuration
-        )
+            IConfiguration configuration,
+            IDropzoneService dropzoneService,
+            IWebHostEnvironment webHostEnvironment)
         {
             _mapperConfiguration = mapperConfiguration;
             _configuration = configuration;
@@ -39,6 +44,8 @@ namespace API._Services.Services
             _userRepository = userRepository;
             _rolesRepository = rolesRepository;
             _roleUserRepository = roleUserRepository;
+            _dropzoneService = dropzoneService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public async Task<OperationResult> CreateUser(User_Dto model)
@@ -53,7 +60,6 @@ namespace API._Services.Services
             model.Last_Login = DateTime.Now;
             model.Valid_From = DateTime.Today;
             model.Valid_To = new DateTime(9999, 12, 31);
-
             var user = _mapper.Map<User>(model);
             _userRepository.Add(user);
             try
@@ -113,17 +119,16 @@ namespace API._Services.Services
             var allRoles = _rolesRepository.FindAll();
             var userRoles = _roleUserRepository.FindAll(r => r.user_account == user_Account);
             var result = await allRoles.Select(r => new Role_User_Authorize_Dto
-                                {
-                                    Factory_ID = factory_ID,
-                                    User_Account = user_Account,
-                                    Role_Unique = r.role_unique,
-                                    Role_Name = r.role_name,
-                                    Role_Type = r.role_type,
-                                    Role_Sequence = r.role_sequence,
-                                    Status = userRoles == null ? false :
-                                                                 userRoles.Where(x => x.user_account == user_Account && x.role_unique == r.role_unique)
-                                                                          .Count() != 0 ? true : false
-                                }).OrderBy(x => x.Role_Sequence).ToListAsync();
+            {
+                Factory_ID = factory_ID,
+                User_Account = user_Account,
+                Role_Unique = r.role_unique,
+                Role_Name = r.role_name,
+                Role_Type = r.role_type,
+                Role_Sequence = r.role_sequence,
+                Status = userRoles == null ? false : userRoles.Where(x => x.user_account == user_Account && x.role_unique == r.role_unique)
+                                                    .Count() != 0 ? true : false
+            }).OrderBy(x => x.Role_Sequence).ToListAsync();
 
             return result;
         }
@@ -238,6 +243,7 @@ namespace API._Services.Services
             {
                 userToUpdate.Password = model.Password;
             }
+            userToUpdate.Image = model.Image;
             _userRepository.Update(userToUpdate);
             try
             {

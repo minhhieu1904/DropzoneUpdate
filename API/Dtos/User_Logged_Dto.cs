@@ -10,5 +10,6 @@ namespace API.Dtos
         public string User_Name { get; set; }
         public string Email { get; set; }
         public List<string> Role { get; set; }
+        public string Image { get; set; }
     }
 }

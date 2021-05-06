@@ -13,5 +13,6 @@ namespace API.Dtos
         public DateTime? Last_Login { get; set; }
         public string Update_By { get; set; }
         public DateTime? Update_Time { get; set; }
+        public string Image { get; set; }
     }
 }

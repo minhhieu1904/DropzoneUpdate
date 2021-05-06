@@ -6,6 +6,7 @@ import { AuthService } from '../../_core/_services/auth.service';
 import { Router } from '@angular/router';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { SnotifyPosition } from 'ng-snotify';
+import { commonPerFactory } from 'src/app/_core/_utility/common-fer-factory';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,6 +16,7 @@ export class DefaultLayoutComponent {
   public sidebarMinimized = false;
   // public navItems = navItems;
   public navItems = [];
+  public imageUser = '';
   currentUser: User = JSON.parse(localStorage.getItem('user'));
   constructor(
     private authService: AuthService,
@@ -23,6 +25,8 @@ export class DefaultLayoutComponent {
     private nav: NavItem
   ) {
     this.navItems = this.nav.getNav();
+    this.imageUser = this.currentUser.image === null ? commonPerFactory.imageUserDefault
+                                    : commonPerFactory.imageUserUrl + this.currentUser.image;
   }
 
   toggleMinimize(e) {

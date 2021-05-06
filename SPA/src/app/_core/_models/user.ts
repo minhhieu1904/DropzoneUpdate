@@ -9,4 +9,5 @@ export interface User {
   valid_From: Date;
   valid_To: Date;
   role: string[];
+  image: string;
 }

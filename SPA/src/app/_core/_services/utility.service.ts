@@ -64,6 +64,18 @@ export class UtilityService {
     return formData;
   }
 
+  getFormDataUser(user: any, file: File) {
+    const formData = new FormData();
+    formData.append('Factory_ID', user.factory_ID);
+    formData.append('User_Account', user.user_Account);
+    formData.append('User_Name', user.user_Name);
+    formData.append('Email', user.email);
+    formData.append('File', file);
+    if (user.password !== null)
+      formData.append('Password', user.password);
+    return formData;
+  }
+
   getParamPagination(page?, itemsPerPage?) {
     let params = new HttpParams();
     if (page != null && itemsPerPage != null) {

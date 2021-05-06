@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using API._Repositories.Interfaces;
 using API._Services.Interface;
+using API._Services.Interfaces;
 using API.Dtos;
 using API.Helpers.Params;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -16,10 +20,18 @@ namespace API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        public UserController(IUserService userService, IMapper mapper)
+        private readonly IUserRepository _userRepository;
+        private readonly IDropzoneService _dropzoneService;
+        public UserController(
+            IUserService userService,
+            IMapper mapper,
+            IUserRepository userRepository,
+            IDropzoneService dropzoneService)
         {
             _mapper = mapper;
             _userService = userService;
+            _userRepository = userRepository;
+            _dropzoneService = dropzoneService;
         }
 
         [HttpGet("Get")]
@@ -54,8 +66,10 @@ namespace API.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> CreateUser(User_Dto model)
+        public async Task<IActionResult> CreateUser([FromForm] User_Dto model)
         {
+            if (model.File != null)
+                model.Image = await _dropzoneService.UploadFile(model.File, model.User_Account.Trim() + "_", "\\uploaded\\images\\user");
             model.Update_By = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var result = await _userService.CreateUser(model);
             return Ok(result);
@@ -69,9 +83,18 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("Update")]
-        public async Task<IActionResult> UpdateUser(User_Dto model)
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser([FromForm] User_Dto model)
         {
+            if (model.File != null)
+            {
+                var image = await _userRepository.FindAll(x => x.Factory_ID == model.Factory_ID && x.User_Account == model.User_Account)
+                                                             .Select(x => x.Image)
+                                                             .FirstOrDefaultAsync();
+                if (!string.IsNullOrEmpty(image))
+                    _dropzoneService.DeleteFileUpload(image, "\\uploaded\\images\\user");
+                model.Image = await _dropzoneService.UploadFile(model.File, model.User_Account.Trim() + "_", "\\uploaded\\images\\user");
+            }
             model.Update_By = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var result = await _userService.UpdateUser(model);
             return Ok(result);
@@ -89,9 +112,14 @@ namespace API.Controllers
             return BadRequest("Updating last login failed on save");
         }
 
-        [HttpGet("Delete")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteUser(string factory_ID, string user_Account)
         {
+            var image = await _userRepository.FindAll(x => x.Factory_ID == factory_ID && x.User_Account == user_Account)
+                                             .Select(x => x.Image)
+                                             .FirstOrDefaultAsync();
+            if (!string.IsNullOrEmpty(image))
+                _dropzoneService.DeleteFileUpload(image, "\\uploaded\\images\\user");
             var result = await _userService.DeleteUser(factory_ID, user_Account);
             return Ok(result);
         }

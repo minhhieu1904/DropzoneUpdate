@@ -31,8 +31,9 @@ export class UserService {
     return this.http.get<PaginationResult<User>>(this.baseUrl + 'User/Search/' + text, { params });
   }
 
-  addUser(user: User) {
-    return this.http.post<OperationResult>(this.baseUrl + 'User/Create', user);
+  addUser(user: any, file: File) {
+    const formData = this.utilityService.getFormDataUser(user, file);
+    return this.http.post<OperationResult>(this.baseUrl + 'User/Create', formData);
   }
 
   deleteUser(factory_ID: string, user_Account: string) {
@@ -40,11 +41,12 @@ export class UserService {
     params = params.append('factory_ID', factory_ID);
     params = params.append('user_Account', user_Account);
 
-    return this.http.get<OperationResult>(this.baseUrl + 'User/Delete', { params });
+    return this.http.delete<OperationResult>(this.baseUrl + 'User', { params });
   }
 
-  updateUser(user: any) {
-    return this.http.post<OperationResult>(this.baseUrl + 'User/Update', user);
+  updateUser(user: any, file: File) {
+    const formData = this.utilityService.getFormDataUser(user, file);
+    return this.http.put<OperationResult>(this.baseUrl + 'User', formData);
   }
 
   getRoleByUser(factory_ID: string, user_Account: string) {
