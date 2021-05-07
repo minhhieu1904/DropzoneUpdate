@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { RoleUserAuthorize } from 'src/app/_core/_models/role-user-authorize';
@@ -19,7 +19,6 @@ import { commonPerFactory } from 'src/app/_core/_utility/common-fer-factory';
 export class UserComponent implements OnInit {
   @ViewChild('addUserModal') addUserModal: ModalDirective;
   @ViewChild('authorizeModal') authorizeModal: ModalDirective;
-  @ViewChild('fileInput') el: ElementRef;
   users: User[];
   user: any = {};
   pagination: Pagination;
@@ -192,6 +191,7 @@ export class UserComponent implements OnInit {
     this.user.user_Name = '';
     this.user.email = '';
     this.user.password = '';
+    this.user.image = null;
     this.imageUser = commonPerFactory.imageUserDefault;
   }
 
@@ -301,7 +301,8 @@ export class UserComponent implements OnInit {
 
   // Function to remove uploaded file
   removeUploadedFile() {
-    let newFileList = Array.from(this.el.nativeElement.files);
+    if(this.user.image === undefined)
+      this.user.image = null;
     this.imageUser = this.user.image !== null ? this.imageUserUrl + this.user.image
                                               : commonPerFactory.imageUserDefault;
     this.editFile = true;
