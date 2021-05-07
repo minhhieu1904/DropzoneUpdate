@@ -20,6 +20,8 @@ export const commonPerFactory = {
   // videoProductUrl: apiUrl + '/uploaded/video/product/',
   // imageArticleUrl: apiUrl + '/uploaded/images/article/',
   // videoArticleUrl: apiUrl + '/uploaded/video/article/',
+  // imageUserUrl: apiUrl + '/uploaded/images/user/',
+  // imageUserDefault: '../../../assets/img/avatars/user.png',
   // serverSentTokenInAppModule: ip + ':8029',
   // linkSentTokenInAppModule: ip + ':8029/api/auth',
   // factoryId: 'SHC',
