@@ -303,7 +303,7 @@ export class UserComponent implements OnInit {
   removeUploadedFile() {
     let newFileList = Array.from(this.el.nativeElement.files);
     this.imageUser = this.user.image !== null ? this.imageUserUrl + this.user.image
-      : commonPerFactory.imageUserDefault;
+                                              : commonPerFactory.imageUserDefault;
     this.editFile = true;
     this.removeUpload = false;
     this.registrationForm.patchValue({

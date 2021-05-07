@@ -131,14 +131,8 @@ export class NavItem {
       icon: 'icon-basket-loaded'
     }
 
-    const navItemPage404_1 = {
-      name: '7. Page 404 1',
-      url: '404-1',
-      icon: 'icon-basket-loaded'
-    }
-
     const navItemPage404_2 = {
-      name: '8. Page 404 2',
+      name: '7. Page 404 2',
       url: '404-2',
       icon: 'icon-basket-loaded'
     }
@@ -150,7 +144,6 @@ export class NavItem {
     this.navItems.push(this.navItemProductCategory);
     this.navItems.push(this.navItemProduct);
     this.navItems.push(navItemPage404);
-    this.navItems.push(navItemPage404_1);
     this.navItems.push(navItemPage404_2);
 
     return this.navItems;
