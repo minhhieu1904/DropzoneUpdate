@@ -172,7 +172,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="[addUserModal.hide(), removeUploadedFile()]">Cancel</button>
-          <button type="submit" class="btn btn-success" [disabled]="addUserForm.invalid">
+          <button type="submit" class="btn btn-success" [disabled]="addUserForm.invalid" (click)="addUserModal.hide()">
             {{flag === 0 ? 'Add' : 'Save'}}
           </button>
         </div>

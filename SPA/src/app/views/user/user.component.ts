@@ -36,6 +36,7 @@ export class UserComponent implements OnInit {
   editFile: boolean = true;
   removeUpload: boolean = false;
   file: File;
+  currentUser: User = JSON.parse(localStorage.getItem('user'));
 
   constructor(
     private route: ActivatedRoute,
@@ -55,6 +56,21 @@ export class UserComponent implements OnInit {
     this.route.data.subscribe(data => {
       this.users = data.users.result;
       this.pagination = data.users.pagination;
+      this.spinnerService.hide();
+    }, error => {
+      console.log(error);
+      this.spinnerService.hide();
+    });
+  }
+
+  loadUserUpdate(): void {
+    this.spinnerService.show();
+    this.userService.getUsers(this.pagination.currentPage, this.pagination.pageSize)
+        .subscribe((res: PaginationResult<User>) => {
+      this.users = res.result;
+      this.pagination = res.pagination;
+      let user = this.users.find(x => x.factory_ID === this.currentUser.factory_ID && x.user_Account === this.currentUser.user_Account);
+      this.resetLocalStore(user);
       this.spinnerService.hide();
     }, error => {
       console.log(error);
@@ -104,6 +120,15 @@ export class UserComponent implements OnInit {
     }
   }
 
+  resetLocalStore(user: any) {
+    this.currentUser.image = user.image;
+    localStorage.removeItem('user');
+    localStorage.setItem('user', JSON.stringify(this.currentUser));
+    setInterval(() => {
+      location.reload();
+    }, 4000);
+  }
+
   clearSearch() {
     this.pagination.currentPage = 1;
     this.text = '';
@@ -136,7 +161,11 @@ export class UserComponent implements OnInit {
         this.file = null;
       this.userService.updateUser(this.user, this.file).subscribe(res => {
         this.spinnerService.hide();
-        if (res.success) {
+        if (this.user.factory_ID === this.currentUser.factory_ID && this.user.user_Account === this.currentUser.user_Account) {
+          this.alertUtility.warning('Wating', 'User updating, please wating page reload');
+          this.loadUserUpdate();
+        }
+        else if (res.success) {
           this.loadUsers();
           this.alertUtility.success('Success!', res.message);
           this.addUserModal.hide();
@@ -178,7 +207,7 @@ export class UserComponent implements OnInit {
   setUser(user: User) {
     this.user = { ...user };
     this.imageUser = user.image !== null ? this.imageUserUrl + user.image
-                                         : commonPerFactory.imageUserDefault;
+      : commonPerFactory.imageUserDefault;
   }
 
   setFlag(flag: number) { // 0: Add; 1: Edit
@@ -301,10 +330,10 @@ export class UserComponent implements OnInit {
 
   // Function to remove uploaded file
   removeUploadedFile() {
-    if(this.user.image === undefined)
+    if (this.user.image === undefined)
       this.user.image = null;
     this.imageUser = this.user.image !== null ? this.imageUserUrl + this.user.image
-                                              : commonPerFactory.imageUserDefault;
+      : commonPerFactory.imageUserDefault;
     this.editFile = true;
     this.removeUpload = false;
     this.registrationForm.patchValue({
