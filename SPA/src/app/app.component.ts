@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SignalRService } from './_core/_services/signal-r.service';
 declare var jQuery: any;
 
 @Component({
@@ -7,9 +8,10 @@ declare var jQuery: any;
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  constructor() { }
+  constructor(public signalRService: SignalRService) { }
 
   ngOnInit() {
+    this.signalRService.startConnection();
     // Select2 Bootstrap Theme
     (function ($) {
       $(document).ready(function () {

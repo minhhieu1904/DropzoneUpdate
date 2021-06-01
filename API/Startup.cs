@@ -12,6 +12,7 @@ using API.Data;
 using API.Dtos;
 using API.Helpers.AutoMapper;
 using API.Helpers.Utilities;
+using API.Hubs;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -40,7 +41,14 @@ namespace API
         {
             services.AddControllers();
             // Add Cors
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder => builder
+                .WithOrigins("http://localhost:4200") // the Angular app url
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+            });
             // Add Db 
             services.AddDbContext<DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -126,6 +134,8 @@ namespace API
                         }
                     });
             });
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -144,9 +154,9 @@ namespace API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            app.UseCors("CorsPolicy");
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -157,6 +167,7 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<HubClient>("/loadData");
             });
 
             // Swagger

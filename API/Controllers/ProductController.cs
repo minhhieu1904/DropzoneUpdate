@@ -9,9 +9,11 @@ using API._Services.Interfaces;
 using API.Dtos;
 using API.Helpers.Params;
 using API.Helpers.Utilities;
+using API.Hubs;
 using Aspose.Cells;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
@@ -22,17 +24,20 @@ namespace API.Controllers
         private readonly IDropzoneService _dropzoneService;
         private readonly IProductRepository _productRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHubContext<HubClient, IHubClient> _hubContext;
 
         public ProductController(
             IProductService productService,
             IWebHostEnvironment webHostEnvironment,
             IProductRepository productRepository,
-            IDropzoneService dropzoneService)
+            IDropzoneService dropzoneService, 
+            IHubContext<HubClient, IHubClient> hubContext)
         {
             _productService = productService;
             _webHostEnvironment = webHostEnvironment;
             _productRepository = productRepository;
             _dropzoneService = dropzoneService;
+            _hubContext = hubContext;
         }
 
         [HttpPost("create")]
@@ -45,7 +50,10 @@ namespace API.Controllers
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             model.Content = model.Content == "null" ? null : model.Content;
-            return Ok(await _productService.Create(model));
+            var result = await _productService.Create(model);
+            if(result.Success)
+                await _hubContext.Clients.All.LoadDataProduct();
+            return Ok(result);
         }
 
         [HttpGet]
@@ -107,7 +115,10 @@ namespace API.Controllers
 
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
-            return Ok(await _productService.Update(model));
+            var result = await _productService.Update(model);
+            if(result.Success)
+                await _hubContext.Clients.All.LoadDataProduct();
+            return Ok(result);
         }
 
         [HttpPut("changeNew")]
@@ -116,7 +127,10 @@ namespace API.Controllers
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             model.New = !model.New;
-            return Ok(await _productService.Update(model));
+            var result = await _productService.Update(model);
+            if(result.Success)
+                await _hubContext.Clients.All.LoadDataProduct();
+            return Ok(result);
         }
 
         [HttpPut("changeHotSale")]
@@ -125,7 +139,10 @@ namespace API.Controllers
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             model.Hot_Sale = !model.Hot_Sale;
-            return Ok(await _productService.Update(model));
+            var result = await _productService.Update(model);
+            if(result.Success)
+                await _hubContext.Clients.All.LoadDataProduct();
+            return Ok(result);
         }
 
         [HttpPut("changeIsSale")]
@@ -140,7 +157,10 @@ namespace API.Controllers
                 model.From_Date_Sale = null;
                 model.To_Date_Sale = null;
             }
-            return Ok(await _productService.Update(model));
+            var result = await _productService.Update(model);
+            if(result.Success)
+                await _hubContext.Clients.All.LoadDataProduct();
+            return Ok(result);
         }
 
         [HttpPut("changeStatus")]
@@ -149,7 +169,10 @@ namespace API.Controllers
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             model.Status = !model.Status;
-            return Ok(await _productService.Update(model));
+            var result = await _productService.Update(model);
+            if(result.Success)
+                await _hubContext.Clients.All.LoadDataProduct();
+            return Ok(result);
         }
 
         [HttpPost("delete")]
@@ -169,8 +192,10 @@ namespace API.Controllers
                 if (!string.IsNullOrEmpty(videos))
                     _dropzoneService.DeleteFileUpload(videos, "\\uploaded\\video\\product");
             }
-
-            return Ok(await _productService.Remove(model));
+            var result = await _productService.Remove(model);
+            if(result.Success)
+                await _hubContext.Clients.All.LoadDataProduct();
+            return Ok(result);
         }
 
         // Export Excel and PDF Product List with Aspose.Cell

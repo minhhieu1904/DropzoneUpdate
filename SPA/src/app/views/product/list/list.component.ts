@@ -6,6 +6,7 @@ import { Product } from 'src/app/_core/_models/product';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { ProductCategoryService } from 'src/app/_core/_services/product-category.service';
 import { ProductService } from 'src/app/_core/_services/product.service';
+import { SignalRService } from 'src/app/_core/_services/signal-r.service';
 import { Pagination, PaginationResult } from 'src/app/_core/_utility/pagination';
 
 @Component({
@@ -31,15 +32,21 @@ export class ListComponent implements OnInit {
     private router: Router,
     private productService: ProductService,
     private productCategoryService: ProductCategoryService,
-    private alertUtility: AlertUtilityService
+    private alertUtility: AlertUtilityService,
+    private signalRService: SignalRService
   ) { }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
       this.productAll = data['products'].result;
       this.pagination = data['products'].pagination;
+      this.products = this.productAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
     });
-    this.getDataPaginations();
+    if (this.signalRService.hubConnection) {
+      this.signalRService.hubConnection.on('LoadProduct', () => {
+        this.getDataPaginations();
+      });
+    }
     this.getProductCateList();
   }
 

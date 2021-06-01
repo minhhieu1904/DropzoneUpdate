@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using API._Services.Interfaces;
 using API.Dtos;
 using API.Helpers.Params;
+using API.Hubs;
 using Aspose.Cells;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using OfficeOpenXml;
 using OfficeOpenXml.Drawing;
 using OfficeOpenXml.Style;
@@ -20,13 +22,16 @@ namespace API.Controllers
     {
         private readonly IProductCategoryService _productCategoryService;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHubContext<HubClient, IHubClient> _hubContext;
 
         public ProductCategoryController(
             IProductCategoryService productCategoryService,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            IHubContext<HubClient, IHubClient> hubContext)
         {
             _productCategoryService = productCategoryService;
             _webHostEnvironment = webHostEnvironment;
+            _hubContext = hubContext;
         }
 
         [HttpPost]
@@ -34,7 +39,10 @@ namespace API.Controllers
         {
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
-            return Ok(await _productCategoryService.Create(model));
+            var result = await _productCategoryService.Create(model);
+            if (result.Success)
+                await _hubContext.Clients.All.LoadDataProductCate();
+            return Ok(result);
         }
 
         [HttpGet]
@@ -66,7 +74,10 @@ namespace API.Controllers
         {
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
-            return Ok(await _productCategoryService.Update(model));
+            var result = await _productCategoryService.Update(model);
+            if (result.Success)
+                await _hubContext.Clients.All.LoadDataProductCate();
+            return Ok(result);
         }
 
         [HttpPut("changeStatus")]
@@ -75,13 +86,19 @@ namespace API.Controllers
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             model.Status = !model.Status;
-            return Ok(await _productCategoryService.Update(model));
+            var result = await _productCategoryService.Update(model);
+            if (result.Success)
+                await _hubContext.Clients.All.LoadDataProductCate();
+            return Ok(result);
         }
 
         [HttpPost("delete")]
         public async Task<IActionResult> Remove(List<ProductCategory_Dto> model)
         {
-            return Ok(await _productCategoryService.Remove(model));
+            var result = await _productCategoryService.Remove(model);
+            if (result.Success)
+                await _hubContext.Clients.All.LoadDataProductCate();
+            return Ok(result);
         }
 
         // Import Data Excel
@@ -104,8 +121,10 @@ namespace API.Controllers
                     files.CopyTo(fs);
                     fs.Flush();
                 }
-
-                return Ok(await _productCategoryService.ImportExcel(filePath, User.FindFirst(ClaimTypes.Name).Value));
+                var result = await _productCategoryService.ImportExcel(filePath, User.FindFirst(ClaimTypes.Name).Value);
+                if (result.Success)
+                    await _hubContext.Clients.All.LoadDataProductCate();
+                return Ok(result);
             }
             throw new Exception("Import Excel Product Category failed on save");
         }

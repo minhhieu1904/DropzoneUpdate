@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using API._Services.Interfaces;
 using API.Dtos;
 using API.Helpers.Params;
+using API.Hubs;
 using Aspose.Cells;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using OfficeOpenXml;
 using OfficeOpenXml.Drawing;
 using OfficeOpenXml.Style;
@@ -21,12 +23,15 @@ namespace API.Controllers
     {
         private readonly IArticleCategoryService _articleCategoryService;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHubContext<HubClient, IHubClient> _hubContext;
         public ArticleCategoryController(
             IArticleCategoryService articleCategoryService,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            IHubContext<HubClient, IHubClient> hubContext)
         {
             _articleCategoryService = articleCategoryService;
             _webHostEnvironment = webHostEnvironment;
+            _hubContext = hubContext;
         }
 
         [HttpPost]
@@ -34,7 +39,10 @@ namespace API.Controllers
         {
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
-            return Ok(await _articleCategoryService.Create(model));
+            var result = await _articleCategoryService.Create(model);
+            if (result.Success)
+                await _hubContext.Clients.All.LoadDataArticleCate();
+            return Ok(result);
         }
 
         [HttpGet]
@@ -66,7 +74,10 @@ namespace API.Controllers
         {
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
-            return Ok(await _articleCategoryService.Update(model));
+            var result = await _articleCategoryService.Update(model);
+            if (result.Success)
+                await _hubContext.Clients.All.LoadDataArticleCate();
+            return Ok(result);
         }
 
         [HttpPut("changeStatus")]
@@ -75,13 +86,19 @@ namespace API.Controllers
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             model.Status = !model.Status;
-            return Ok(await _articleCategoryService.Update(model));
+            var result = await _articleCategoryService.Update(model);
+            if (result.Success)
+                await _hubContext.Clients.All.LoadDataArticleCate();
+            return Ok(result);
         }
 
         [HttpPost("delete")]
         public async Task<IActionResult> Remove(List<ArticleCategory_Dto> model)
         {
-            return Ok(await _articleCategoryService.Remove(model));
+            var result = await _articleCategoryService.Remove(model);
+            if (result.Success)
+                await _hubContext.Clients.All.LoadDataArticleCate();
+            return Ok(result);
         }
 
         // Import Data Excel
@@ -104,8 +121,10 @@ namespace API.Controllers
                     files.CopyTo(fs);
                     fs.Flush();
                 }
-
-                return Ok(await _articleCategoryService.ImportExcel(filePath, User.FindFirst(ClaimTypes.Name).Value));
+                var result = await _articleCategoryService.ImportExcel(filePath, User.FindFirst(ClaimTypes.Name).Value);
+                if (result.Success)
+                    await _hubContext.Clients.All.LoadDataArticleCate();
+                return Ok(result);
             }
             throw new Exception("Import Excel Article Category failed on save");
         }

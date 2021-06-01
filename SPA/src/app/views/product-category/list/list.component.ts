@@ -7,6 +7,7 @@ import { MailContent } from 'src/app/_core/_models/mailContent';
 import { ProductCategory } from 'src/app/_core/_models/product-category';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { ProductCategoryService } from 'src/app/_core/_services/product-category.service';
+import { SignalRService } from 'src/app/_core/_services/signal-r.service';
 import { Pagination, PaginationResult } from 'src/app/_core/_utility/pagination';
 
 @Component({
@@ -32,15 +33,21 @@ export class ListComponent implements OnInit {
     private route: ActivatedRoute,
     private productCateService: ProductCategoryService,
     private spinner: NgxSpinnerService,
-    private alertUtility: AlertUtilityService
+    private alertUtility: AlertUtilityService,
+    private signalRService: SignalRService
   ) { }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
       this.productCateAll = data['productCates'].result;
       this.pagination = data['productCates'].pagination;
+      this.productCates = this.productCateAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
     });
-    this.getDataPaginations();
+    if (this.signalRService.hubConnection) {
+      this.signalRService.hubConnection.on('LoadProductCate', () => {
+        this.getDataPaginations();
+      });
+    }
   }
 
   save() {

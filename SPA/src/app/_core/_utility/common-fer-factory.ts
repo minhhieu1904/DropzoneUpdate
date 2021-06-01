@@ -12,6 +12,7 @@ export const commonPerFactory = {
   imageUserDefault: '../../../assets/img/avatars/user.png',
   serverSentTokenInAppModule: 'localhost:5000',
   linkSentTokenInAppModule: 'localhost:5000/api/auth',
+  urlSignalR: 'http://localhost:5000',
   factoryId: 'SHC',
 
   // //IIS
@@ -24,6 +25,7 @@ export const commonPerFactory = {
   // imageUserDefault: '../../../assets/img/avatars/user.png',
   // serverSentTokenInAppModule: ip + ':8029',
   // linkSentTokenInAppModule: ip + ':8029/api/auth',
+  // urlSignalR: ip + ':8029',
   // factoryId: 'SHC',
 };
 

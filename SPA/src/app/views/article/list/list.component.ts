@@ -7,6 +7,7 @@ import { Article } from 'src/app/_core/_models/article';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { ArticleCategoryService } from 'src/app/_core/_services/article-category.service';
 import { ArticleService } from 'src/app/_core/_services/article.service';
+import { SignalRService } from 'src/app/_core/_services/signal-r.service';
 import { Pagination, PaginationResult } from 'src/app/_core/_utility/pagination';
 
 @Component({
@@ -33,15 +34,21 @@ export class ListComponent implements OnInit {
     private articleService: ArticleService,
     private articleCategoryService: ArticleCategoryService,
     private spinner: NgxSpinnerService,
-    private alertUtility: AlertUtilityService
+    private alertUtility: AlertUtilityService,
+    private signalRService :SignalRService
   ) { }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
       this.articleAll = data['articles'].result;
       this.pagination = data['articles'].pagination;
+      this.articles = this.articleAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
     });
-    this.getDataPaginations();
+    if (this.signalRService.hubConnection) {
+      this.signalRService.hubConnection.on('LoadArticle', () => {
+        this.getDataPaginations();
+      });
+    }
     this.getArticleCateList();
   }
 

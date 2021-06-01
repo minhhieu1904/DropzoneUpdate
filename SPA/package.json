@@ -42,6 +42,7 @@
     "@coreui/icons": "^0.3.0",
     "@datorama/akita": "^4.22.0",
     "@mdi/font": "^5.8.55",
+    "@microsoft/signalr": "^5.0.6",
     "animate.css": "^4.1.1",
     "bootstrap": "^4.1.1",
     "flag-icon-css": "^3.5.0",

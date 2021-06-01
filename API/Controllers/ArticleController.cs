@@ -10,10 +10,12 @@ using API._Services.Interfaces;
 using API.Dtos;
 using API.Helpers.Params;
 using API.Helpers.Utilities;
+using API.Hubs;
 using Aspose.Cells;
 using Aspose.Cells.Drawing;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
@@ -24,17 +26,20 @@ namespace API.Controllers
         private readonly IDropzoneService _dropzoneService;
         private readonly IArticleRepository _articleRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHubContext<HubClient, IHubClient> _hubContext;
 
         public ArticleController(
             IArticleService articleService,
             IDropzoneService dropzoneService,
             IArticleRepository articleRepository,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment, 
+            IHubContext<HubClient, IHubClient> hubContext)
         {
             _articleService = articleService;
             _dropzoneService = dropzoneService;
             _articleRepository = articleRepository;
             _webHostEnvironment = webHostEnvironment;
+            _hubContext = hubContext;
         }
 
         [HttpPost]
@@ -47,7 +52,10 @@ namespace API.Controllers
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             model.Content = model.Content == "null" ? null : model.Content;
-            return Ok(await _articleService.Create(model));
+            var result = await _articleService.Create(model);
+            if(result.Success)
+                await _hubContext.Clients.All.LoadDataArticle();
+            return Ok(result);
         }
 
         [HttpGet]
@@ -109,7 +117,10 @@ namespace API.Controllers
 
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
-            return Ok(await _articleService.Update(model));
+            var result = await _articleService.Update(model);
+            if(result.Success)
+                await _hubContext.Clients.All.LoadDataArticle();
+            return Ok(result);
         }
 
         [HttpPut("changeStatus")]
@@ -118,7 +129,10 @@ namespace API.Controllers
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             model.Status = !model.Status;
-            return Ok(await _articleService.Update(model));
+            var result = await _articleService.Update(model);
+            if(result.Success)
+                await _hubContext.Clients.All.LoadDataArticle();
+            return Ok(result);
         }
 
         [HttpPost("delete")]
@@ -138,7 +152,10 @@ namespace API.Controllers
                 if (!string.IsNullOrEmpty(videos))
                     _dropzoneService.DeleteFileUpload(videos, "\\uploaded\\video\\article");
             }
-            return Ok(await _articleService.Remove(model));
+            var result = await _articleService.Remove(model);
+            if(result.Success)
+                await _hubContext.Clients.All.LoadDataArticle();
+            return Ok(result);
         }
 
         // Export Excel and PDF Article List with Aspose.Cell
