@@ -3,9 +3,11 @@ import { ActivatedRoute } from '@angular/router';
 import { SnotifyPosition } from 'ng-snotify';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { takeUntil } from 'rxjs/operators';
 import { MailContent } from 'src/app/_core/_models/mailContent';
 import { ProductCategory } from 'src/app/_core/_models/product-category';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
+import { DestroyService } from 'src/app/_core/_services/destroy.service';
 import { ProductCategoryService } from 'src/app/_core/_services/product-category.service';
 import { SignalRService } from 'src/app/_core/_services/signal-r.service';
 import { Pagination, PaginationResult } from 'src/app/_core/_utility/pagination';
@@ -13,7 +15,8 @@ import { Pagination, PaginationResult } from 'src/app/_core/_utility/pagination'
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  providers: [DestroyService]
 })
 export class ListComponent implements OnInit {
   @ViewChild('addProductCateModal') addUserModal: ModalDirective;
@@ -34,17 +37,18 @@ export class ListComponent implements OnInit {
     private productCateService: ProductCategoryService,
     private spinner: NgxSpinnerService,
     private alertUtility: AlertUtilityService,
-    private signalRService: SignalRService
+    private signalRService: SignalRService,
+    private destroyService: DestroyService
   ) { }
 
   ngOnInit() {
-    this.route.data.subscribe(data => {
+    this.route.data.pipe(takeUntil(this.destroyService.destroys$)).subscribe(data => {
       this.productCateAll = data['productCates'].result;
       this.pagination = data['productCates'].pagination;
       this.productCates = this.productCateAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
     });
     if (this.signalRService.hubConnection) {
-      this.signalRService.hubConnection.on('LoadProductCate', () => {
+      this.signalRService.hubConnection.on('LoadDataProductCate', () => {
         this.getDataPaginations();
       });
     }
@@ -52,51 +56,58 @@ export class ListComponent implements OnInit {
 
   save() {
     if (this.flag === 0) {
-      this.productCateService.create(this.productCate).subscribe(res => {
-        if (res.success) {
-          this.alertUtility.success('Success!', res.message);
-          this.getDataPaginations();
-        } else {
-          this.alertUtility.error('Error!', res.message);
-        }
-      },
-        error => {
-          console.log(error);
-        }
-      );
+      this.productCateService.create(this.productCate)
+        .pipe(takeUntil(this.destroyService.destroys$))
+        .subscribe(res => {
+          if (res.success) {
+            this.alertUtility.success('Success!', res.message);
+            this.getDataPaginations();
+          } else {
+            this.alertUtility.error('Error!', res.message);
+          }
+        },
+          error => {
+            console.log(error);
+          }
+        );
     } else {
-      this.productCateService.update(this.productCate).subscribe(res => {
-        if (res.success) {
-          this.alertUtility.success('Success!', res.message);
-          this.getDataPaginations();
-        } else {
-          this.alertUtility.error('Error!', res.message);
-        }
-      },
-        error => {
-          console.log(error);
-        }
-      );
+      this.productCateService.update(this.productCate)
+        .pipe(takeUntil(this.destroyService.destroys$))
+        .subscribe(res => {
+          if (res.success) {
+            this.alertUtility.success('Success!', res.message);
+            this.getDataPaginations();
+          } else {
+            this.alertUtility.error('Error!', res.message);
+          }
+        },
+          error => {
+            console.log(error);
+          }
+        );
     }
   }
 
   changeStatus(productCate: ProductCategory) {
-    this.productCateService.changeStatus(productCate).subscribe(res => {
-      if (res.success) {
-        this.alertUtility.success('Success!', res.message);
-        this.getDataPaginations();
-      } else {
-        this.alertUtility.error('Error!', res.message);
-      }
-    },
-      error => {
-        console.log(error);
-      }
-    );
+    this.productCateService.changeStatus(productCate)
+      .pipe(takeUntil(this.destroyService.destroys$))
+      .subscribe(res => {
+        if (res.success) {
+          this.alertUtility.success('Success!', res.message);
+          this.getDataPaginations();
+        } else {
+          this.alertUtility.error('Error!', res.message);
+        }
+      },
+        error => {
+          console.log(error);
+        }
+      );
   }
 
   getDataPaginations() {
     this.productCateService.getDataPaginations(this.pagination.currentPage, this.pagination.pageSize, this.text)
+      .pipe(takeUntil(this.destroyService.destroys$))
       .subscribe((res: PaginationResult<ProductCategory>) => {
         this.productCateAll = res.result;
         this.pagination = res.pagination;
@@ -148,20 +159,22 @@ export class ListComponent implements OnInit {
 
   checkDelete(listProductCate: ProductCategory[], alert: string) {
     this.alertUtility.confirmDelete(alert, SnotifyPosition.rightCenter, () => {
-      this.productCateService.remove(listProductCate).subscribe(res => {
-        if (res.success) {
-          this.alertUtility.success('Success!', res.message);
-          this.listProductCate = [];
-          this.text = '';
-          this.getDataPaginations();
-        }
-        else {
-          this.alertUtility.error('Error!', res.message);
-        }
-      },
-        error => {
-          console.log(error);
-        });
+      this.productCateService.remove(listProductCate)
+        .pipe(takeUntil(this.destroyService.destroys$))
+        .subscribe(res => {
+          if (res.success) {
+            this.alertUtility.success('Success!', res.message);
+            this.listProductCate = [];
+            this.text = '';
+            this.getDataPaginations();
+          }
+          else {
+            this.alertUtility.error('Error!', res.message);
+          }
+        },
+          error => {
+            console.log(error);
+          });
     });
   }
 
@@ -183,14 +196,16 @@ export class ListComponent implements OnInit {
       subject: 'Test',
       body: '<p><strong>Say hello me!!!</strong></p>'
     };
-    this.productCateService.sendMailKit(this.mailContent).subscribe(res => {
-      if (res.success) {
-        this.alertUtility.asyncLoadingSuccess('Success!', res.message, SnotifyPosition.centerCenter);
-      }
-      else {
-        this.alertUtility.asyncLoadingError('Error!', res.message, SnotifyPosition.centerCenter);
-      }
-    });
+    this.productCateService.sendMailKit(this.mailContent)
+      .pipe(takeUntil(this.destroyService.destroys$))
+      .subscribe(res => {
+        if (res.success) {
+          this.alertUtility.asyncLoadingSuccess('Success!', res.message, SnotifyPosition.centerCenter);
+        }
+        else {
+          this.alertUtility.asyncLoadingError('Error!', res.message, SnotifyPosition.centerCenter);
+        }
+      });
   }
 
   import() {
@@ -200,17 +215,19 @@ export class ListComponent implements OnInit {
     }
 
     this.alertUtility.confirmDelete('Are you sure import file?', SnotifyPosition.centerCenter, () => {
-      this.productCateService.importExcel(this.fileImportExcel).subscribe((res) => {
-        if (res.success) {
-          this.alertUtility.success('Success!', 'Import file successfuly');
-        } else {
-          this.alertUtility.error('Error!', 'Import file failse');
-        }
-        this.onRemoveFile();
-        this.getDataPaginations();
-      }, error => {
-        this.alertUtility.error('Error', 'Upload Data Fail!');
-      });
+      this.productCateService.importExcel(this.fileImportExcel)
+        .pipe(takeUntil(this.destroyService.destroys$))
+        .subscribe((res) => {
+          if (res.success) {
+            this.alertUtility.success('Success!', 'Import file successfuly');
+          } else {
+            this.alertUtility.error('Error!', 'Import file failse');
+          }
+          this.onRemoveFile();
+          this.getDataPaginations();
+        }, error => {
+          this.alertUtility.error('Error', 'Upload Data Fail!');
+        });
     });
   }
 

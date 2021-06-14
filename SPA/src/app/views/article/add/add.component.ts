@@ -3,16 +3,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Select2OptionData } from 'ng-select2';
 import { SnotifyPosition } from 'ng-snotify';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { takeUntil } from 'rxjs/operators';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { ArticleCategoryService } from 'src/app/_core/_services/article-category.service';
 import { ArticleService } from 'src/app/_core/_services/article.service';
+import { DestroyService } from 'src/app/_core/_services/destroy.service';
 import { UtilityService } from 'src/app/_core/_services/utility.service';
 import { commonPerFactory } from 'src/app/_core/_utility/common-fer-factory';
 
 @Component({
   selector: 'app-add',
   templateUrl: './add.component.html',
-  styleUrls: ['./add.component.scss']
+  styleUrls: ['./add.component.scss'],
+  providers: [DestroyService]
 })
 export class AddComponent implements OnInit {
   article: any = {};
@@ -32,11 +35,12 @@ export class AddComponent implements OnInit {
     private articleCategoryService: ArticleCategoryService,
     private spinner: NgxSpinnerService,
     private alertUtility: AlertUtilityService,
-    private utilityService: UtilityService
+    private utilityService: UtilityService,
+    private destroyService: DestroyService
   ) { }
 
   ngOnInit() {
-    this.articleService.currentArticle.subscribe(article => {
+    this.articleService.currentArticle.pipe(takeUntil(this.destroyService.destroys$)).subscribe(article => {
       this.article = article;
 
       if (this.article.fileImages != null)
@@ -50,8 +54,8 @@ export class AddComponent implements OnInit {
 
       // ***Here is the code for converting "String" to "File"
       this.utilityService.convertToFile(this.listFileVideo, this.urlVideo, this.fileVideos);
-    }).unsubscribe();
-    this.articleService.currentFlag.subscribe(flag => this.flag = flag).unsubscribe();
+    });
+    this.articleService.currentFlag.pipe(takeUntil(this.destroyService.destroys$)).subscribe(flag => this.flag = flag);
     if (this.flag === '0') {
       this.cancel();
     }
@@ -70,50 +74,56 @@ export class AddComponent implements OnInit {
 
   saveAndNext() {
     this.checkStatus();
-    this.articleService.create(this.article, this.fileImages, this.fileVideos).subscribe(res => {
-      if (res.success) {
-        this.alertUtility.success('Success!', res.message);
-        this.cancel();
-      }
-      else {
-        this.alertUtility.error('Error!', res.message);
-      }
-    },
-      error => {
-        console.log(error);
-      });
+    this.articleService.create(this.article, this.fileImages, this.fileVideos)
+      .pipe(takeUntil(this.destroyService.destroys$))
+      .subscribe(res => {
+        if (res.success) {
+          this.alertUtility.success('Success!', res.message);
+          this.cancel();
+        }
+        else {
+          this.alertUtility.error('Error!', res.message);
+        }
+      },
+        error => {
+          console.log(error);
+        });
   }
 
   save() {
     this.checkStatus();
     if (this.flag === '0') {
-      this.articleService.create(this.article, this.fileImages, this.fileVideos).subscribe(res => {
-        if (res.success) {
-          this.alertUtility.success('Success!', res.message);
-          this.backList();
-        }
-        else {
-          this.alertUtility.error('Error!', res.message);
-        }
-      },
-        error => {
-          console.log(error);
-        });
+      this.articleService.create(this.article, this.fileImages, this.fileVideos)
+        .pipe(takeUntil(this.destroyService.destroys$))
+        .subscribe(res => {
+          if (res.success) {
+            this.alertUtility.success('Success!', res.message);
+            this.backList();
+          }
+          else {
+            this.alertUtility.error('Error!', res.message);
+          }
+        },
+          error => {
+            console.log(error);
+          });
     }
     else {
       this.checkStatus();
-      this.articleService.update(this.article, this.fileImages, this.fileVideos).subscribe(res => {
-        if (res.success) {
-          this.alertUtility.success('Success!', res.message);
-          this.backList();
-        }
-        else {
-          this.alertUtility.error('Error!', res.message);
-        }
-      },
-        error => {
-          console.log(error);
-        });
+      this.articleService.update(this.article, this.fileImages, this.fileVideos)
+        .pipe(takeUntil(this.destroyService.destroys$))
+        .subscribe(res => {
+          if (res.success) {
+            this.alertUtility.success('Success!', res.message);
+            this.backList();
+          }
+          else {
+            this.alertUtility.error('Error!', res.message);
+          }
+        },
+          error => {
+            console.log(error);
+          });
     }
   }
 
@@ -133,14 +143,16 @@ export class AddComponent implements OnInit {
   }
 
   getArticleCateList() {
-    this.articleCategoryService.getIdAndName().subscribe(res => {
-      this.articleCateList = res.map(item => {
-        return { id: item.id, text: item.name };
+    this.articleCategoryService.getIdAndName()
+      .pipe(takeUntil(this.destroyService.destroys$))
+      .subscribe(res => {
+        this.articleCateList = res.map(item => {
+          return { id: item.id, text: item.name };
+        });
+        if (res.length > 0 && this.flag === '0') {
+          this.article.article_Cate_ID = this.articleCateList[0].id;
+        }
       });
-      if (res.length > 0 && this.flag === '0') {
-        this.article.article_Cate_ID = this.articleCateList[0].id;
-      }
-    });
   }
 
   // Dropzone import multi file images or videos

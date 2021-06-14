@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Select2OptionData } from 'ng-select2';
 import { SnotifyPosition } from 'ng-snotify';
+import { takeUntil } from 'rxjs/operators';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
+import { DestroyService } from 'src/app/_core/_services/destroy.service';
 import { ProductCategoryService } from 'src/app/_core/_services/product-category.service';
 import { ProductService } from 'src/app/_core/_services/product.service';
 import { UtilityService } from 'src/app/_core/_services/utility.service';
@@ -11,7 +13,8 @@ import { commonPerFactory } from 'src/app/_core/_utility/common-fer-factory';
 @Component({
   selector: 'app-add',
   templateUrl: './add.component.html',
-  styleUrls: ['./add.component.scss']
+  styleUrls: ['./add.component.scss'],
+  providers: [DestroyService]
 })
 export class AddComponent implements OnInit {
   product: any = {};
@@ -31,29 +34,32 @@ export class AddComponent implements OnInit {
     private productService: ProductService,
     private productCategoryService: ProductCategoryService,
     private alertUtility: AlertUtilityService,
-    private utilityService: UtilityService
+    private utilityService: UtilityService,
+    private destroyService: DestroyService
   ) { }
 
   ngOnInit() {
-    this.productService.currentProduct.subscribe(product => {
-      this.product = product;
-      if (this.product.from_Date_Sale !== null)
-        this.product.from_Date_Sale = new Date(this.product.from_Date_Sale);
-      if (this.product.to_Date_Sale !== null)
-        this.product.to_Date_Sale = new Date(this.product.to_Date_Sale);
-      if (this.product.fileImages != null)
-        this.listFileImage = this.product.fileImages.split(';');
+    this.productService.currentProduct
+      .pipe(takeUntil(this.destroyService.destroys$))
+      .subscribe(product => {
+        this.product = product;
+        if (this.product.from_Date_Sale !== null)
+          this.product.from_Date_Sale = new Date(this.product.from_Date_Sale);
+        if (this.product.to_Date_Sale !== null)
+          this.product.to_Date_Sale = new Date(this.product.to_Date_Sale);
+        if (this.product.fileImages != null)
+          this.listFileImage = this.product.fileImages.split(';');
 
-      // ***Here is the code for converting "String" to "File"
-      this.utilityService.convertToFile(this.listFileImage, this.urlImage, this.fileImages);
+        // ***Here is the code for converting "String" to "File"
+        this.utilityService.convertToFile(this.listFileImage, this.urlImage, this.fileImages);
 
-      if (this.product.fileVideos != null)
-        this.listFileVideo = this.product.fileVideos.split(';');
+        if (this.product.fileVideos != null)
+          this.listFileVideo = this.product.fileVideos.split(';');
 
-      // ***Here is the code for converting "String" to "File"
-      this.utilityService.convertToFile(this.listFileVideo, this.urlVideo, this.fileVideos);
-    }).unsubscribe();
-    this.productService.currentFlag.subscribe(flag => this.flag = flag).unsubscribe();
+        // ***Here is the code for converting "String" to "File"
+        this.utilityService.convertToFile(this.listFileVideo, this.urlVideo, this.fileVideos);
+      });
+    this.productService.currentFlag.pipe(takeUntil(this.destroyService.destroys$)).subscribe(flag => this.flag = flag);
     if (this.flag === '0') {
       this.cancel();
     }
@@ -90,18 +96,20 @@ export class AddComponent implements OnInit {
     this.checkHotSale();
     this.checkIsSale();
     this.checkStatus();
-    this.productService.create(this.product, this.fileImages, this.fileVideos).subscribe(res => {
-      if (res.success) {
-        this.alertUtility.success('Success!', res.message);
-        this.cancel();
-      }
-      else {
-        this.alertUtility.error('Error!', res.message);
-      }
-    },
-      error => {
-        console.log(error);
-      });
+    this.productService.create(this.product, this.fileImages, this.fileVideos)
+      .pipe(takeUntil(this.destroyService.destroys$))
+      .subscribe(res => {
+        if (res.success) {
+          this.alertUtility.success('Success!', res.message);
+          this.cancel();
+        }
+        else {
+          this.alertUtility.error('Error!', res.message);
+        }
+      },
+        error => {
+          console.log(error);
+        });
   }
 
   save() {
@@ -110,32 +118,36 @@ export class AddComponent implements OnInit {
     this.checkIsSale();
     this.checkStatus();
     if (this.flag === '0') {
-      this.productService.create(this.product, this.fileImages, this.fileVideos).subscribe(res => {
-        if (res.success) {
-          this.alertUtility.success('Success!', res.message);
-          this.backList();
-        }
-        else {
-          this.alertUtility.error('Error!', res.message);
-        }
-      },
-        error => {
-          console.log(error);
-        });
+      this.productService.create(this.product, this.fileImages, this.fileVideos)
+        .pipe(takeUntil(this.destroyService.destroys$))
+        .subscribe(res => {
+          if (res.success) {
+            this.alertUtility.success('Success!', res.message);
+            this.backList();
+          }
+          else {
+            this.alertUtility.error('Error!', res.message);
+          }
+        },
+          error => {
+            console.log(error);
+          });
     }
     else {
-      this.productService.update(this.product, this.fileImages, this.fileVideos).subscribe(res => {
-        if (res.success) {
-          this.alertUtility.success('Success!', res.message);
-          this.backList();
-        }
-        else {
-          this.alertUtility.error('Error!', res.message);
-        }
-      },
-        error => {
-          console.log(error);
-        });
+      this.productService.update(this.product, this.fileImages, this.fileVideos)
+        .pipe(takeUntil(this.destroyService.destroys$))
+        .subscribe(res => {
+          if (res.success) {
+            this.alertUtility.success('Success!', res.message);
+            this.backList();
+          }
+          else {
+            this.alertUtility.error('Error!', res.message);
+          }
+        },
+          error => {
+            console.log(error);
+          });
     }
   }
 
@@ -177,14 +189,15 @@ export class AddComponent implements OnInit {
   }
 
   getProductCateList() {
-    this.productCategoryService.getIdAndName().subscribe(res => {
-      this.productCateList = res.map(item => {
-        return { id: item.id, text: item.name };
+    this.productCategoryService.getIdAndName()
+      .pipe(takeUntil(this.destroyService.destroys$)).subscribe(res => {
+        this.productCateList = res.map(item => {
+          return { id: item.id, text: item.name };
+        });
+        if (res.length > 0 && this.flag === '0') {
+          this.product.product_Cate_ID = this.productCateList[0].id;
+        }
       });
-      if (res.length > 0 && this.flag === '0') {
-        this.product.product_Cate_ID = this.productCateList[0].id;
-      }
-    });
   }
 
   changeIsSale(event) {

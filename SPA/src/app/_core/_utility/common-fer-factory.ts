@@ -25,7 +25,7 @@ export const commonPerFactory = {
   // imageUserDefault: '../../../assets/img/avatars/user.png',
   // serverSentTokenInAppModule: ip + ':8029',
   // linkSentTokenInAppModule: ip + ':8029/api/auth',
-  // urlSignalR: ip + ':8029',
+  // urlSignalR: apiUrl,
   // factoryId: 'SHC',
 };
 

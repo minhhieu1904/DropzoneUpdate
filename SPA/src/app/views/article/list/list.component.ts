@@ -3,17 +3,20 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Select2OptionData } from 'ng-select2';
 import { SnotifyPosition } from 'ng-snotify';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { takeUntil } from 'rxjs/operators';
 import { Article } from 'src/app/_core/_models/article';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { ArticleCategoryService } from 'src/app/_core/_services/article-category.service';
 import { ArticleService } from 'src/app/_core/_services/article.service';
+import { DestroyService } from 'src/app/_core/_services/destroy.service';
 import { SignalRService } from 'src/app/_core/_services/signal-r.service';
 import { Pagination, PaginationResult } from 'src/app/_core/_utility/pagination';
 
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  providers: [DestroyService]
 })
 export class ListComponent implements OnInit {
   articleAll: Article[];
@@ -35,17 +38,18 @@ export class ListComponent implements OnInit {
     private articleCategoryService: ArticleCategoryService,
     private spinner: NgxSpinnerService,
     private alertUtility: AlertUtilityService,
-    private signalRService :SignalRService
+    private signalRService: SignalRService,
+    private destroyService: DestroyService
   ) { }
 
   ngOnInit() {
-    this.route.data.subscribe(data => {
+    this.route.data.pipe(takeUntil(this.destroyService.destroys$)).subscribe(data => {
       this.articleAll = data['articles'].result;
       this.pagination = data['articles'].pagination;
       this.articles = this.articleAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
     });
     if (this.signalRService.hubConnection) {
-      this.signalRService.hubConnection.on('LoadArticle', () => {
+      this.signalRService.hubConnection.on('LoadDataArticle', () => {
         this.getDataPaginations();
       });
     }
@@ -66,6 +70,7 @@ export class ListComponent implements OnInit {
 
   getDataPaginations() {
     this.articleService.getDataPaginations(this.pagination.currentPage, this.pagination.pageSize, this.text)
+      .pipe(takeUntil(this.destroyService.destroys$))
       .subscribe((res: PaginationResult<Article>) => {
         this.articleAll = res.result;
         this.pagination = res.pagination;
@@ -78,6 +83,7 @@ export class ListComponent implements OnInit {
 
   searchDataPaginations() {
     this.articleService.searchDataPaginations(this.pagination.currentPage, this.pagination.pageSize, this.articleCateID, this.article_Name)
+      .pipe(takeUntil(this.destroyService.destroys$))
       .subscribe((res: PaginationResult<Article>) => {
         this.articleAll = res.result;
         this.pagination = res.pagination;
@@ -89,18 +95,19 @@ export class ListComponent implements OnInit {
   }
 
   changeStatus(article: Article) {
-    this.articleService.changeStatus(article).subscribe(res => {
-      if (res.success) {
-        this.alertUtility.success('Success!', res.message);
-        this.getDataPaginations();
-      } 
-      else
-        this.alertUtility.error('Error!', res.message);
-    },
-      error => {
-        console.log(error);
-      }
-    );
+    this.articleService.changeStatus(article)
+      .pipe(takeUntil(this.destroyService.destroys$)).subscribe(res => {
+        if (res.success) {
+          this.alertUtility.success('Success!', res.message);
+          this.getDataPaginations();
+        }
+        else
+          this.alertUtility.error('Error!', res.message);
+      },
+        error => {
+          console.log(error);
+        }
+      );
   }
 
   pageChanged(event: any): void {
@@ -118,12 +125,14 @@ export class ListComponent implements OnInit {
   }
 
   getArticleListByArticleCateID() {
-    this.articleService.getArticleListByArticleCateID(this.articleCateID).subscribe(res => {
-      this.articleList = res.map(item => {
-        return { id: item.id, text: item.name };
+    this.articleService.getArticleListByArticleCateID(this.articleCateID)
+      .pipe(takeUntil(this.destroyService.destroys$))
+      .subscribe(res => {
+        this.articleList = res.map(item => {
+          return { id: item.id, text: item.name };
+        });
+        this.articleList.unshift({ id: 'all', text: 'All' });
       });
-      this.articleList.unshift({ id: 'all', text: 'All' });
-    });
   }
 
   changeArticleCateID(event) {
@@ -147,17 +156,19 @@ export class ListComponent implements OnInit {
 
   checkDelete(articleList: Article[], alert: string) {
     this.alertUtility.confirmDelete(alert, SnotifyPosition.rightCenter, () => {
-      this.articleService.remove(articleList).subscribe(res => {
-        if (res.success) {
-          this.alertUtility.success('Success!', res.message);
-          this.getDataPaginations();
-        }
-        else
-          this.alertUtility.error('Error!', res.message);
-      },
-        error => {
-          console.log(error);
-        });
+      this.articleService.remove(articleList)
+        .pipe(takeUntil(this.destroyService.destroys$))
+        .subscribe(res => {
+          if (res.success) {
+            this.alertUtility.success('Success!', res.message);
+            this.getDataPaginations();
+          }
+          else
+            this.alertUtility.error('Error!', res.message);
+        },
+          error => {
+            console.log(error);
+          });
     });
   }
 

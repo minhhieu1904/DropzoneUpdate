@@ -36,9 +36,6 @@
               <th>User Account</th>
               <th>User Name</th>
               <th>Email</th>
-              <!-- <th >Valid From</th>
-                <th >Valid To</th>
-                <th >Last Login</th> -->
               <th>Update By</th>
               <th>Update Time</th>
               <th colspan="3">Action</th>
@@ -51,9 +48,6 @@
               <td>{{user.user_Account}}</td>
               <td>{{ user.user_Name }}</td>
               <td>{{ user.email }}</td>
-              <!-- <td>{{ user.valid_From | date: 'MM/dd/yyyy' }}</td>
-                <td>{{ user.valid_To | date: 'MM/dd/yyyy' }}</td>
-                <td>{{ user.last_Login | date: 'MM/dd/yyyy, HH:mm:ss' }}</td> -->
               <td>{{ user.update_By }}</td>
               <td>{{ user.update_Time | date: 'MM/dd/yyyy, HH:mm:ss' }}</td>
               <td class="w-1rem">
@@ -161,14 +155,6 @@
               <button type="button" class="btn btn-danger" (click)="removeUploadedFile()">Remove Image</button>
             </div>
           </div>
-          <!-- <div class="form-group">
-              <label>Valid From</label>
-              <input type="text" class="form-control" name="valid_From">
-            </div>
-            <div class="form-group">
-              <label>Valid To</label>
-              <input type="text" class="form-control" name="valid_To">
-            </div> -->
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="[addUserModal.hide(), removeUploadedFile()]">Cancel</button>

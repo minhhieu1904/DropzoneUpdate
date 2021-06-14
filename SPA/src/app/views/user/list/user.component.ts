@@ -10,11 +10,14 @@ import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.servi
 import { SnotifyPosition } from 'ng-snotify';
 import { FormBuilder } from '@angular/forms';
 import { commonPerFactory } from 'src/app/_core/_utility/common-fer-factory';
+import { DestroyService } from 'src/app/_core/_services/destroy.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss']
+  styleUrls: ['./user.component.scss'],
+  providers: [DestroyService]
 })
 export class UserComponent implements OnInit {
   @ViewChild('addUserModal') addUserModal: ModalDirective;
@@ -44,7 +47,8 @@ export class UserComponent implements OnInit {
     private spinnerService: NgxSpinnerService,
     private alertUtility: AlertUtilityService,
     public fb: FormBuilder,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private destroyService: DestroyService
   ) { }
 
   ngOnInit(): void {
@@ -53,7 +57,7 @@ export class UserComponent implements OnInit {
 
   loadData(): void {
     this.spinnerService.show();
-    this.route.data.subscribe(data => {
+    this.route.data.pipe(takeUntil(this.destroyService.destroys$)).subscribe(data => {
       this.users = data.users.result;
       this.pagination = data.users.pagination;
       this.spinnerService.hide();
@@ -66,16 +70,17 @@ export class UserComponent implements OnInit {
   loadUserUpdate(): void {
     this.spinnerService.show();
     this.userService.getUsers(this.pagination.currentPage, this.pagination.pageSize)
-        .subscribe((res: PaginationResult<User>) => {
-      this.users = res.result;
-      this.pagination = res.pagination;
-      let user = this.users.find(x => x.factory_ID === this.currentUser.factory_ID && x.user_Account === this.currentUser.user_Account);
-      this.resetLocalStore(user);
-      this.spinnerService.hide();
-    }, error => {
-      console.log(error);
-      this.spinnerService.hide();
-    });
+      .pipe(takeUntil(this.destroyService.destroys$))
+      .subscribe((res: PaginationResult<User>) => {
+        this.users = res.result;
+        this.pagination = res.pagination;
+        let user = this.users.find(x => x.factory_ID === this.currentUser.factory_ID && x.user_Account === this.currentUser.user_Account);
+        this.resetLocalStore(user);
+        this.spinnerService.hide();
+      }, error => {
+        console.log(error);
+        this.spinnerService.hide();
+      });
   }
 
   pageChanged(event: any): void {
@@ -88,6 +93,7 @@ export class UserComponent implements OnInit {
       this.searchKey = true;
       this.pagination.currentPage = 1;
       this.userService.searchUser(this.pagination.currentPage, this.pagination.pageSize, this.text)
+        .pipe(takeUntil(this.destroyService.destroys$))
         .subscribe((res: PaginationResult<User>) => {
           this.users = res.result;
           this.pagination = res.pagination;
@@ -103,6 +109,7 @@ export class UserComponent implements OnInit {
   loadUsers() {
     if (this.searchKey === false) {
       this.userService.getUsers(this.pagination.currentPage, this.pagination.pageSize)
+        .pipe(takeUntil(this.destroyService.destroys$))
         .subscribe((res: PaginationResult<User>) => {
           this.users = res.result;
           this.pagination = res.pagination;
@@ -111,6 +118,7 @@ export class UserComponent implements OnInit {
         });
     } else {
       this.userService.searchUser(this.pagination.currentPage, this.pagination.pageSize, this.text)
+        .pipe(takeUntil(this.destroyService.destroys$))
         .subscribe((res: PaginationResult<User>) => {
           this.users = res.result;
           this.pagination = res.pagination;
@@ -140,42 +148,46 @@ export class UserComponent implements OnInit {
     if (!this.validate()) { return; }
     if (this.flag === 0) { // Case Add User
       this.spinnerService.show();
-      this.userService.addUser(this.user, this.file).subscribe(res => {
-        this.spinnerService.hide();
-        if (res.success) {
-          this.alertUtility.success('Success!', res.message);
-          this.loadUsers();
-          this.addUserModal.hide();
-        } else {
-          this.alertUtility.error('Error!', res.message);
-        }
-      }, error => {
-        console.log(error);
-        this.spinnerService.hide();
-      });
+      this.userService.addUser(this.user, this.file)
+        .pipe(takeUntil(this.destroyService.destroys$))
+        .subscribe(res => {
+          this.spinnerService.hide();
+          if (res.success) {
+            this.alertUtility.success('Success!', res.message);
+            this.loadUsers();
+            this.addUserModal.hide();
+          } else {
+            this.alertUtility.error('Error!', res.message);
+          }
+        }, error => {
+          console.log(error);
+          this.spinnerService.hide();
+        });
     } else { // Case Edit User
       this.spinnerService.show();
       if (this.user.password === undefined)
         this.user.password = null;
       if (this.file === undefined)
         this.file = null;
-      this.userService.updateUser(this.user, this.file).subscribe(res => {
-        this.spinnerService.hide();
-        if (this.user.factory_ID === this.currentUser.factory_ID && this.user.user_Account === this.currentUser.user_Account) {
-          this.alertUtility.warning('Wating', 'User updating, please wating page reload');
-          this.loadUserUpdate();
-        }
-        else if (res.success) {
-          this.loadUsers();
-          this.alertUtility.success('Success!', res.message);
-          this.addUserModal.hide();
-        } else {
-          this.alertUtility.error('Error!', res.message);
-        }
-      }, error => {
-        console.log(error);
-        this.spinnerService.hide();
-      });
+      this.userService.updateUser(this.user, this.file)
+        .pipe(takeUntil(this.destroyService.destroys$))
+        .subscribe(res => {
+          this.spinnerService.hide();
+          if (this.user.factory_ID === this.currentUser.factory_ID && this.user.user_Account === this.currentUser.user_Account) {
+            this.alertUtility.warning('Wating', 'User updating, please wating page reload');
+            this.loadUserUpdate();
+          }
+          else if (res.success) {
+            this.loadUsers();
+            this.alertUtility.success('Success!', res.message);
+            this.addUserModal.hide();
+          } else {
+            this.alertUtility.error('Error!', res.message);
+          }
+        }, error => {
+          console.log(error);
+          this.spinnerService.hide();
+        });
     }
   }
 
@@ -188,18 +200,20 @@ export class UserComponent implements OnInit {
       } else {
         // Execute delete user
         this.spinnerService.show();
-        this.userService.deleteUser(factoryID, userAccount).subscribe(res => {
-          this.spinnerService.hide();
-          if (res.success) {
-            this.loadUsers();
-            this.alertUtility.success('Deleted!', res.message);
-          } else {
-            this.alertUtility.error('Error!', res.message);
-          }
-        }, error => {
-          console.log(error);
-          this.spinnerService.hide();
-        });
+        this.userService.deleteUser(factoryID, userAccount)
+          .pipe(takeUntil(this.destroyService.destroys$))
+          .subscribe(res => {
+            this.spinnerService.hide();
+            if (res.success) {
+              this.loadUsers();
+              this.alertUtility.success('Deleted!', res.message);
+            } else {
+              this.alertUtility.error('Error!', res.message);
+            }
+          }, error => {
+            console.log(error);
+            this.spinnerService.hide();
+          });
       }
     });
   }
@@ -227,6 +241,7 @@ export class UserComponent implements OnInit {
   setAuthorizeList() {
     this.spinnerService.show();
     this.userService.getRoleByUser(this.user.factory_ID, this.user.user_Account)
+      .pipe(takeUntil(this.destroyService.destroys$))
       .subscribe((roles: RoleUserAuthorize[]) => {
         this.roles = roles;
         this.checkIfAllRolesChecked();
@@ -271,19 +286,21 @@ export class UserComponent implements OnInit {
 
   authorizeSave() {
     this.spinnerService.show();
-    this.userService.saveUserRole(this.roles).subscribe(res => {
-      this.spinnerService.hide();
-      if (res.success) {
-        this.alertUtility.success('Success!', res.message);
-        this.authorizeModal.hide();
-        this.loadUsers();
-      } else {
-        this.alertUtility.error('Oops!', res.message);
-      }
-    }, error => {
-      console.log(error);
-      this.spinnerService.hide();
-    });
+    this.userService.saveUserRole(this.roles)
+      .pipe(takeUntil(this.destroyService.destroys$))
+      .subscribe(res => {
+        this.spinnerService.hide();
+        if (res.success) {
+          this.alertUtility.success('Success!', res.message);
+          this.authorizeModal.hide();
+          this.loadUsers();
+        } else {
+          this.alertUtility.error('Oops!', res.message);
+        }
+      }, error => {
+        console.log(error);
+        this.spinnerService.hide();
+      });
   }
 
   validate() {
@@ -333,7 +350,7 @@ export class UserComponent implements OnInit {
     if (this.user.image === undefined)
       this.user.image = null;
     this.imageUser = this.user.image !== null ? this.imageUserUrl + this.user.image
-      : commonPerFactory.imageUserDefault;
+                                              : commonPerFactory.imageUserDefault;
     this.editFile = true;
     this.removeUpload = false;
     this.registrationForm.patchValue({

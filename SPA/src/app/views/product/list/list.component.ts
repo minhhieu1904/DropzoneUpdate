@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Select2OptionData } from 'ng-select2';
 import { SnotifyPosition } from 'ng-snotify';
+import { takeUntil } from 'rxjs/operators';
 import { Product } from 'src/app/_core/_models/product';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
+import { DestroyService } from 'src/app/_core/_services/destroy.service';
 import { ProductCategoryService } from 'src/app/_core/_services/product-category.service';
 import { ProductService } from 'src/app/_core/_services/product.service';
 import { SignalRService } from 'src/app/_core/_services/signal-r.service';
@@ -12,7 +14,8 @@ import { Pagination, PaginationResult } from 'src/app/_core/_utility/pagination'
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
-  styleUrls: ['./list.component.scss']
+  styleUrls: ['./list.component.scss'],
+  providers: [DestroyService]
 })
 export class ListComponent implements OnInit {
   productAll: Product[];
@@ -33,17 +36,20 @@ export class ListComponent implements OnInit {
     private productService: ProductService,
     private productCategoryService: ProductCategoryService,
     private alertUtility: AlertUtilityService,
-    private signalRService: SignalRService
+    private signalRService: SignalRService,
+    private destroyService: DestroyService,
   ) { }
 
   ngOnInit() {
-    this.route.data.subscribe(data => {
-      this.productAll = data['products'].result;
-      this.pagination = data['products'].pagination;
-      this.products = this.productAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
-    });
+    this.route.data.pipe(takeUntil(this.destroyService.destroys$))
+      .pipe(takeUntil(this.destroyService.destroys$))
+      .subscribe(data => {
+        this.productAll = data['products'].result;
+        this.pagination = data['products'].pagination;
+        this.products = this.productAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
+      });
     if (this.signalRService.hubConnection) {
-      this.signalRService.hubConnection.on('LoadProduct', () => {
+      this.signalRService.hubConnection.on('LoadDataProduct', () => {
         this.getDataPaginations();
       });
     }
@@ -79,25 +85,28 @@ export class ListComponent implements OnInit {
 
   checkDelete(products: Product[], alert: string) {
     this.alertUtility.confirmDelete(alert, SnotifyPosition.rightCenter, () => {
-      this.productService.remove(products).subscribe(res => {
-        if (res.success) {
-          this.alertUtility.success('Success!', res.message);
-          this.listProduct = [];
-          this.text = '';
-          this.getDataPaginations();
-        }
-        else {
-          this.alertUtility.error('Error!', res.message);
-        }
-      },
-        error => {
-          console.log(error);
-        });
+      this.productService.remove(products)
+        .pipe(takeUntil(this.destroyService.destroys$))
+        .subscribe(res => {
+          if (res.success) {
+            this.alertUtility.success('Success!', res.message);
+            this.listProduct = [];
+            this.text = '';
+            this.getDataPaginations();
+          }
+          else {
+            this.alertUtility.error('Error!', res.message);
+          }
+        },
+          error => {
+            console.log(error);
+          });
     });
   }
 
   getDataPaginations() {
     this.productService.getDataPaginations(this.pagination.currentPage, this.pagination.pageSize, this.text)
+      .pipe(takeUntil(this.destroyService.destroys$))
       .subscribe((res: PaginationResult<Product>) => {
         this.productAll = res.result;
         this.pagination = res.pagination;
@@ -110,6 +119,7 @@ export class ListComponent implements OnInit {
 
   searchDataPaginations() {
     this.productService.searchDataPaginations(this.pagination.currentPage, this.pagination.pageSize, this.productCateID, this.product_Name)
+      .pipe(takeUntil(this.destroyService.destroys$))
       .subscribe((res: PaginationResult<Product>) => {
         this.productAll = res.result;
         this.pagination = res.pagination;
@@ -121,63 +131,71 @@ export class ListComponent implements OnInit {
   }
 
   changeNew(product: Product) {
-    this.productService.changeNew(product).subscribe(res => {
-      if (res.success) {
-        this.alertUtility.success('Success!', res.message);
-        this.getDataPaginations();
-      } else {
-        this.alertUtility.error('Error!', res.message);
-      }
-    },
-      error => {
-        console.log(error);
-      }
-    );
+    this.productService.changeNew(product)
+      .pipe(takeUntil(this.destroyService.destroys$))
+      .subscribe(res => {
+        if (res.success) {
+          this.alertUtility.success('Success!', res.message);
+          this.getDataPaginations();
+        } else {
+          this.alertUtility.error('Error!', res.message);
+        }
+      },
+        error => {
+          console.log(error);
+        }
+      );
   }
 
   changeHotSale(product: Product) {
-    this.productService.changeHotSale(product).subscribe(res => {
-      if (res.success) {
-        this.alertUtility.success('Success!', res.message);
-        this.getDataPaginations();
-      } else {
-        this.alertUtility.error('Error!', res.message);
-      }
-    },
-      error => {
-        console.log(error);
-      }
-    );
+    this.productService.changeHotSale(product)
+      .pipe(takeUntil(this.destroyService.destroys$))
+      .subscribe(res => {
+        if (res.success) {
+          this.alertUtility.success('Success!', res.message);
+          this.getDataPaginations();
+        } else {
+          this.alertUtility.error('Error!', res.message);
+        }
+      },
+        error => {
+          console.log(error);
+        }
+      );
   }
 
   changeIsSale(product: Product) {
-    this.productService.changeIsSale(product).subscribe(res => {
-      if (res.success) {
-        this.alertUtility.success('Success!', res.message);
-        this.getDataPaginations();
-      } else {
-        this.alertUtility.error('Error!', res.message);
-      }
-    },
-      error => {
-        console.log(error);
-      }
-    );
+    this.productService.changeIsSale(product)
+      .pipe(takeUntil(this.destroyService.destroys$))
+      .subscribe(res => {
+        if (res.success) {
+          this.alertUtility.success('Success!', res.message);
+          this.getDataPaginations();
+        } else {
+          this.alertUtility.error('Error!', res.message);
+        }
+      },
+        error => {
+          console.log(error);
+        }
+      );
   }
 
   changeStatus(product: Product) {
-    this.productService.changeStatus(product).subscribe(res => {
-      if (res.success) {
-        this.alertUtility.success('Success!', res.message);
-        this.getDataPaginations();
-      } else {
-        this.alertUtility.error('Error!', res.message);
-      }
-    },
-      error => {
-        console.log(error);
-      }
-    );
+    this.productService.changeStatus(product)
+      .pipe(takeUntil(this.destroyService.destroys$))
+      .subscribe(res => {
+        if (res.success) {
+          this.alertUtility.success('Success!', res.message);
+          this.getDataPaginations();
+        } else {
+          this.alertUtility.error('Error!', res.message);
+        }
+      },
+        error => {
+          console.log(error);
+        }
+      );
   }
 
   pageChanged(event: any): void {
@@ -186,21 +204,25 @@ export class ListComponent implements OnInit {
   }
 
   getProductCateList() {
-    this.productCategoryService.getIdAndName().subscribe(res => {
-      this.productCateList = res.map(item => {
-        return { id: item.id, text: item.name };
+    this.productCategoryService.getIdAndName()
+      .pipe(takeUntil(this.destroyService.destroys$))
+      .subscribe(res => {
+        this.productCateList = res.map(item => {
+          return { id: item.id, text: item.name };
+        });
+        this.productCateList.unshift({ id: 'all', text: 'All' });
       });
-      this.productCateList.unshift({ id: 'all', text: 'All' });
-    });
   }
 
   getProductListByProductCateID() {
-    this.productService.getProductListByProductCateID(this.productCateID).subscribe(res => {
-      this.productList = res.map(item => {
-        return { id: item.id, text: item.name };
+    this.productService.getProductListByProductCateID(this.productCateID)
+      .pipe(takeUntil(this.destroyService.destroys$))
+      .subscribe(res => {
+        this.productList = res.map(item => {
+          return { id: item.id, text: item.name };
+        });
+        this.productList.unshift({ id: 'all', text: 'All' });
       });
-      this.productList.unshift({ id: 'all', text: 'All' });
-    });
   }
 
   changeProductCateID(event) {
