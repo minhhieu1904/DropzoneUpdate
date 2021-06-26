@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { environment } from 'src/environments/environment';
 import { FunctionUtility } from '../_utility/fucntion-utility';
 
@@ -10,7 +11,8 @@ export class UtilityService {
   baseUrl = environment.apiUrl;
   constructor(
     private http: HttpClient,
-    private functionUtility: FunctionUtility
+    private functionUtility: FunctionUtility,
+    private spinner: NgxSpinnerService
   ) { }
 
   getFormData(product: any, fileImages: File[], fileVideos: File[]) {
@@ -149,6 +151,7 @@ export class UtilityService {
         link.setAttribute('download', filename);
         document.body.appendChild(link);
         link.click();
+        this.spinner.hide();
       });
   }
   // End export excel with Params
@@ -171,6 +174,7 @@ export class UtilityService {
         link.setAttribute('download', filename + fileExtension);
         document.body.appendChild(link);
         link.click();
+        this.spinner.hide();
       });
   }
   // End export excel with checkExport

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductListResolver } from 'src/app/_core/_resolver/product-list.resolver';
 import { ProductListGuard } from 'src/app/_core/_guard/product-list.guard';
@@ -30,6 +30,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
   providers: [
     ProductListResolver,
     ProductListGuard
-  ]
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ProductModule { }

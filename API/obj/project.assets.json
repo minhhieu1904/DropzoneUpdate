@@ -7345,11 +7345,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\HIEU\\hoc\\DropzoneUpdate\\API\\API.csproj",
+      "projectUniqueName": "D:\\HIEU\\hoc\\DropzoneUpdate\\API\\API.csproj",
       "projectName": "API",
-      "projectPath": "d:\\HIEU\\hoc\\DropzoneUpdate\\API\\API.csproj",
+      "projectPath": "D:\\HIEU\\hoc\\DropzoneUpdate\\API\\API.csproj",
       "packagesPath": "C:\\Users\\hieu.nguyen\\.nuget\\packages\\",
-      "outputPath": "d:\\HIEU\\hoc\\DropzoneUpdate\\API\\obj\\",
+      "outputPath": "D:\\HIEU\\hoc\\DropzoneUpdate\\API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\hieu.nguyen\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -7364,6 +7364,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "projectReferences": {}
         }
       },
@@ -7375,6 +7376,7 @@
     },
     "frameworks": {
       "netcoreapp3.1": {
+        "targetAlias": "netcoreapp3.1",
         "dependencies": {
           "Aspose.Cells": {
             "target": "Package",
@@ -7447,7 +7449,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
       }
     }
   }

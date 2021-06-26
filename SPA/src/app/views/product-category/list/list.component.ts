@@ -55,6 +55,7 @@ export class ListComponent implements OnInit {
   }
 
   save() {
+    this.spinner.show();
     if (this.flag === 0) {
       this.productCateService.create(this.productCate)
         .pipe(takeUntil(this.destroyService.destroys$))
@@ -106,6 +107,7 @@ export class ListComponent implements OnInit {
   }
 
   getDataPaginations() {
+    this.spinner.show();
     this.productCateService.getDataPaginations(this.pagination.currentPage, this.pagination.pageSize, this.text)
       .pipe(takeUntil(this.destroyService.destroys$))
       .subscribe((res: PaginationResult<ProductCategory>) => {
@@ -113,8 +115,10 @@ export class ListComponent implements OnInit {
         this.pagination = res.pagination;
         this.productCates = this.productCateAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
         this.checkboxAll = false;
+        this.spinner.hide();
       }), error => {
         this.alertUtility.error('Error!', error);
+        this.spinner.hide();
       };
   }
 
@@ -254,17 +258,23 @@ export class ListComponent implements OnInit {
   }
 
   export() {
+    this.spinner.show();
     if (this.productCateAll.length > 0 && this.productCates.length > 0)
       return this.productCateService.export(this.pagination.currentPage, this.pagination.pageSize, this.text);
-    else
+    else {
+      this.spinner.hide();
       return this.alertUtility.warning('Warning', 'No data');
+    }
   }
 
   exportAspose(checkExport: number) {
+    this.spinner.show();
     if (this.productCateAll.length > 0 && this.productCates.length > 0)
       return this.productCateService.exportAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport);
-    else
+    else {
+      this.spinner.hide();
       return this.alertUtility.warning('Warning', 'No data');
+    }
   }
 
   downloadExcelTemplate() {

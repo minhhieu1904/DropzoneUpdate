@@ -23,16 +23,20 @@
         <button type="button" class="btn btn-sm btn-success mr-2" (click)="export()" tooltip="Xuất file Excel Epplus">
           <i class="fa fa-file-excel-o"></i> Export
         </button>
-        <button type="button" class="btn btn-sm btn-success mr-2" (click)="exportAspose(1)" tooltip="Xuất file Excel Aspose">
+        <button type="button" class="btn btn-sm btn-success mr-2" (click)="exportAspose(1)"
+          tooltip="Xuất file Excel Aspose">
           <i class="fa fa-file-excel-o"></i> ExportAspose
         </button>
-        <button type="button" class="btn btn-sm btn-warning mr-2" (click)="exportAspose(2)" tooltip="Xuất file PDF Epplus">
+        <button type="button" class="btn btn-sm btn-warning mr-2" (click)="exportAspose(2)"
+          tooltip="Xuất file PDF Epplus">
           <i class="fa fa-file-pdf-o"></i> Pdf
         </button>
-        <button type="button" class="btn btn-sm btn-success mr-2" (click)="importExcelModel.show()"  tooltip="Thêm dữ liệu từ file Excel">
+        <button type="button" class="btn btn-sm btn-success mr-2" (click)="importExcelModel.show()"
+          tooltip="Thêm dữ liệu từ file Excel">
           <i class="fa fa-file-excel-o"></i> Import
         </button>
-        <button type="button" class="btn btn-sm btn-danger float-right" (click)="removeMulti()" tooltip="Xóa nhiều danh mục bài viết">
+        <button type="button" class="btn btn-sm btn-danger float-right" (click)="removeMulti()"
+          tooltip="Xóa nhiều danh mục bài viết">
           <i class="fa fa-trash fa-lg"></i> Delete
         </button>
       </div>
@@ -51,8 +55,8 @@
               <th colspan="2">Action</th>
               <th>
                 <div class="pretty p-icon p-round p-jelly">
-                  <input type="checkbox" class="custom-control-input" id="checkAll"
-                    [(ngModel)]="checkboxAll" (change)="checkAll($event)">
+                  <input type="checkbox" class="custom-control-input" id="checkAll" [(ngModel)]="checkboxAll"
+                    (change)="checkAll($event)">
                   <div class="state p-warning" id="custom">
                     <i class="icon fa fa-check"></i>
                     <label class="custom-control-label" for="checkAll"></label>
@@ -71,12 +75,11 @@
               <td>{{ articleCate.update_Time | date: 'MM/dd/yyyy, HH:mm:ss' }}</td>
               <td>
                 <div class="pretty p-icon p-round p-jelly">
-                  <input type="checkbox" class="custom-control-input"
-                    [id]="articleCate.article_Cate_ID" [checked]="articleCate.status"
-                    (change)="changeStatus(articleCate)">
-                    <div class="state p-success">
-                      <i class="icon fa fa-check"></i>
-                      <label></label>
+                  <input type="checkbox" class="custom-control-input" [id]="articleCate.article_Cate_ID"
+                    [checked]="articleCate.status" (change)="changeStatus(articleCate)">
+                  <div class="state p-success">
+                    <i class="icon fa fa-check"></i>
+                    <label></label>
                   </div>
                 </div>
               </td>
@@ -89,7 +92,8 @@
                 </div>
               </td>
               <td class="w-1rem">
-                <button type="button" class="btn btn-sm btn-danger" (click)="remove(articleCate)" tooltip="Xóa danh mục bài viết">
+                <button type="button" class="btn btn-sm btn-danger" (click)="remove(articleCate)"
+                  tooltip="Xóa danh mục bài viết">
                   <i class="fa fa-trash fa-lg"></i>
                 </button>
               </td>
@@ -135,8 +139,7 @@
       <form #addArticleCateForm="ngForm">
         <div class="modal-header">
           <strong>{{flag === 0 ? 'New' : 'Edit'}} Article Category</strong>
-          <button type="button" class="close pull-right" aria-label="Close"
-            (click)="addOrEditArticleCateModal.hide()">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="addOrEditArticleCateModal.hide()">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -152,13 +155,14 @@
           </div>
           <div class="form-group">
             <label class="badge badge-warning font-lable">Status</label>
-            <input type="checkbox" style="margin-left: 10px; vertical-align: middle;" name="status" [(ngModel)]="articleCate.status">
+            <input type="checkbox" style="margin-left: 10px; vertical-align: middle;" name="status"
+              [(ngModel)]="articleCate.status">
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="addOrEditArticleCateModal.hide()">Cancel</button>
-          <button type="submit" class="btn btn-success" (click)="[addOrEditArticleCateModal.hide(), save()]" 
-          [disabled]="addArticleCateForm.invalid">
+          <button type="submit" class="btn btn-success" (click)="[addOrEditArticleCateModal.hide(), save()]"
+            [disabled]="addArticleCateForm.invalid">
             {{flag === 0 ? 'Add' : 'Save'}}
           </button>
         </div>
@@ -174,8 +178,7 @@
       <form #importExcel="ngForm">
         <div class="modal-header">
           <strong>Import Excel Product Category</strong>
-          <button type="button" class="close pull-right" aria-label="Close"
-            (click)="importExcelModel.hide()">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="importExcelModel.hide()">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>

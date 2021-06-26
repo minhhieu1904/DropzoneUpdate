@@ -102,6 +102,7 @@ export class ListComponent implements OnInit {
   }
 
   getDataPaginations() {
+    this.spinner.show();
     this.articleCateService.getDataPaginations(this.pagination.currentPage, this.pagination.pageSize, this.text)
       .pipe(takeUntil(this.destroyService.destroys$))
       .subscribe((res: PaginationResult<ArticleCategory>) => {
@@ -109,8 +110,10 @@ export class ListComponent implements OnInit {
         this.pagination = res.pagination;
         this.articleCates = this.articleCateAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
         this.checkboxAll = false;
+        this.spinner.hide();
       }), error => {
         this.alertUtility.error('Error!', error);
+        this.spinner.hide();
       };
   }
 
@@ -216,17 +219,24 @@ export class ListComponent implements OnInit {
   }
 
   export() {
+    this.spinner.show();
     if (this.articleCateAll.length > 0 && this.articleCates.length > 0)
       return this.articleCateService.export(this.pagination.currentPage, this.pagination.pageSize, this.text);
-    else
+    else{
+      this.spinner.hide();
       return this.alertUtility.warning('Warning', 'No data');
+    }
   }
 
   exportAspose(checkExport: number) {
+    this.spinner.show();
     if (this.articleCateAll.length > 0 && this.articleCates.length > 0)
       return this.articleCateService.exportAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport);
     else
+    {
+      this.spinner.hide();
       return this.alertUtility.warning('Warning', 'No data');
+    }
   }
 
   downloadExcelTemplate() {

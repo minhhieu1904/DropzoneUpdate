@@ -42,28 +42,25 @@ export class AddComponent implements OnInit {
   ngOnInit() {
     this.articleService.currentArticle.pipe(takeUntil(this.destroyService.destroys$)).subscribe(article => {
       this.article = article;
-
-      if (this.article.fileImages != null)
+      if (this.article.fileImages != null) {
         this.listFileImage = this.article.fileImages.split(';');
+        // ***Here is the code for converting "String" to "File"
+        this.utilityService.convertToFile(this.listFileImage, this.urlImage, this.fileImages);
+      }
 
-      // ***Here is the code for converting "String" to "File"
-      this.utilityService.convertToFile(this.listFileImage, this.urlImage, this.fileImages);
-
-      if (this.article.fileVideos != null)
+      if (this.article.fileVideos != null) {
         this.listFileVideo = this.article.fileVideos.split(';');
+        // ***Here is the code for converting "String" to "File"
+        this.utilityService.convertToFile(this.listFileVideo, this.urlVideo, this.fileVideos);
+      }
 
-      // ***Here is the code for converting "String" to "File"
-      this.utilityService.convertToFile(this.listFileVideo, this.urlVideo, this.fileVideos);
     });
     this.articleService.currentFlag.pipe(takeUntil(this.destroyService.destroys$)).subscribe(flag => this.flag = flag);
     if (this.flag === '0') {
       this.cancel();
     }
     if (this.flag === '1') {
-      if (this.article.status === true)
-        this.article.status = '1';
-      else
-        this.article.status = '0';
+      this.article.status = this.article.status === true ? '1' : '0';
     }
     this.getArticleCateList();
   }
@@ -73,25 +70,30 @@ export class AddComponent implements OnInit {
   }
 
   saveAndNext() {
-    this.checkStatus();
+    this.spinner.show();
+    this.article.status = this.article.status === '1' ? true : false;
     this.articleService.create(this.article, this.fileImages, this.fileVideos)
       .pipe(takeUntil(this.destroyService.destroys$))
       .subscribe(res => {
         if (res.success) {
           this.alertUtility.success('Success!', res.message);
           this.cancel();
+          this.spinner.hide();
         }
         else {
           this.alertUtility.error('Error!', res.message);
+          this.spinner.hide();
         }
       },
         error => {
           console.log(error);
+          this.spinner.hide();
         });
   }
 
   save() {
-    this.checkStatus();
+    this.spinner.show();
+    this.article.status = this.article.status === '1' ? true : false;
     if (this.flag === '0') {
       this.articleService.create(this.article, this.fileImages, this.fileVideos)
         .pipe(takeUntil(this.destroyService.destroys$))
@@ -102,36 +104,33 @@ export class AddComponent implements OnInit {
           }
           else {
             this.alertUtility.error('Error!', res.message);
+            this.spinner.hide();
           }
         },
           error => {
             console.log(error);
+            this.spinner.hide();
           });
     }
     else {
-      this.checkStatus();
       this.articleService.update(this.article, this.fileImages, this.fileVideos)
         .pipe(takeUntil(this.destroyService.destroys$))
         .subscribe(res => {
           if (res.success) {
             this.alertUtility.success('Success!', res.message);
             this.backList();
+            this.spinner.hide();
           }
           else {
             this.alertUtility.error('Error!', res.message);
+            this.spinner.hide();
           }
         },
           error => {
             console.log(error);
+            this.spinner.hide();
           });
     }
-  }
-
-  checkStatus() {
-    if (this.article.status === '1')
-      this.article.status = true;
-    if (this.article.status === '0')
-      this.article.status = false;
   }
 
   cancel() {
@@ -159,8 +158,7 @@ export class AddComponent implements OnInit {
   onSelectImages(event) {
     // Kiểm tra rejectedFiles ( file không hợp lệ )
     if (event.rejectedFiles && event.rejectedFiles[0]) {
-      this.alertUtility.warning('Error', 'Please select file images', SnotifyPosition.rightCenter);
-      return;
+      return this.alertUtility.warning('Error', 'Please select file images', SnotifyPosition.rightCenter);
     }
 
     // Kiểm tra tổng dung lượng của tất cả file import
@@ -184,8 +182,7 @@ export class AddComponent implements OnInit {
   onSelectVideos(event) {
     // Kiểm tra rejectedFiles ( file không hợp lệ )
     if (event.rejectedFiles && event.rejectedFiles[0]) {
-      this.alertUtility.warning('Error', 'Please select file videos', SnotifyPosition.rightCenter);
-      return;
+      return this.alertUtility.warning('Error', 'Please select file videos', SnotifyPosition.rightCenter);
     }
 
     // Kiểm tra tổng dung lượng của tất cả file import
@@ -207,6 +204,7 @@ export class AddComponent implements OnInit {
   }
 
   exportAspose(checkExport: number) {
+    this.spinner.show();
     return this.articleService.exportAspose(this.article.article_Cate_ID, this.article.article_ID, checkExport);
   }
 }

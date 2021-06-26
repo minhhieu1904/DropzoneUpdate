@@ -107,14 +107,17 @@ export class UserComponent implements OnInit {
   }
 
   loadUsers() {
+    this.spinnerService.show();
     if (this.searchKey === false) {
       this.userService.getUsers(this.pagination.currentPage, this.pagination.pageSize)
         .pipe(takeUntil(this.destroyService.destroys$))
         .subscribe((res: PaginationResult<User>) => {
           this.users = res.result;
           this.pagination = res.pagination;
+          this.spinnerService.hide();
         }, error => {
           console.log(error);
+          this.spinnerService.hide();
         });
     } else {
       this.userService.searchUser(this.pagination.currentPage, this.pagination.pageSize, this.text)
@@ -122,8 +125,10 @@ export class UserComponent implements OnInit {
         .subscribe((res: PaginationResult<User>) => {
           this.users = res.result;
           this.pagination = res.pagination;
+          this.spinnerService.hide();
         }, error => {
           console.log(error);
+          this.spinnerService.hide();
         });
     }
   }
@@ -158,6 +163,7 @@ export class UserComponent implements OnInit {
             this.addUserModal.hide();
           } else {
             this.alertUtility.error('Error!', res.message);
+            this.spinnerService.hide();
           }
         }, error => {
           console.log(error);
@@ -183,6 +189,7 @@ export class UserComponent implements OnInit {
             this.addUserModal.hide();
           } else {
             this.alertUtility.error('Error!', res.message);
+            this.spinnerService.hide();
           }
         }, error => {
           console.log(error);
@@ -209,6 +216,7 @@ export class UserComponent implements OnInit {
               this.alertUtility.success('Deleted!', res.message);
             } else {
               this.alertUtility.error('Error!', res.message);
+              this.spinnerService.hide();
             }
           }, error => {
             console.log(error);

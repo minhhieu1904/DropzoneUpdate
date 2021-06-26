@@ -6,13 +6,13 @@
           <strong>Article List</strong>
         </div>
         <div class="col-md-6 col-lg-2">
-          <input type="text" class="form-control" name="search" placeholder="Enter Article Data..."
-            [(ngModel)]="text" (keyup)="getDataPaginations()">
+          <input type="text" class="form-control" name="search" placeholder="Enter Article Data..." [(ngModel)]="text"
+            (keyup)="getDataPaginations()">
         </div>
         <div class="col-lg-2 col-md-none p-0">
           <div class="select-list">
             <ng-select2 width="100%" [data]="articleCateList" [(ngModel)]="articleCateID" name="articleCateList"
-            (ngModelChange)="changeArticleCateID($event)">
+              (ngModelChange)="changeArticleCateID($event)">
             </ng-select2>
           </div>
         </div>
@@ -29,8 +29,8 @@
         </div>
         <div class="col-md-3 col-lg-2">
           <!-- Button Add -->
-          <button type="button" class="btn btn-sm btn-primary float-right height34px" 
-            (click)="addNew()" style="float: right;" tooltip="Thêm mới bài viết">
+          <button type="button" class="btn btn-sm btn-primary float-right height34px" (click)="addNew()"
+            style="float: right;" tooltip="Thêm mới bài viết">
             <i class="fa fa-plus"></i> Add new
           </button>
         </div>
@@ -38,11 +38,11 @@
     </div>
     <div class="card-body">
       <div class="col-12" style="margin-bottom: 15px; padding: 0;">
-        <button type="button" class="btn btn-sm btn-success mr-2" 
-            (click)="exportExcel(1)" tooltip="Xuất file Excel">
-            <i class="fa fa-file-excel-o"></i> ExportAspose
-          </button>
-        <button type="button" class="btn btn-sm btn-danger float-right" (click)="removeMulti()" tooltip="Xóa nhiều bài viết">
+        <button type="button" class="btn btn-sm btn-success mr-2" (click)="exportExcel(1)" tooltip="Xuất file Excel">
+          <i class="fa fa-file-excel-o"></i> ExportAspose
+        </button>
+        <button type="button" class="btn btn-sm btn-danger float-right" (click)="removeMulti()"
+          tooltip="Xóa nhiều bài viết">
           <i class="fa fa-trash fa-lg"></i> Delete
         </button>
       </div>
@@ -62,8 +62,8 @@
               <th colspan="2">Action</th>
               <th>
                 <div class="pretty p-icon p-round p-jelly">
-                  <input type="checkbox" class="custom-control-input" id="checkAll"
-                    [(ngModel)]="checkboxAll" (change)="checkAll($event)">
+                  <input type="checkbox" class="custom-control-input" id="checkAll" [(ngModel)]="checkboxAll"
+                    (change)="checkAll($event)">
                   <div class="state p-warning" id="custom">
                     <i class="icon fa fa-check"></i>
                     <label class="custom-control-label" for="checkAll"></label>
@@ -83,18 +83,18 @@
               <td>{{ article.update_Time | date: 'MM/dd/yyyy, HH:mm:ss' }}</td>
               <td>
                 <div class="pretty p-icon p-round p-jelly p-bigger">
-                  <input type="checkbox" class="custom-control-input"
-                    [id]="article.article_ID" [checked]="article.status"
-                    (change)="changeStatus(article)">
-                    <div class="state p-success">
-                      <i class="icon fa fa-check"></i>
-                      <label></label>
+                  <input type="checkbox" class="custom-control-input" [id]="article.article_ID"
+                    [checked]="article.status" (change)="changeStatus(article)">
+                  <div class="state p-success">
+                    <i class="icon fa fa-check"></i>
+                    <label></label>
                   </div>
                 </div>
               </td>
               <td class="w-1rem">
                 <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-primary" (click)="edit(article)" tooltip="Chỉnh sửa bài viết">
+                  <button type="button" class="btn btn-sm btn-primary" (click)="edit(article)"
+                    tooltip="Chỉnh sửa bài viết">
                     <i class="fa fa-edit fa-lg"></i>
                   </button>
                 </div>

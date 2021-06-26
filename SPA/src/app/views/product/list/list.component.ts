@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Select2OptionData } from 'ng-select2';
 import { SnotifyPosition } from 'ng-snotify';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { takeUntil } from 'rxjs/operators';
 import { Product } from 'src/app/_core/_models/product';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
@@ -38,10 +39,11 @@ export class ListComponent implements OnInit {
     private alertUtility: AlertUtilityService,
     private signalRService: SignalRService,
     private destroyService: DestroyService,
+    private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit() {
-    this.route.data.pipe(takeUntil(this.destroyService.destroys$))
+    this.route.data
       .pipe(takeUntil(this.destroyService.destroys$))
       .subscribe(data => {
         this.productAll = data['products'].result;
@@ -105,6 +107,7 @@ export class ListComponent implements OnInit {
   }
 
   getDataPaginations() {
+    this.spinner.show();
     this.productService.getDataPaginations(this.pagination.currentPage, this.pagination.pageSize, this.text)
       .pipe(takeUntil(this.destroyService.destroys$))
       .subscribe((res: PaginationResult<Product>) => {
@@ -112,12 +115,15 @@ export class ListComponent implements OnInit {
         this.pagination = res.pagination;
         this.products = this.productAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
         this.checkboxAll = false;
+        this.spinner.hide();
       }), error => {
         this.alertUtility.error('Error!', error);
+        this.spinner.hide();
       };
   }
 
   searchDataPaginations() {
+    this.spinner.show();
     this.productService.searchDataPaginations(this.pagination.currentPage, this.pagination.pageSize, this.productCateID, this.product_Name)
       .pipe(takeUntil(this.destroyService.destroys$))
       .subscribe((res: PaginationResult<Product>) => {
@@ -125,8 +131,10 @@ export class ListComponent implements OnInit {
         this.pagination = res.pagination;
         this.products = this.productAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
         this.checkboxAll = false;
+        this.spinner.hide();
       }), error => {
         this.alertUtility.error('Error!', error);
+        this.spinner.hide();
       };
   }
 
@@ -231,11 +239,15 @@ export class ListComponent implements OnInit {
   }
 
   exportExcel(checkExport: number) {
+    this.spinner.show();
     let checkSearch = this.productCateID === 'all' ? 1 : 2;
     if (this.productAll.length > 0 && this.products.length > 0)
       return this.productService.exportListAspose(this.pagination.currentPage, this.pagination.pageSize, this.text, checkExport, this.productCateID, this.product_Name, checkSearch);
     else
+    {
+      this.spinner.hide();
       return this.alertUtility.warning('Warning', 'No data');
+    }
   }
 
   checkAll(e) {

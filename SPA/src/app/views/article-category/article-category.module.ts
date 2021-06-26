@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ArticleCategoryRoutingModule } from './article-category-routing.module';
 import { ArticleCategoryListGuard } from 'src/app/_core/_guard/article-category-list.guard';
@@ -26,6 +26,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
   providers: [
     ArticleCategoryListResolver,
     ArticleCategoryListGuard
-  ]
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ArticleCategoryModule { }

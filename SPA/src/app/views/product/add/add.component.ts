@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Select2OptionData } from 'ng-select2';
 import { SnotifyPosition } from 'ng-snotify';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { takeUntil } from 'rxjs/operators';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
 import { DestroyService } from 'src/app/_core/_services/destroy.service';
@@ -35,7 +36,8 @@ export class AddComponent implements OnInit {
     private productCategoryService: ProductCategoryService,
     private alertUtility: AlertUtilityService,
     private utilityService: UtilityService,
-    private destroyService: DestroyService
+    private destroyService: DestroyService,
+    private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit() {
@@ -48,41 +50,29 @@ export class AddComponent implements OnInit {
         if (this.product.to_Date_Sale !== null)
           this.product.to_Date_Sale = new Date(this.product.to_Date_Sale);
         if (this.product.fileImages != null)
+        {
           this.listFileImage = this.product.fileImages.split(';');
-
-        // ***Here is the code for converting "String" to "File"
-        this.utilityService.convertToFile(this.listFileImage, this.urlImage, this.fileImages);
+          // ***Here is the code for converting "String" to "File"
+          this.utilityService.convertToFile(this.listFileImage, this.urlImage, this.fileImages);
+        }
 
         if (this.product.fileVideos != null)
+        {
           this.listFileVideo = this.product.fileVideos.split(';');
+          // ***Here is the code for converting "String" to "File"
+          this.utilityService.convertToFile(this.listFileVideo, this.urlVideo, this.fileVideos);
+        }
 
-        // ***Here is the code for converting "String" to "File"
-        this.utilityService.convertToFile(this.listFileVideo, this.urlVideo, this.fileVideos);
       });
     this.productService.currentFlag.pipe(takeUntil(this.destroyService.destroys$)).subscribe(flag => this.flag = flag);
     if (this.flag === '0') {
       this.cancel();
     }
     if (this.flag === '1') {
-      if (this.product.new === true)
-        this.product.new = '1';
-      else
-        this.product.new = '0';
-
-      if (this.product.hot_Sale === true)
-        this.product.hot_Sale = '1';
-      else
-        this.product.hot_Sale = '0';
-
-      if (this.product.isSale === true)
-        this.product.isSale = '1';
-      else
-        this.product.isSale = '0';
-
-      if (this.product.status === true)
-        this.product.status = '1';
-      else
-        this.product.status = '0';
+      this.product.new = this.product.new === true ? '1' : '0';
+      this.product.hot_Sale = this.product.new === true ? '1' : '0';
+      this.product.isSale = this.product.new === true ? '1' : '0';
+      this.product.status = this.product.new === true ? '1' : '0';
     }
     this.getProductCateList();
   }
@@ -92,31 +82,36 @@ export class AddComponent implements OnInit {
   }
 
   saveAndNext() {
-    this.checkNew();
-    this.checkHotSale();
-    this.checkIsSale();
-    this.checkStatus();
+    this.spinner.show();
+    this.product.new = this.product.new === '1' ? true : false;
+    this.product.hot_Sale = this.product.new === '1' ? true : false;
+    this.product.isSale = this.product.new === '1' ? true : false;
+    this.product.status = this.product.new === '1' ? true : false;
     this.productService.create(this.product, this.fileImages, this.fileVideos)
       .pipe(takeUntil(this.destroyService.destroys$))
       .subscribe(res => {
         if (res.success) {
           this.alertUtility.success('Success!', res.message);
           this.cancel();
+          this.spinner.hide();
         }
         else {
           this.alertUtility.error('Error!', res.message);
+          this.spinner.hide();
         }
       },
         error => {
           console.log(error);
+          this.spinner.hide();
         });
   }
 
   save() {
-    this.checkNew();
-    this.checkHotSale();
-    this.checkIsSale();
-    this.checkStatus();
+    this.spinner.show();
+    this.product.new = this.product.new === '1' ? true : false;
+    this.product.hot_Sale = this.product.new === '1' ? true : false;
+    this.product.isSale = this.product.new === '1' ? true : false;
+    this.product.status = this.product.new === '1' ? true : false;
     if (this.flag === '0') {
       this.productService.create(this.product, this.fileImages, this.fileVideos)
         .pipe(takeUntil(this.destroyService.destroys$))
@@ -124,13 +119,16 @@ export class AddComponent implements OnInit {
           if (res.success) {
             this.alertUtility.success('Success!', res.message);
             this.backList();
+            this.spinner.hide();
           }
           else {
             this.alertUtility.error('Error!', res.message);
+            this.spinner.hide();
           }
         },
           error => {
             console.log(error);
+            this.spinner.hide();
           });
     }
     else {
@@ -140,43 +138,18 @@ export class AddComponent implements OnInit {
           if (res.success) {
             this.alertUtility.success('Success!', res.message);
             this.backList();
+            this.spinner.hide();
           }
           else {
             this.alertUtility.error('Error!', res.message);
+            this.spinner.hide();
           }
         },
           error => {
             console.log(error);
+            this.spinner.hide();
           });
     }
-  }
-
-  checkNew() {
-    if (this.product.new === '1')
-      this.product.new = true;
-    if (this.product.new === '0')
-      this.product.new = false;
-  }
-
-  checkHotSale() {
-    if (this.product.hot_Sale === '1')
-      this.product.hot_Sale = true;
-    if (this.product.hot_Sale === '0')
-      this.product.hot_Sale = false;
-  }
-
-  checkIsSale() {
-    if (this.product.isSale === '1')
-      this.product.isSale = true;
-    if (this.product.isSale === '0')
-      this.product.isSale = false;
-  }
-
-  checkStatus() {
-    if (this.product.status === '1')
-      this.product.status = true;
-    if (this.product.status === '0')
-      this.product.status = false;
   }
 
   cancel() {
@@ -214,8 +187,7 @@ export class AddComponent implements OnInit {
   onSelectImages(event) {
     // Kiểm tra rejectedFiles ( file không hợp lệ )
     if (event.rejectedFiles && event.rejectedFiles[0]) {
-      this.alertUtility.warning('Error', 'Please select file images', SnotifyPosition.rightCenter);
-      return;
+      return this.alertUtility.warning('Error', 'Please select file images', SnotifyPosition.rightCenter);
     }
 
     // Kiểm tra tổng dung lượng của tất cả file import
@@ -239,8 +211,7 @@ export class AddComponent implements OnInit {
   onSelectVideos(event) {
     // Kiểm tra rejectedFiles ( file không hợp lệ )
     if (event.rejectedFiles && event.rejectedFiles[0]) {
-      this.alertUtility.warning('Error', 'Please select file videos', SnotifyPosition.rightCenter);
-      return;
+      return this.alertUtility.warning('Error', 'Please select file videos', SnotifyPosition.rightCenter);
     }
 
     // Kiểm tra tổng dung lượng của tất cả file import
@@ -262,6 +233,7 @@ export class AddComponent implements OnInit {
   }
 
   exportAspose(checkExport: number) {
+    this.spinner.show();
     return this.productService.exportAspose(this.product.product_Cate_ID, this.product.product_ID, checkExport);
   }
 }
