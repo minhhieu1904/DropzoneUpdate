@@ -137,6 +137,12 @@ export class NavItem {
       icon: 'icon-basket-loaded'
     }
 
+    const navItemCard = {
+      name: '8. Cards',
+      url: 'cards',
+      icon: 'icon-basket-loaded'
+    }
+
     this.navItems.push(navItemDashboard);
     this.navItems.push(this.navItemUser);
     this.navItems.push(this.navItemArticleCategory);
@@ -145,6 +151,7 @@ export class NavItem {
     this.navItems.push(this.navItemProduct);
     this.navItems.push(navItemPage404);
     this.navItems.push(navItemPage404_2);
+    this.navItems.push(navItemCard);
 
     return this.navItems;
   }

@@ -192,7 +192,7 @@ export class UserComponent implements OnInit {
   }
 
   deleteUser(factoryID: string, userAccount: string) {
-    this.alertUtility.confirmDelete("Are you sure you want to delete account '" + userAccount.toUpperCase() + "' ?", SnotifyPosition.rightCenter, () => {
+    this.alertUtility.confirmDelete("Are you sure you want to delete account '" + userAccount.toUpperCase() + "' ?", SnotifyPosition.centerCenter, () => {
       // Prevent from deleting current user
       const currentUser: User = JSON.parse(localStorage.getItem('user'));
       if (factoryID === currentUser.factory_ID && userAccount === currentUser.user_Account) {
@@ -350,7 +350,7 @@ export class UserComponent implements OnInit {
     if (this.user.image === undefined)
       this.user.image = null;
     this.imageUser = this.user.image !== null ? this.imageUserUrl + this.user.image
-                                              : commonPerFactory.imageUserDefault;
+      : commonPerFactory.imageUserDefault;
     this.editFile = true;
     this.removeUpload = false;
     this.registrationForm.patchValue({

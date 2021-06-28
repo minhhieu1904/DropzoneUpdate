@@ -84,6 +84,16 @@ const routes: Routes = [
               .then(m => m.ProductModule)
           }
         ]
+      },
+      {
+        path: 'cards',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../views/card-style/card-style.module')
+              .then(m => m.CardStyleModule)
+          }
+        ]
       }
     ]
   },

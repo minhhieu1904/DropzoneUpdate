@@ -27,6 +27,7 @@
   },
   "private": true,
   "dependencies": {
+    "@alyle/ui": "^10.5.3",
     "@angular/animations": "~11.0.5",
     "@angular/common": "~11.0.5",
     "@angular/compiler": "^11.0.5",
@@ -51,6 +52,7 @@
     "ng-select2": "^1.2.4",
     "ng-snotify": "^9.0.1",
     "ngx-bootstrap": "^6.2.0",
+    "ngx-datatable": "^1.0.3",
     "ngx-dropzone": "^2.3.0",
     "ngx-print": "^1.2.0-beta.5",
     "ngx-spinner": "^10.0.1",

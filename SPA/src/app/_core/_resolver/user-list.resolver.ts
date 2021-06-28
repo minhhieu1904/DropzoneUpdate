@@ -10,7 +10,7 @@ import { SnotifyPosition } from 'ng-snotify';
 @Injectable()
 export class UserListResolver implements Resolve<User[]> {
   pageNumber = 1;
-  pageSize = 10;
+  pageSize = 8;
   constructor(
     private userService: UserService,
     private router: Router,

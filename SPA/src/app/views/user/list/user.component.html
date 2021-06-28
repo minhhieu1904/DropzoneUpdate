@@ -1,15 +1,13 @@
 <div class="animated fadeIn">
-  <div class="card">
+  <div class="cards">
     <div class="card-header">
       <strong>User List</strong>
-      <!-- Button Add -->
       <button type="button" class="btn btn-sm btn-primary float-right"
         (click)="[resetUser(), setFlag(0), addUserModal.show()]" tooltip="Thêm mới tài khoản">
         <i class="fa fa-plus"></i> Add new
       </button>
     </div>
     <div class="card-body">
-      <!-- Form Search -->
       <form #searchForm="ngForm" (ngSubmit)="searchUser()">
         <div class="form-group form-row">
           <div class="col-lg-3"></div>
@@ -26,58 +24,42 @@
           </div>
         </div>
       </form>
-      <!-- User Table -->
-      <div class="table-responsive">
-        <table class="table table-bordered table-hover text-center">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Factory ID</th>
-              <th>User Account</th>
-              <th>User Name</th>
-              <th>Email</th>
-              <th>Update By</th>
-              <th>Update Time</th>
-              <th colspan="3">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let user of users; let i=index">
-              <td>{{ (pagination.currentPage - 1) * pagination.pageSize + i + 1 }}</td>
-              <td>{{ user.factory_ID }}</td>
-              <td>{{user.user_Account}}</td>
-              <td>{{ user.user_Name }}</td>
-              <td>{{ user.email }}</td>
-              <td>{{ user.update_By }}</td>
-              <td>{{ user.update_Time | date: 'MM/dd/yyyy, HH:mm:ss' }}</td>
-              <td class="w-1rem">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-primary" tooltip="Chỉnh sửa tài khoản"
-                    (click)="[addUserModal.show(), setUser(user), setFlag(1)]">
-                    <i class="fa fa-edit fa-lg"></i>
-                  </button>
+      <div class="row">
+        <div class="col-lg-4 col-xl-3 col-md-6" *ngFor="let user of users">
+          <div class="card border-success">
+            <div class="card-body" style="width: 100%; color: #000;">
+              <div class="avatar-upload" style="width: 150px !important;">
+                <div class="avatar-preview custom">
+                  <div id="imagePreview" [style.backgroundImage]="'url('+ imageUserUrl + user.image +')'"></div>
                 </div>
-              </td>
-              <td class="w-1rem">
-                <button type="button" class="btn btn-sm btn-warning" tooltip="Phân quyền"
+              </div>
+              <div id="content" style="text-align: center;">
+                <h5 class="card-title text-success">{{user.user_Name.toUpperCase()}}</h5>
+                <p>{{user.factory_ID}}</p>
+                <p>{{user.user_Account}}</p>
+                <p>{{user.email}}</p>
+                <p>{{user.update_Time}}</p>
+              </div>
+            </div>
+            <div class="content">
+              <div>
+                <button type="button" class="btn btn-sm btn-primary mr-2 custom" tooltip="Chỉnh sửa tài khoản"
+                  (click)="[addUserModal.show(), setUser(user), setFlag(1)]">
+                  <i class="fa fa-edit fa-lg"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-warning mr-2 custom" tooltip="Phân quyền"
                   (click)="[authorizeModal.show(), setUser(user), setAuthorizeList()]">
                   <i class=" fa fa-cog fa-lg"></i>
                 </button>
-              </td>
-              <td class="w-1rem">
-                <button type="button" class="btn btn-sm btn-danger" tooltip="Xóa tài khoản"
+                <button type="button" class="btn btn-sm btn-danger custom" tooltip="Xóa tài khoản"
                   (click)="deleteUser(user.factory_ID, user.user_Account)">
                   <i class="fa fa-trash fa-lg"></i>
                 </button>
-              </td>
-            </tr>
-            <tr *ngIf="users.length === 0">
-              <td colspan="100%" class="table-warning text-center font-weight-bold"> NO DATA! </td>
-            </tr>
-          </tbody>
-        </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <!-- Pagination -->
       <div id="pagination" *ngIf="pagination.totalPage > 1">
         <pagination [boundaryLinks]="true" [totalItems]="pagination.totalCount" [(ngModel)]="pagination.currentPage"
           [itemsPerPage]="pagination.pageSize" (pageChanged)="pageChanged($event)" previousText="&lsaquo;"
@@ -143,8 +125,7 @@
           <div class="form-group">
             <div class="avatar-upload">
               <div class="avatar-edit">
-                <input type='file' id="imageUpload" accept="image/*" #fileInput
-                  (change)="uploadFile($event)" />
+                <input type='file' id="imageUpload" accept="image/*" #fileInput (change)="uploadFile($event)" />
               </div>
               <div class="avatar-preview">
                 <div id="imagePreview" [style.backgroundImage]="'url('+ imageUser +')'"></div>
@@ -157,7 +138,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="[addUserModal.hide(), removeUploadedFile()]">Cancel</button>
+          <button type="button" class="btn btn-secondary"
+            (click)="[addUserModal.hide(), removeUploadedFile()]">Cancel</button>
           <button type="submit" class="btn btn-success" [disabled]="addUserForm.invalid" (click)="addUserModal.hide()">
             {{flag === 0 ? 'Add' : 'Save'}}
           </button>
