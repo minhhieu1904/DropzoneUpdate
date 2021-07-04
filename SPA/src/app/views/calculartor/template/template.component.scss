@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
+
+.container {
+  background: #EEEEEE;
+  width: 320px;
+  height: 550px;
+  border-radius: 1em;
+  box-shadow: 4px 4px 10px 0 rgba(0,0,2,.3);
+  margin: 50px auto;
+  padding: 32px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
+}
+.container .result {
+  width: 100%;
+  height: 150px;
+}
+.container .result p {
+  font-size: 45pt;
+  overflow-y: auto;
+  text-align: right;
+
+}
+
+.container .buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 1em;
+}
+.container .buttons .button, .container .buttons .num-button  {
+  cursor: grab;
+  text-align: center;
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-content: center;
+  border-radius: 50%;
+  box-shadow: -6px -6px 9px 0px white, 6px 6px 9px rgb(0 0 0 / 40%);
+//   border: 1px solid #ffc676;
+}
+
+.container .buttons .button:hover, .container .buttons .num-button:hover {
+    background: #aaa;
+    color: #eee;
+}
+
+/*  UTILITIES*/
+.container .buttons #total {
+  grid-column: 5/ 3;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: -6px -6px 9px 0px white, 6px 6px 9px rgb(0 0 0 / 40%);
+}
+.action-btn {
+  color: #000;
+  font-weight: bold;
+}
+.calc-action-btn{
+  color: #000;
+  font-weight: bold;
+  background: orange;
+  font-size: large;
+}

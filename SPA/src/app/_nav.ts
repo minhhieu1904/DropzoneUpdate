@@ -143,6 +143,12 @@ export class NavItem {
       icon: 'icon-basket-loaded'
     }
 
+    const navItemCalculator = {
+      name: '9. Calculator',
+      url: 'calculator',
+      icon: 'icon-basket-loaded'
+    }
+
     this.navItems.push(navItemDashboard);
     this.navItems.push(this.navItemUser);
     this.navItems.push(this.navItemArticleCategory);
@@ -152,6 +158,7 @@ export class NavItem {
     this.navItems.push(navItemPage404);
     this.navItems.push(navItemPage404_2);
     this.navItems.push(navItemCard);
+    this.navItems.push(navItemCalculator);
 
     return this.navItems;
   }

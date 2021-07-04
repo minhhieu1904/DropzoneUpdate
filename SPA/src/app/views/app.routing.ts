@@ -94,6 +94,16 @@ const routes: Routes = [
               .then(m => m.CardStyleModule)
           }
         ]
+      },
+      {
+        path: 'calculator',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../views/calculartor/calculartor.module')
+              .then(m => m.CalculartorModule)
+          }
+        ]
       }
     ]
   },
