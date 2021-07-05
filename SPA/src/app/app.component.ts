@@ -11,7 +11,7 @@ export class AppComponent implements OnInit {
   constructor(public signalRService: SignalRService) { }
 
   ngOnInit() {
-    this.signalRService.startConnection();
+    this.signalRService.startConnection('/loadData');
     // Select2 Bootstrap Theme
     (function ($) {
       $(document).ready(function () {

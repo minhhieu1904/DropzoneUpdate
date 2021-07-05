@@ -24,7 +24,7 @@
           </div>
         </div>
       </form>
-      <div class="row">
+      <div class="row" style="margin-top: 3rem;">
         <div class="col-lg-4 col-xl-3 col-md-6" *ngFor="let user of users">
           <div class="card border-success">
             <div class="card-body" style="width: 100%; color: #000;">
@@ -34,11 +34,10 @@
                 </div>
               </div>
               <div id="content" style="text-align: center;">
-                <h5 class="card-title text-success">{{user.user_Name.toUpperCase()}}</h5>
+                <h5 class="card-title text-success">{{user.user_Account.toUpperCase()}}</h5>
                 <p>{{user.factory_ID}}</p>
-                <p>{{user.user_Account}}</p>
+                <p>{{user.user_Name}}</p>
                 <p>{{user.email}}</p>
-                <p>{{user.update_Time}}</p>
               </div>
             </div>
             <div class="content">

@@ -7,10 +7,10 @@ import { commonPerFactory } from '../_utility/common-fer-factory';
 })
 export class SignalRService {
   public hubConnection: signalR.HubConnection;
-  public startConnection = () => {
+  public startConnection(link: string) {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withAutomaticReconnect([0, 10000, 20000, 30000])
-      .withUrl(commonPerFactory.urlSignalR + '/loadData')
+      .withUrl(commonPerFactory.urlSignalR + link)
       .build();
     this.hubConnection
       .start()
