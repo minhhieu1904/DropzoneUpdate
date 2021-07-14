@@ -105,7 +105,7 @@ export class ProductService {
     return this.utilityService.exportExcelWithCheckExport(params, 'Product/exportExcelListAspose', 'Product_List_', checkExport);
   }
 
-  exportAspose(productCateID : string, productID: number, checkExport?: number) {
+  exportAspose(productCateID: string, productID: number, checkExport?: number) {
     let params = new HttpParams();
     params = params.append("productCateID", productCateID);
     params = params.append("productID", productID.toString());
@@ -116,5 +116,25 @@ export class ProductService {
 
   print(file: string) {
     return this.http.post(this.baseUrl + 'Product/print', file);
+  }
+
+  pdf() {
+    debugger
+    return this.http.get(this.baseUrl + 'product/PDF', { responseType: 'blob' })
+      .subscribe((result: Blob) => {
+        debugger
+        const blob = new Blob([result]);
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const currentTime = new Date();
+        let filename = 'PDF_demo_' + currentTime.getFullYear().toString() +
+          (currentTime.getMonth() + 1) + currentTime.getDate() +
+          currentTime.toLocaleTimeString().replace(/[ ]|[,]|[:]/g, '').trim() + '.pdf';
+
+        link.href = url;
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+      });
   }
 }

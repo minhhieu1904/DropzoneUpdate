@@ -1,29 +1,30 @@
 <div class="container">
     <div class="result">
-        <p id="result-box">0</p>
+        <p id="result-text">{{text}}</p>
+        <p id="result-box">{{result}}</p>
     </div>
 
 
     <div class="buttons">
-        <div class="button action-btn" id="clear"> AC </div>
-        <div class="button action-btn"> C</div>
+        <div class="button action-btn" id="clear" (click)="removeAll()"> AC </div>
+        <div class="button action-btn" (click)="remove()"> C</div>
         <div class="button num-button  action-btn"> %</div>
-        <div class="button num-button  calc-action-btn">:</div>
-        <div class="button num-button seven">7</div>
-        <div class="button num-button eight">8</div>
-        <div class="button num-button  nine">9</div>
-        <div class="button num-button  calc-action-btn">x</div>
-        <div class="button num-button  four">4</div>
-        <div class="button num-button  five">5</div>
-        <div class="button num-button  six">6</div>
-        <div class="button num-button  calc-action-btn">-</div>
-        <div class="button num-button  one">1</div>
-        <div class="button num-button  two">2</div>
-        <div class="button num-button  three">3</div>
-        <div class="button num-button  calc-action-btn">+</div>
-        <div class="button num-button  zero">0</div>
-        <div class="button num-button  point">.</div>
-        <div class="button calc-action-btn" id="total">=</div>
+        <div class="button num-button  calc-action-btn" (click)="changeCalculator('4')">:</div>
+        <div class="button num-button seven" (click)="input(7)">7</div>
+        <div class="button num-button eight" (click)="input(8)">8</div>
+        <div class="button num-button  nine" (click)="input(9)">9</div>
+        <div class="button num-button  calc-action-btn" (click)="changeCalculator('3')">x</div>
+        <div class="button num-button  four" (click)="input(4)">4</div>
+        <div class="button num-button  five" (click)="input(5)">5</div>
+        <div class="button num-button  six" (click)="input(6)">6</div>
+        <div class="button num-button  calc-action-btn" (click)="changeCalculator('2')">-</div>
+        <div class="button num-button  one" (click)="input(1)">1</div>
+        <div class="button num-button  two" (click)="input(2)">2</div>
+        <div class="button num-button  three" (click)="input(3)">3</div>
+        <div class="button num-button  calc-action-btn" (click)="changeCalculator('1')">+</div>
+        <div class="button num-button  zero" (click)="input(0)">0</div>
+        <div class="button num-button  point" (click)="changeCalculator('.')">.</div>
+        <div class="button calc-action-btn" id="total" (click)="changeCurrentResult()">=</div>
     </div>
 
 </div>

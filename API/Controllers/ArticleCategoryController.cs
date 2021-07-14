@@ -108,7 +108,7 @@ namespace API.Controllers
             if (files != null)
             {
                 string fileNameExtension = (files.FileName.Split("."))[(files.FileName.Split(".")).Length - 1];
-                string fileName = "Upload_Excel_ProductCate_" + DateTime.Now.ToString().Replace(":", "").Replace("/", "").Replace(" ", "") + "." + fileNameExtension;
+                string fileName = "Upload_Excel_ArticleCate_" + DateTime.Now.ToString().Replace(":", "").Replace("/", "").Replace(" ", "") + "." + fileNameExtension;
 
                 string folder = _webHostEnvironment.WebRootPath + $@"\uploaded\excels\ArticleCategory";
                 if (!Directory.Exists(folder))

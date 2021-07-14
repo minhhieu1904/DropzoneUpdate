@@ -260,4 +260,9 @@ export class ListComponent implements OnInit {
       this.checkboxAll = false;
     }
   }
+
+  pdf() {
+    debugger
+    return this.productService.pdf();
+  }
 }

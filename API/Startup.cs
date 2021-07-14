@@ -39,12 +39,13 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var appsettings = Configuration.GetSection("Appsettings").Get<Appsettings>();
             services.AddControllers();
             // Add Cors
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", builder => builder
-                .WithOrigins("http://localhost:4200") // the Angular app url
+                .WithOrigins(appsettings.CorsPolicy) // the Angular app url
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());
@@ -152,6 +153,13 @@ namespace API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                // Swagger
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+                });
             }
 
             app.UseCors("CorsPolicy");
@@ -168,14 +176,6 @@ namespace API
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<HubClient>("/loadData");
-            });
-
-            // Swagger
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
             });
         }
     }

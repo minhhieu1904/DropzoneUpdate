@@ -30,7 +30,7 @@ namespace API.Controllers
             IProductService productService,
             IWebHostEnvironment webHostEnvironment,
             IProductRepository productRepository,
-            IDropzoneService dropzoneService, 
+            IDropzoneService dropzoneService,
             IHubContext<HubClient, IHubClient> hubContext)
         {
             _productService = productService;
@@ -51,7 +51,7 @@ namespace API.Controllers
             model.Update_Time = DateTime.Now;
             model.Content = model.Content == "null" ? null : model.Content;
             var result = await _productService.Create(model);
-            if(result.Success)
+            if (result.Success)
                 await _hubContext.Clients.All.LoadDataProduct();
             return Ok(result);
         }
@@ -116,7 +116,7 @@ namespace API.Controllers
             model.Update_By = User.FindFirst(ClaimTypes.Name).Value;
             model.Update_Time = DateTime.Now;
             var result = await _productService.Update(model);
-            if(result.Success)
+            if (result.Success)
                 await _hubContext.Clients.All.LoadDataProduct();
             return Ok(result);
         }
@@ -128,7 +128,7 @@ namespace API.Controllers
             model.Update_Time = DateTime.Now;
             model.New = !model.New;
             var result = await _productService.Update(model);
-            if(result.Success)
+            if (result.Success)
                 await _hubContext.Clients.All.LoadDataProduct();
             return Ok(result);
         }
@@ -140,7 +140,7 @@ namespace API.Controllers
             model.Update_Time = DateTime.Now;
             model.Hot_Sale = !model.Hot_Sale;
             var result = await _productService.Update(model);
-            if(result.Success)
+            if (result.Success)
                 await _hubContext.Clients.All.LoadDataProduct();
             return Ok(result);
         }
@@ -158,7 +158,7 @@ namespace API.Controllers
                 model.To_Date_Sale = null;
             }
             var result = await _productService.Update(model);
-            if(result.Success)
+            if (result.Success)
                 await _hubContext.Clients.All.LoadDataProduct();
             return Ok(result);
         }
@@ -170,7 +170,7 @@ namespace API.Controllers
             model.Update_Time = DateTime.Now;
             model.Status = !model.Status;
             var result = await _productService.Update(model);
-            if(result.Success)
+            if (result.Success)
                 await _hubContext.Clients.All.LoadDataProduct();
             return Ok(result);
         }
@@ -193,7 +193,7 @@ namespace API.Controllers
                     _dropzoneService.DeleteFileUpload(videos, "\\uploaded\\video\\product");
             }
             var result = await _productService.Remove(model);
-            if(result.Success)
+            if (result.Success)
                 await _hubContext.Clients.All.LoadDataProduct();
             return Ok(result);
         }
@@ -423,6 +423,30 @@ namespace API.Controllers
             pic.Top = 10;
             pic.Left = 20;
             return await Task.FromResult(pic);
+        }
+
+        [HttpGet("PDF")]
+        public ActionResult PDF()
+        {
+            var path = Path.Combine(_webHostEnvironment.ContentRootPath, "Resources\\Template\\Book1.xlsx");
+            WorkbookDesigner designer = new WorkbookDesigner();
+            designer.Workbook = new Workbook(path);
+            Worksheet ws = designer.Workbook.Worksheets[0];
+            ws.Cells["B5"].PutValue("Demo");
+
+            MemoryStream stream = new MemoryStream();
+            // custom size ( width: in, height: in )
+            ws.PageSetup.FitToPagesTall = 0;
+            ws.PageSetup.SetHeader(0, "&D &T");
+            ws.PageSetup.SetHeader(1, "&B Article");
+            ws.PageSetup.SetFooter(0, "&B SYSTEM BY MINH HIEU");
+            ws.PageSetup.SetFooter(2, "&P/&N");
+            ws.PageSetup.PrintQuality = 2400;
+            designer.Workbook.Save(stream, SaveFormat.Pdf);
+
+            byte[] result = stream.ToArray();
+
+            return File(result, "application/pdf", "PDF.pdf");
         }
     }
 }

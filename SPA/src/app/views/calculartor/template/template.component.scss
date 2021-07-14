@@ -3,7 +3,7 @@
 .container {
   background: #EEEEEE;
   width: 320px;
-  height: 550px;
+  height: auto;
   border-radius: 1em;
   box-shadow: 4px 4px 10px 0 rgba(0,0,2,.3);
   margin: 50px auto;
@@ -15,13 +15,26 @@
 }
 .container .result {
   width: 100%;
-  height: 150px;
+  height: auto;
+  min-height: 150px;
+  max-height: 180px;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  padding: 0 10px;
+  margin-bottom: 15px;
 }
 .container .result p {
-  font-size: 45pt;
-  overflow-y: auto;
+  margin: 0 !important;
+}
+.container .result p#result-box {
+  font-size: 30pt;
   text-align: right;
+  word-wrap: break-word;
+}
 
+.container .result p#result-text {
+  font-size: 15pt;
+  height: 50px;
 }
 
 .container .buttons {
@@ -30,7 +43,7 @@
   grid-gap: 1em;
 }
 .container .buttons .button, .container .buttons .num-button  {
-  cursor: grab;
+  cursor: pointer;
   text-align: center;
   width: 60px;
   height: 60px;

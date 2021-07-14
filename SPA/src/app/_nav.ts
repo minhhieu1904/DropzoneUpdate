@@ -128,25 +128,32 @@ export class NavItem {
     const navItemPage404 = {
       name: '6. Page 404',
       url: '404',
-      icon: 'icon-basket-loaded'
+      icon: 'icon-shield'
     }
 
     const navItemPage404_2 = {
       name: '7. Page 404 2',
       url: '404-2',
-      icon: 'icon-basket-loaded'
+      icon: 'icon-shield'
     }
 
     const navItemCard = {
       name: '8. Cards',
       url: 'cards',
-      icon: 'icon-basket-loaded'
+      icon: 'icon-picture'
     }
 
     const navItemCalculator = {
       name: '9. Calculator',
       url: 'calculator',
-      icon: 'icon-basket-loaded'
+      icon: 'icon-list',
+      children: [
+        {
+          name: '9.1 Version 1',
+          url: 'calculator/version1',
+          icon: 'icon-calculator'
+        }
+      ]
     }
 
     this.navItems.push(navItemDashboard);

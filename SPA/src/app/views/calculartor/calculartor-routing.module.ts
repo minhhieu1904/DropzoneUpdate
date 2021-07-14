@@ -4,7 +4,7 @@ import { TemplateComponent } from './template/template.component';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'version1',
     data: { title: 'Calculator' },
     component: TemplateComponent
   },
