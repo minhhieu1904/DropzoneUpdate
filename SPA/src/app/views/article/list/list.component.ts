@@ -48,7 +48,7 @@ export class ListComponent implements OnInit {
       this.pagination = data['articles'].pagination;
       this.articles = this.articleAll.slice((this.pagination.currentPage - 1) * this.pagination.pageSize, this.pagination.pageSize * this.pagination.currentPage);
     });
-    this.signalRService.startConnection('/loadData');
+    this.signalRService.startConnection();
     if (this.signalRService.hubConnection) {
       this.signalRService.hubConnection.on('LoadDataArticle', () => {
         this.getDataPaginations();

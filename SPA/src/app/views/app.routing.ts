@@ -40,8 +40,7 @@ const routes: Routes = [
         children: [
           {
             path: 'user-list',
-            loadChildren: () => import('../views/user/user.module')
-              .then(m => m.UserModule)
+            loadChildren: () => import('../views/user/user.module').then(m => m.UserModule)
           }
         ]
       },
@@ -50,8 +49,7 @@ const routes: Routes = [
         children: [
           {
             path: 'list',
-            loadChildren: () => import('../views/article-category/article-category.module')
-              .then(m => m.ArticleCategoryModule)
+            loadChildren: () => import('../views/article-category/article-category.module').then(m => m.ArticleCategoryModule)
           }
         ]
       },
@@ -60,8 +58,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () => import('../views/article/article.module')
-              .then(m => m.ArticleModule)
+            loadChildren: () => import('../views/article/article.module').then(m => m.ArticleModule)
           }
         ]
       },
@@ -70,8 +67,7 @@ const routes: Routes = [
         children: [
           {
             path: 'list',
-            loadChildren: () => import('../views/product-category/product-category.module')
-              .then(m => m.ProductCategoryModule)
+            loadChildren: () => import('../views/product-category/product-category.module').then(m => m.ProductCategoryModule)
           }
         ]
       },
@@ -80,8 +76,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () => import('../views/product/product.module')
-              .then(m => m.ProductModule)
+            loadChildren: () => import('../views/product/product.module').then(m => m.ProductModule)
           }
         ]
       },
@@ -90,8 +85,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () => import('../views/card-style/card-style.module')
-              .then(m => m.CardStyleModule)
+            loadChildren: () => import('../views/card-style/card-style.module').then(m => m.CardStyleModule)
           }
         ]
       },
@@ -100,8 +94,16 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () => import('../views/calculartor/calculartor.module')
-              .then(m => m.CalculartorModule)
+            loadChildren: () => import('../views/calculartor/calculartor.module').then(m => m.CalculartorModule)
+          }
+        ]
+      },
+      {
+        path: 'chart',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../views/chart/chart.module').then(m => m.ChartModule)
           }
         ]
       }

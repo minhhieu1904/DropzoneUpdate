@@ -156,6 +156,24 @@ export class NavItem {
       ]
     }
 
+    const navItemChart = {
+      name: '10. Chart',
+      url: 'chart',
+      icon: 'icon-list',
+      children: [
+        {
+          name: '10.1 Apexcharts',
+          url: 'chart/apexcharts',
+          icon: 'icon-calculator'
+        },
+        {
+          name: '10.1 Ng2 Chart',
+          url: 'chart/ng2Chart',
+          icon: 'icon-calculator'
+        }
+      ]
+    }
+
     this.navItems.push(navItemDashboard);
     this.navItems.push(this.navItemUser);
     this.navItems.push(this.navItemArticleCategory);
@@ -166,6 +184,7 @@ export class NavItem {
     this.navItems.push(navItemPage404_2);
     this.navItems.push(navItemCard);
     this.navItems.push(navItemCalculator);
+    this.navItems.push(navItemChart);
 
     return this.navItems;
   }

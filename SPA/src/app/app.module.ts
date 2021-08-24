@@ -25,6 +25,7 @@ import { ErrorInterceptorProvider } from './_core/_services/error.interceptor';
 import { AppAsideModule, AppBreadcrumbModule, AppFooterModule, AppHeaderModule, AppSidebarModule } from '@coreui/angular';
 import { AppRoutingModule } from './views/app.routing';
 import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
+import { ChartsModule } from 'ng2-charts';
 
 const APP_CONTAINERS = [
   DefaultLayoutComponent
@@ -66,7 +67,8 @@ export function tokenGetter() {
     AppAsideModule,
     AppBreadcrumbModule.forRoot(),
     BsDropdownModule.forRoot(),
-    SnotifyModule
+    SnotifyModule,
+    ChartsModule
   ],
   providers: [
     {
@@ -75,7 +77,7 @@ export function tokenGetter() {
     },
     AuthGuard,
     ErrorInterceptorProvider,
-    { provide: 'SnotifyToastConfig', useValue: ToastDefaults},
+    { provide: 'SnotifyToastConfig', useValue: ToastDefaults },
     SnotifyService
   ],
   bootstrap: [AppComponent],

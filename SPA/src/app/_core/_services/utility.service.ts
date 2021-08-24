@@ -174,4 +174,17 @@ export class UtilityService {
       });
   }
   // End export excel with checkExport
+
+  // Remove Ng-Select2 when click "History Back Browser"
+  removeSelect2() {
+    document.querySelectorAll('.select2-container--open').forEach(item => item.remove());
+    // let elements = document.getElementsByClassName("select2-container--open");
+    // let sum = elements.length;
+    // if (elements.length > 0) {
+    //   for (let i = 0; i < sum; i++) {
+    //     elements[0].remove();
+    //   }
+    // }
+  }
+  // End Remove Ng-Select2 when click "History Back Browser"
 }

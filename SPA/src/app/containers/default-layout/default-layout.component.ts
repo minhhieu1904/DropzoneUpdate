@@ -5,7 +5,6 @@ import { User } from '../../_core/_models/user';
 import { AuthService } from '../../_core/_services/auth.service';
 import { Router } from '@angular/router';
 import { AlertUtilityService } from 'src/app/_core/_services/alert-utility.service';
-import { SnotifyPosition } from 'ng-snotify';
 import { commonPerFactory } from 'src/app/_core/_utility/common-fer-factory';
 
 @Component({
@@ -26,7 +25,7 @@ export class DefaultLayoutComponent {
   ) {
     this.navItems = this.nav.getNav();
     this.imageUser = this.currentUser.image === null ? commonPerFactory.imageUserDefault
-                                    : commonPerFactory.imageUserUrl + this.currentUser.image;
+      : commonPerFactory.imageUserUrl + this.currentUser.image;
   }
 
   toggleMinimize(e) {
@@ -39,5 +38,9 @@ export class DefaultLayoutComponent {
     this.authService.decodedToken = null;
     this.alertUtility.success('Success', 'Logged out');
     this.router.navigate(['/login']);
+  }
+
+  removeSelect2() {
+    document.querySelectorAll('.select2-container--open').forEach(item => item.remove());
   }
 }
